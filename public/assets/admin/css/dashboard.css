@@ -1,0 +1,53 @@
+.card {
+
+    border-radius: 12px;
+
+}
+
+.card-body h2 {
+
+    font-weight: 700;
+
+}
+
+.quick-action-btn {
+
+    width: 100%;
+
+    margin-bottom: 10px;
+
+}
+
+.stat-card {
+
+    transition: .3s;
+
+    border-radius: 14px;
+
+}
+
+.stat-card:hover {
+
+    transform: translateY(-5px);
+
+}
+
+.stat-icon {
+
+    width: 60px;
+
+    height: 60px;
+
+    border-radius: 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #fff;
+
+    font-size: 24px;
+
+}

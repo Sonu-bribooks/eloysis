@@ -1,0 +1,171 @@
+.admin-sidebar {
+
+    width: 260px;
+
+    height: 100vh;
+
+    position: fixed;
+
+    left: 0;
+
+    top: 0;
+
+    background: #1e293b;
+
+    color: #fff;
+
+    overflow-y: auto;
+
+    transition: .3s;
+
+    z-index: 1050;
+
+}
+
+.sidebar-brand {
+
+    height: 70px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+
+}
+
+.sidebar-brand a {
+
+    color: #fff;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    font-weight: 600;
+
+}
+
+.sidebar-logo {
+
+    width: 40px;
+
+}
+
+.sidebar-user {
+
+    padding: 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+
+}
+
+.user-avatar img {
+
+    width: 50px;
+
+    height: 50px;
+
+    border-radius: 50%;
+
+}
+
+.user-info h6 {
+
+    margin: 0;
+
+    font-size: 15px;
+
+}
+
+.user-info small {
+
+    color: #cbd5e1;
+
+}
+
+.sidebar-menu {
+
+    padding: 15px 0;
+
+}
+
+.sidebar-menu ul {
+
+    padding: 0;
+
+    margin: 0;
+
+}
+
+.sidebar-menu li {
+
+    list-style: none;
+
+}
+
+.menu-title {
+
+    padding: 18px 20px 8px;
+
+    font-size: 11px;
+
+    text-transform: uppercase;
+
+    color: #94a3b8;
+
+    font-weight: 600;
+
+}
+
+.sidebar-menu a {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    color: #cbd5e1;
+
+    padding: 12px 20px;
+
+    transition: .3s;
+
+}
+
+.sidebar-menu a:hover {
+
+    background: #334155;
+
+    color: #fff;
+
+}
+
+.sidebar-menu a.active {
+
+    background: #2563eb;
+
+    color: #fff;
+
+}
+
+.sidebar-menu .collapse a {
+
+    padding-left: 55px;
+
+    font-size: 14px;
+
+    background: #172554;
+
+}

@@ -1,0 +1,121 @@
+.admin-header {
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 1000;
+
+    background: #fff;
+
+    height: 70px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 0 25px;
+
+    border-bottom: 1px solid var(--border-color);
+
+}
+
+.header-left {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+}
+
+.sidebar-toggle {
+
+    border: none;
+
+    background: none;
+
+    font-size: 24px;
+
+    cursor: pointer;
+}
+
+.header-right {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+}
+
+.header-search {
+
+    width: 280px;
+}
+
+.header-icon {
+
+    position: relative;
+
+    border: none;
+
+    background: none;
+
+    font-size: 22px;
+
+    cursor: pointer;
+}
+
+.header-icon .badge {
+
+    position: absolute;
+
+    top: -5px;
+
+    right: -8px;
+
+    font-size: 10px;
+}
+
+.profile-btn {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    border: none;
+
+    background: none;
+
+    cursor: pointer;
+}
+
+.profile-btn img {
+
+    width: 42px;
+
+    height: 42px;
+
+    border-radius: 50%;
+}
+
+.profile-btn strong {
+
+    display: block;
+
+    font-size: 14px;
+}
+
+.profile-btn small {
+
+    color: #6c757d;
+
+    display: block;
+
+    text-align: left;
+}

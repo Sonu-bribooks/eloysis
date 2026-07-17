@@ -1,0 +1,37 @@
+:root {
+    /* Theme Colors */
+
+    --primary: #0d6efd;
+
+    --secondary: #198754;
+
+    --danger: #dc3545;
+
+    --warning: #ffc107;
+
+    --dark: #212529;
+
+    --light: #f8f9fa;
+
+    --white: #ffffff;
+
+    --text: #555555;
+
+    --heading: #222222;
+
+    /* Radius */
+
+    --radius-sm: 5px;
+
+    --radius-md: 10px;
+
+    --radius-lg: 20px;
+
+    /* Shadow */
+
+    --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+
+    /* Transition */
+
+    --transition: 0.3s ease;
+}

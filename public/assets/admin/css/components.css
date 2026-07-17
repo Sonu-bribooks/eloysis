@@ -1,0 +1,29 @@
+.modal-content {
+
+    border: none;
+
+    border-radius: 12px;
+
+}
+
+.modal-header {
+
+    border-bottom: 1px solid #ececec;
+
+    padding: 18px 22px;
+
+}
+
+.modal-body {
+
+    padding: 22px;
+
+}
+
+.modal-footer {
+
+    border-top: 1px solid #ececec;
+
+    padding: 18px 22px;
+
+}
