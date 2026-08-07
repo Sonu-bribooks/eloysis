@@ -123,7 +123,7 @@
         </x-ui.table.tbody>
 
     </x-ui.datatable>
-    <x.ui.table.pagination id="academicPagination" class="pagination justify-content-end mt-3"> </x.ui.table.pagination>
+    <x-ui.table.pagination id="academicPagination" class="pagination justify-content-end mt-3"> </x-ui.table.pagination>
 
 </div>
 

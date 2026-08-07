@@ -4,19 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StudentProfile extends Model
 {
+    use SoftDeletes;
+    
     protected $fillable = [
         'user_id',
-        'class_id',
-        'roll_number',
+        'admission_date',
+        'blood_group',
         'admission_no',
         'dob',
         'gender',
         'address',
+        'father_name',
+        'mother_name',
+        'guardian_name',
+        'guardian_mobile',
+        'guardian_email',
+        'city', 'state', 'pincode'
     ];
-
+ 
     protected $casts = [
         'dob' => 'date',
     ];
@@ -29,11 +38,11 @@ class StudentProfile extends Model
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Profile belongs to class
-     */
-    public function schoolClass(): BelongsTo
+    public function enrollments()
     {
-        return $this->belongsTo(SchoolClass::class, 'class_id');
+        return $this->hasMany(
+            StudentEnrollment::class,
+            'stu_profile_id'
+        );
     }
 }

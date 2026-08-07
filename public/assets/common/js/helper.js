@@ -85,7 +85,40 @@ const Helper = {
                 >
             </div>
         `;
-    }
+    },
+
+    // formatDate(date) {
+    //     let parts = date.split('T');
+    //     return `${parts[0]}`;
+    // },
+
+    formatDate(date) {
+
+        if (!date) {
+
+            return '-';
+
+        }
+
+        return new Date(date)
+            .toLocaleDateString(
+                'en-IN',
+                {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                }
+            );
+
+    },
+
+
+    capitalize(value) {
+
+        return value.charAt(0).toUpperCase()
+            + value.slice(1);
+
+    },
 
 };
 
@@ -127,5 +160,87 @@ document.addEventListener('input', function (e) {
         }
 
     }
+
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| section list by class id
+|--------------------------------------------------------------------------
+*/
+
+$(document).on('change', '#class_id, #form_class_id, #target_class_id', function () {
+
+    let classId = $(this).val();
+
+    // Kis section dropdown ko update karna hai
+    let sectionTarget = $(this).data('section-target');
+    let subjectTarget = $(this).data('subject-target');
+
+    // Agar target dropdown nahi hai to API call mat karo
+    if (!sectionTarget && !subjectTarget) {
+        return;
+    }
+
+    let $section = sectionTarget ? $(sectionTarget) : $();
+    let $subject = subjectTarget ? $(subjectTarget) : $();
+
+
+    if ($section.length) {
+        $section.empty()
+            .append('<option value="">Select Section</option>');
+    }
+
+    if ($subject.length) {
+        $subject.empty()
+            .append('<option value="">Select Subject</option>');
+    }
+    if (!classId) return;
+
+
+    Ajax.request({
+
+        // url: SECTION_BY_CLASS_URL.replace(':id', classId),
+        url: BASE_URL + '/admin/sections/by-class/' + classId,
+
+        method: 'GET',
+
+        data: {},
+
+        success: (response) => {
+
+            if (response.status && Object.keys(response.data).length > 0) {
+                const section_data = response.data.sections ?? {};
+                const subject_data = response.data.subjects ?? {};
+
+                if ($section.length) {
+                    $.each(section_data, function (id, name) {
+                        $section.append(
+                            `<option value="${id}">${name}</option>`
+                        );
+                    });
+                }
+
+
+                if ($subject.length) {
+                    $.each(subject_data, function (id, subject_name) {
+                        $subject.append(
+                            `<option value="${id}">${subject_name}</option>`
+                        );
+                    });
+                }
+
+            } else {
+                $section.empty();
+                $section.append(
+                    '<option value="" disabled selected>This class has no active sections</option>'
+                );
+
+            }
+
+        }
+
+    });
 
 });

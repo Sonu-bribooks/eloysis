@@ -109,11 +109,11 @@
 
             </x-ui.table.col>
 
-             <x-ui.table.col>
+             <!-- <x-ui.table.col>
 
                 Description
 
-            </x-ui.table.col>
+            </x-ui.table.col> -->
 
             <x-ui.table.col width="120">
 
@@ -134,7 +134,7 @@
         </x-ui.table.tbody>
 
     </x-ui.datatable>
-    <x.ui.table.pagination id="classPagination" class="pagination justify-content-end mt-3"> </x.ui.table.pagination>
+    <x-ui.table.pagination id="classPagination" class="pagination justify-content-end mt-3"> </x-ui.table.pagination>
 
 </div>
 

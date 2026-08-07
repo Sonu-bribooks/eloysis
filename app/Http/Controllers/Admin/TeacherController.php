@@ -1,0 +1,140 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\TeacherRequest;
+use App\Models\TeacherProfile;
+use App\Services\Admin\TeacherService;
+use Illuminate\Http\Request;
+
+class TeacherController extends BaseController
+{
+    protected TeacherService $teacherService;
+    public function __construct(TeacherService $teacherService) {
+
+        $this->teacherService = $teacherService;
+    }
+
+     /**
+     * Teacher listing page
+     */
+    public function index()
+    {
+        return view('admin.teachers.index');
+    }
+
+    /**
+     * Teacher list AJAX
+     */
+    public function list(Request $request)
+    {
+        $teachers = $this->teacherService->getList(
+            $request->all()
+        );
+
+        return $this->success(
+            'Teacher list fetched successfully.',
+            $teachers
+        );
+    }
+
+    /**
+     * Get teacher details
+     */
+    public function show(TeacherProfile $teacher)
+    {
+        return $this->success(
+            'Teacher details fetched successfully.',
+            $this->teacherService->find($teacher->id)
+        );
+    }
+
+    /**
+     * Store teacher
+     */
+    public function store(TeacherRequest $request)
+    {
+        $this->teacherService->create(
+            $request->validated()
+        );
+
+        return $this->success(
+            'Teacher created successfully.'
+        );
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(TeacherProfile $teacher)
+    {
+        return $this->success(
+            'Teacher details fetched successfully.',
+            $this->teacherService->find($teacher->id)
+        );
+    }
+
+
+    /**
+     * Update teacher 
+     */
+    public function update(
+        TeacherRequest $request,
+        TeacherProfile $teacher
+    ) {
+        $this->teacherService->update(
+            $teacher->id,
+            $request->validated()
+        );
+
+        return $this->success(
+            'Teacher updated successfully.'
+        );
+    }
+
+    /**
+     * Delete teacher
+     */
+    public function destroy(TeacherProfile $teacher)
+    {
+        $this->teacherService->delete(
+            $teacher->id
+        );
+
+        return $this->success(
+            'Teacher deleted successfully.'
+        );
+    }
+
+    /**
+     * Change teacher status
+     */
+    // public function status(
+    //     Request $request,
+    //     TeacherProfile $teacher
+    // ) {
+    //     $this->teacherService->changeStatus(
+    //         $teacher->id,
+    //         (bool) $request->status
+    //     );
+
+    //     return $this->success(
+    //         'Teacher status updated successfully.'
+    //     );
+    // }
+
+    /**
+     * Change status
+     */
+    public function changeStatus(TeacherProfile $teachers)
+    {
+        $this->teacherService->changeStatus($teachers->id);
+
+        return $this->success(
+            'Academic Teacher status updated successfully.'
+        );
+    }
+
+}

@@ -13,21 +13,14 @@ return new class extends Migration
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('class_id')
-                ->nullable()
-                ->constrained('academic_classes')
-                ->cascadeOnUpdate()
-                ->nullOnDelete();
-
             $table->string('subject_name', 150);
             $table->string('subject_code', 50)->nullable();
             $table->text('description')->nullable();
             $table->boolean('status')->default(1)->comment('1 = active, 0 = inactive');
             $table->timestamps();
-
-            $table->index('class_id');
+            $table->softDeletes();
             $table->index('status');
-            $table->unique(['class_id', 'subject_name']);
+            $table->unique(['subject_name']);
         });
     }
 

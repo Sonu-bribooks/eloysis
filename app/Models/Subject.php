@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Subject extends Model
 {
     protected $fillable = [
-        'class_id',
         'subject_name',
         'subject_code',
         'description',
@@ -28,10 +27,10 @@ class Subject extends Model
     /**
      * Subject belongs to class
      */
-    public function schoolClass(): BelongsTo
-    {
-        return $this->belongsTo(SchoolClass::class, 'class_id');
-    }
+    // public function subjectClass(): BelongsTo
+    // {
+    //     return $this->belongsTo(AcademicClass::class, 'class_id');
+    // }
 
     /**
      * Subject has many questions
@@ -47,5 +46,10 @@ class Subject extends Model
     public function exams(): HasMany
     {
         return $this->hasMany(Exam::class);
+    }
+
+    public function teacherSubjects()
+    {
+        return $this->hasMany(TeacherSubject::class);
     }
 }

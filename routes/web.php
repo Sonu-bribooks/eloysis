@@ -5,14 +5,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\StudentController;
-use App\Http\Controllers\Admin\ClassController;
-use App\Http\Controllers\Admin\SubjectController;
+use App\Http\Controllers\Admin\CommonController;
+
 use App\Http\Controllers\Admin\ExamController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\ExamQuestionController;
 use App\Http\Controllers\Admin\ResultController;
 
-use App\Http\Controllers\Admin\{RoleController,AcademicSessionController,AcademicClassController};
+use App\Http\Controllers\Admin\{RoleController,AcademicSessionController,AcademicClassController,
+AcademicSectionController,SubjectController,TeacherController,StaffController,ClassSubjectController,
+TeacherSubjectController,StudentPromotionController,ClassSectionController};
 
 require __DIR__ . '/website.php';
 // require __DIR__ . '/admin.php';
@@ -35,12 +37,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
     });
 
+    //************Some common routes *********** */
+    Route::get('sections/by-class/{classId}',[CommonController::class, 'byClass'])->name('sections.byClass');
+
     // Auth admin routes
     Route::middleware(['admin.auth'])->group(function () {
         Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+        //************Roles route*******************
         Route::prefix('roles')
             ->name('roles.')
             ->controller(RoleController::class)
@@ -61,7 +67,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::patch('/{role}/status', 'changeStatus')->name('status');
 
             });
-        
+        //************Academic Session route*******************
         Route::prefix('academic')
             ->name('academic.')
             ->controller(AcademicSessionController::class)
@@ -83,39 +89,68 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
             });
 
-        Route::prefix('classes')
-            ->name('classes.')
-            ->controller(AcademicClassController::class)
+
+        //************Academic Classes route*******************
+        Route::get('classes/list', [AcademicClassController::class, 'list'])->name('classes.list');
+        Route::patch('classes/{classes}/status', [AcademicClassController::class, 'changeStatus'])->name('classes.status');
+        Route::resource('classes', AcademicClassController::class);
+        
+        //************Academic Classes Section route*******************
+        Route::get('sections/list', [AcademicSectionController::class, 'list'])->name('sections.list');
+        Route::patch('sections/{sections}/status', [AcademicSectionController::class, 'changeStatus'])->name('sections.status');
+        Route::resource('sections', AcademicSectionController::class);
+
+        //************Academic Student route*******************
+        Route::get('students/list', [StudentController::class, 'list'])->name('students.list');
+        Route::patch('students/{students}/status', [StudentController::class, 'changeStatus'])->name('students.status');
+        Route::resource('students', StudentController::class);
+
+        //************Academic Classes Subject route*******************
+        Route::get('subjects/list', [SubjectController::class, 'list'])->name('subjects.list');
+        Route::patch('subjects/{subjects}/status', [SubjectController::class, 'changeStatus'])->name('subjects.status');
+        Route::resource('subjects', SubjectController::class);
+
+        //************Academic Teacher route*******************
+        Route::get('teachers/list', [TeacherController::class, 'list'])->name('teachers.list');
+        Route::patch('teachers/{teachers}/status', [TeacherController::class, 'changeStatus'])->name('teachers.status');
+        Route::resource('teachers', TeacherController::class);
+
+        //************Academic Staff route*******************
+        Route::get('staffs/list', [StaffController::class, 'list'])->name('staffs.list');
+        Route::patch('staffs/{staffs}/status', [StaffController::class, 'changeStatus'])->name('staffs.status');
+        Route::resource('staffs', StaffController::class);
+
+        //************Academic class subjects route*******************
+        Route::get('clsubject/list', [ClassSubjectController::class, 'list'])->name('clsubject.list');
+        Route::patch('clsubject/{clsubject}/status', [ClassSubjectController::class, 'changeStatus'])->name('clsubject.status');
+        Route::resource('clsubject', ClassSubjectController::class);
+
+        //************Academic teacher subjects route*******************
+        Route::get('teacher-subject/list', [TeacherSubjectController::class, 'list'])->name('teacher-subject.list');
+        Route::patch('teacher-subject/{teacher_subject}/status', [TeacherSubjectController::class, 'changeStatus'])->name('teacher-subject.status');
+        Route::resource('teacher-subject', TeacherSubjectController::class);
+
+         //************Academic Class Section route*******************
+        Route::get('class-sections/list', [ClassSectionController::class, 'list'])->name('class-sections.list');
+        Route::patch('class-sections/{classSection}/status', [ClassSectionController::class, 'changeStatus'])->name('class-sections.status');
+        Route::resource('class-sections', ClassSectionController::class);
+        
+        
+        //*****************Student Promotions route****************************** */
+        Route::prefix('student-promotions')
+            ->name('student-promotions.')
+            ->controller(StudentPromotionController::class)
             ->group(function () {
 
                 Route::get('/', 'index')->name('index');
 
-                Route::get('/list', 'list')->name('list');
+                Route::get('/students', 'students')->name('students');
 
-                Route::post('/', 'store')->name('store');
-
-                Route::get('/{classes}/edit', 'edit')->name('edit');
-
-                Route::put('/{classes}', 'update')->name('update');
-
-                Route::delete('/{classes}', 'destroy')->name('destroy');
-
-                Route::patch('/{classes}/status', 'changeStatus')->name('status');
+                Route::post('/promote', 'promote')->name('promote');
 
             });
 
-        // Route::resource('classes', AcademicClassController::class);
 
-        // Route::get('classes/list', [AcademicClassController::class, 'list'])
-        //     ->name('classes.list');
-
-        // Route::patch('classes/{classes}/status', [AcademicClassController::class, 'changeStatus'])
-        //     ->name('classes.status');
-            
-
-        Route::resource('students', StudentController::class);
-        // Route::resource('classes', ClassController::class);
-        Route::resource('subjects', SubjectController::class);
         Route::resource('exams', ExamController::class);
         Route::resource('questions', QuestionController::class);
 

@@ -116,6 +116,26 @@ const Academic = {
 
             data: $('#filterForm').serialize() + '&page=' + page,
 
+            beforeSend: () => {
+
+                $('#academicTableBody').html(`
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="text-center py-4">
+
+                            Loading...
+
+                        </td>
+
+                    </tr>
+
+                `);
+
+            },
+
             success: (response) => {
 
                 this.render(response.data);
@@ -166,8 +186,8 @@ const Academic = {
 
                     <td>${row.start_year}</td>
                     <td>${row.end_year}</td>
-                    <td>${row.start_date}</td>
-                    <td>${row.end_date}</td>
+                    <td>${Helper.formatDate(row.start_date)}</td>
+                    <td>${Helper.formatDate(row.end_date)}</td>
 
                     <td>
                         ${Helper.statusSwitch(row.id, row.is_current)}
@@ -304,8 +324,8 @@ const Academic = {
                 $('#start_year').val(academic.start_year);
                 $('#end_year').val(academic.end_year);
                 // alert(this.formatDate(academic.start_date));
-                $('#start_date').val(this.formatDate(academic.start_date));
-                $('#end_date').val(this.formatDate(academic.end_date));
+                $('#start_date').val(Helper.formatDate(academic.start_date));
+                $('#end_date').val(Helper.formatDate(academic.end_date));
 
                 $('#academicModalTitle').text('Edit Academic Session');
 
@@ -320,11 +340,6 @@ const Academic = {
         });
 
 
-    },
-
-    formatDate(date) {
-        let parts = date.split('T');
-        return `${parts[0]}`;
     },
 
     /*

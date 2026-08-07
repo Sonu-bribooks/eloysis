@@ -109,6 +109,25 @@ const Role = {
 
             data: $('#filterForm').serialize() + '&page=' + page,
 
+            beforeSend: () => {
+
+                $('#roleTableBody').html(`
+
+                    <tr>
+
+                        <td
+                            colspan="5"
+                            class="text-center py-4">
+
+                            Loading...
+
+                        </td>
+
+                    </tr>
+
+                `);
+
+            },
             success: (response) => {
 
                 this.render(response.data);
@@ -189,8 +208,6 @@ const Role = {
         });
 
         $('#roleTableBody').html(html);
-
-
 
     },
 

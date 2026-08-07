@@ -47,11 +47,17 @@ class User extends Authenticatable
         'profile_image',
         'status',
         'last_login_at',
+        'created_by',
+        'updated_by'
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    protected $appends = [
+        'profile_image_url'
     ];
 
     public function scopeActive($query)
@@ -68,9 +74,9 @@ class User extends Authenticatable
 
     public function getProfileImageUrlAttribute(): ?string
     {
-        return $this->profile_image
-            ? asset('storage/' . $this->profile_image)
-            : null;
+        return \App\Helpers\UploadHelper::url(
+            $this->profile_image
+        );
     }
 
     /**
@@ -87,6 +93,13 @@ class User extends Authenticatable
     public function studentProfile(): HasOne
     {
         return $this->hasOne(StudentProfile::class);
+    }
+
+    public function teacherProfile()
+    {
+        return $this->hasOne(
+            TeacherProfile::class
+        );
     }
 
     /**
@@ -211,4 +224,11 @@ class User extends Authenticatable
             ->pluck('slug')
             ->toArray();
     }
+
+    public function teacherSubjects()
+    {
+        return $this->hasMany(TeacherSubject::class);
+    }
+
+   
 }

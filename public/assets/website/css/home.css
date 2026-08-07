@@ -6,6 +6,12 @@ section {
     scroll-margin-top: 80px;
 }
 
+img.sidebar-logo {
+    width: 43%;
+    height: 20%;
+    object-fit: contain;
+}
+
 /* ===========================
    HERO SECTION
 =========================== */

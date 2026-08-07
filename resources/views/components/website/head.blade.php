@@ -9,7 +9,9 @@
 </title>
 
 
-
+{{-- Favicon --}}
+    <link rel="icon" type="image/png"
+        href="{{ asset('assets/common/images/favicon.png') }}">
 
 <link
     href="{{ asset('assets/website/css/app.css') }}"

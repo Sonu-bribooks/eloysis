@@ -9,7 +9,7 @@
                  alt="Logo"
                  class="sidebar-logo">
 
-            <span>{{ config('app.name') }}</span>
+            <!-- <span>{{ config('app.name') }}</span> -->
 
         </a>
 
@@ -136,37 +136,59 @@
                     <li>
                         <a href="{{ route('admin.academic.index') }}">
                             <i class="bi bi-calendar3 me-2"></i> 
-                            <span>Academic Session </sapan>
+                            <span>Academic Session </span>
                         </a>
                     </li>
 
                     <li>
                         <a href="{{route('admin.classes.index')}}">
                             <i class="bi bi-building me-2"></i> 
-                            <span>Classes </sapan>
+                            <span>Classes </span>
                         </a>
                     </li>
 
                     <li>
-                        <a href="#">
+                        <a href="{{route('admin.sections.index')}}">
                             <i class="bi bi-diagram-3 me-2"></i> 
-                            <span> Sections </sapan>
+                            <span> Sections </span>
                         </a>
                     </li>
 
                     <li>
-                        <a href="#">
+                        <a href="{{ route('admin.class-sections.index') }}">
+                            <i class="bi bi-diagram-2 me-2"></i> 
+                            <span>Class Sections </span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('admin.subjects.index') }}">
                             <i class="bi bi-book me-2"></i> 
-                            <span> Subjects </sapan>
+                            <span> Subjects </span>
                         </a>
                     </li>
 
                     <li>
-                        <a href="#">
-                            <i class="bi bi-person-workspace me-2"></i> 
-                            <span> Teachers </sapan>
+                        <a href="{{ route('admin.clsubject.index') }}">
+                            <i class="bi bi-journal-bookmark me-2"></i> 
+                            <span>Class Subjects </span>
                         </a>
                     </li>
+
+                    <li>
+                        <a href="{{ route('admin.teachers.index') }}">
+                            <i class="bi bi-person-workspace me-2"></i> 
+                            <span> Teachers </span>
+                        </a>
+                    </li>
+
+                     <li>
+                        <a href="{{ route('admin.teacher-subject.index') }}">
+                            <i class="bi bi-person-video2 me-2"></i> 
+                            <span>Teacher Subjects </span>
+                        </a>
+                    </li>
+                    
                 </ul>
 
             </li>
@@ -179,7 +201,7 @@
 
                     <i class="bi bi-people"></i>
 
-                    <span>Students</span>
+                    <span>Students Management</span>
 
                     <i class="bi bi-chevron-down ms-auto"></i>
 
@@ -187,11 +209,13 @@
 
                 <ul class="collapse" id="studentMenu">
 
-                    <li><a href="#"><i class="bi bi-list-ul me-2"></i> <span>Student List </sapan></a></li>
+                    <li><a href="{{ route('admin.students.index') }}"><i class="bi bi-list-ul me-2"></i> <span>Student List </span></a></li>
+                    <li><a href="{{ route('admin.student-promotions.index') }}"><i class="bi bi-mortarboard-fill me-2"></i> <span>Student Promotion </span></a></li>
+                    
 
-                    <li><a href="#"><i class="bi bi-person-plus me-2"></i> <span>Admissions </sapan></a></li>
+                    <li><a href="#"><i class="bi bi-person-plus me-2"></i> <span>Admissions </span></a></li>
 
-                    <li><a href="#"><i class="bi bi-calendar-check me-2"></i> <span>Attendance </sapan></a></li>
+                    <li><a href="#"><i class="bi bi-calendar-check me-2"></i> <span>Attendance </span></a></li>
 
                 </ul>
 
@@ -213,11 +237,11 @@
 
                 <ul class="collapse" id="examMenu">
 
-                    <li><a href="#"><i class="bi bi-journal-text me-2"></i> <span>Exams </sapan></a></li>
+                    <li><a href="#"><i class="bi bi-journal-text me-2"></i> <span>Exams </span></a></li>
 
-                    <li><a href="#"> <i class="bi bi-patch-question me-2"></i> <span>Questions </sapan></a></li>
+                    <li><a href="#"> <i class="bi bi-patch-question me-2"></i> <span>Questions </span></a></li>
 
-                    <li><a href="#"> <i class="bi bi-award me-2"></i> <span>Results </sapan></a></li>
+                    <li><a href="#"> <i class="bi bi-award me-2"></i> <span>Results </span></a></li>
 
                 </ul>
 
@@ -247,21 +271,21 @@
                     <li>
                         <a href="{{ route('admin.roles.index') }}">
                             <i class="bi bi-person-badge me-2"></i> 
-                            <span> Roles </sapan>
+                            <span> Roles </span>
                         </a>
                     </li>
 
                     <li>
                         <a href="#">
                             <i class="bi bi-shield-lock me-2"></i> 
-                            <span> Permissions </sapan>
+                            <span> Permissions </span>
                         </a>
                     </li>
 
                     <li>
-                        <a href="#">
+                        <a href="{{ route('admin.staffs.index')}}">
                             <i class="bi bi-person-gear me-2"></i> 
-                            <span> Admin Users </sapan>
+                            <span> Admin Users </span>
                         </a>
                     </li>
                 </ul>

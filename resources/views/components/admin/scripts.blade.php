@@ -16,3 +16,12 @@
 <script src="{{ asset('assets/admin/js/sidebar.js') }}"></script>
 <script src="{{ asset('assets/admin/js/app.js') }}"></script>
 <script src="{{ asset('assets/admin/js/auth.js') }}"></script>
+
+<script> 
+
+    const BASE_URL = document
+        .querySelector('meta[name="base-url"]')
+        .getAttribute('content');
+
+    console.log(BASE_URL);
+</script>

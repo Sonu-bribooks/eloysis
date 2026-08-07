@@ -38,8 +38,9 @@ return new class extends Migration
             $table->string('roll_number', 50)->nullable();
 
             $table->boolean('status')->default(true);
-
+            $table->unsignedBigInteger('promoted_by')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->unique([
                 'stu_profile_id',

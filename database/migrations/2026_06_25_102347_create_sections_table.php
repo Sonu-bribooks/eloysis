@@ -13,10 +13,6 @@ return new class extends Migration
     {
         Schema::create('sections', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('class_id')
-                ->constrained('academic_classes')
-                ->cascadeOnDelete();
-
             $table->string('name', 50);
 
             $table->string('code', 20)->nullable();
@@ -25,7 +21,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->unique(['class_id', 'name']);
+            $table->unique(['name','code']);
             
         });
     }

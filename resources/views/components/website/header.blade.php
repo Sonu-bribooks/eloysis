@@ -4,7 +4,14 @@
 
         <div class="col-md-2">
 
-            LOGO
+            <a href="{{ url('/') }}">
+
+            <img src="{{ asset('assets/common/images/logo.png') }}"
+                 alt="Logo"
+                 class="sidebar-logo">
+
+
+        </a>
 
         </div>
 

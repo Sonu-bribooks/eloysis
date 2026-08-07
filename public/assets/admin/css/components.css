@@ -27,3 +27,79 @@
     padding: 18px 22px;
 
 }
+
+/* Details componenets ka liye */
+
+.teacher-profile-header {
+    position: relative;
+    min-height: 220px;
+    overflow: hidden;
+}
+
+.teacher-profile-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: inherit;
+    background-size: cover;
+    background-position: center;
+    filter: blur(12px);
+    transform: scale(1.1);
+}
+
+.teacher-profile-header::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .35);
+}
+
+.teacher-profile-header>* {
+    position: relative;
+    z-index: 1;
+}
+
+/* .teacher-profile-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+} */
+
+.detail-section {
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 20px;
+}
+
+.detail-section:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.detail-section-title {
+    color: #3068a1;
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f1f1f1;
+}
+
+.detail-item {
+    min-height: 50px;
+}
+
+.detail-label {
+    color: #6c757d;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.detail-value {
+    color: #212529;
+    font-size: 15px;
+    font-weight: 600;
+    word-break: break-word;
+}
+
+.header-title {
+    color: #3068a1;
+}

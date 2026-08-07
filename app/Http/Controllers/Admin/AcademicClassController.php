@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\AcademicClassRequest;
 use App\Services\Admin\AcademicClassService;
 use Illuminate\Http\Request;
 use App\Models\AcademicClass;
@@ -50,9 +51,16 @@ class AcademicClassController extends BaseController
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(AcademicClassRequest $request)
     {
-        //
+        // dd($request->all());
+        $this->academicClassService->create(
+            $request->validated()
+        );
+
+        return $this->success(
+            'Academic Class created successfully.'
+        );
     }
 
     /**
@@ -66,24 +74,53 @@ class AcademicClassController extends BaseController
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(AcademicClass $class)
     {
-        //
+        // dd($classes);
+        return $this->success(
+            'Academic Classes fetched successfully.',
+            $class
+        );
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(AcademicClassRequest $request, AcademicClass $class)
     {
-        //
+        $this->academicClassService->update(
+            $class->id,
+            $request->validated()
+        );
+
+        return $this->success(
+            'Academic Class Updated successfully.'
+        );
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(AcademicClass $class)
     {
-        //
+        $this->academicClassService->delete(
+            $class->id
+        );
+
+        return $this->success(
+            'Academic Session deleted successfully.'
+        );
+    }
+
+    /**
+     * Change status
+     */
+    public function changeStatus(AcademicClass $classes)
+    {
+        $this->academicClassService->changeStatus($classes->id);
+
+        return $this->success(
+            'Academic Class status updated successfully.'
+        );
     }
 }

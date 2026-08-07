@@ -3,8 +3,52 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StudentEnrollment extends Model
 {
-    //
+    use SoftDeletes;
+
+    protected $fillable = [
+        'user_id',
+        'stu_profile_id',
+        'roll_number',
+        'academic_session_id',
+        'class_id',
+        'section_id',
+        'status',
+        'promoted_by'
+    ];
+
+    public function student()
+    {
+        return $this->belongsTo(
+            StudentProfile::class,
+            'stu_profile_id'
+        );
+    }
+
+    public function academicSession()
+    {
+        return $this->belongsTo(
+            AcademicSession::class
+        );
+    }
+
+
+    public function studentClass()
+    {
+        return $this->belongsTo(
+            AcademicClass::class,
+            'class_id'
+        );
+    }
+
+
+    public function section()
+    {
+        return $this->belongsTo(
+            Section::class
+        );
+    }
 }

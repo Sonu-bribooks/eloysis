@@ -14,6 +14,22 @@ abstract class BaseRepository
     }
 
     /**
+    * Get query builder.
+    */
+    public function query()
+    {
+        return $this->model->newQuery();
+    }
+
+    /**
+     * Count records.
+     */
+    public function count(): int
+    {
+        return $this->model->count();
+    }
+
+    /**
      * Get all records.
      */
     public function all()
@@ -70,15 +86,22 @@ abstract class BaseRepository
         return $this->find($id)->delete();
     }
 
+    public function deleteWhere(array $conditions): int
+    {
+        return $this->model
+            ->where($conditions)
+            ->delete();
+    }
+
     /**
      * Change record Status.
      */
     public function changeStatus(int $id)
     {
-        $role = $this->findOrFail($id);
+        $record = $this->findOrFail($id);
 
-        $role->status = ! $role->status;
+        $record->status = ! $record->status;
 
-        return $role->save();
+        return $record->save();
     }
 }

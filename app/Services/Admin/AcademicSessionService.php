@@ -107,6 +107,7 @@ class AcademicSessionService
      */
     public function changeStatus(int $id)
     {
+        $this->academicSessionRepository->changeStatus($id);
         return $this->academicSessionRepository->academicStatus($id);
     }
 }

@@ -48,4 +48,12 @@ class AcademicClass extends Model
     {
         return $this->hasMany(Exam::class, 'class_id');
     }
+
+    public function teacherSubjects()
+    {
+        return $this->hasMany(
+            TeacherSubject::class,
+            'class_id'
+        );
+    }
 }
