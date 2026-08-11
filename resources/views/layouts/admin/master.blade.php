@@ -9,38 +9,42 @@
 
     <div class="admin-wrapper">
 
-        {{-- Sidebar --}}
-        @include('components.admin.sidebar')
+        {{-- Header --}}
+        @include('components.admin.header')
 
-        {{-- Main Content --}}
-        <div class="main-wrapper">
+        <div class="admin-body">
 
-            {{-- Header --}}
-            @include('components.admin.header')
+            {{-- Sidebar --}}
+            @include('components.admin.sidebar')
 
-            <main class="content-wrapper">
+            {{-- Main Content --}}
+            <div class="main-wrapper">
 
-                <div class="container-fluid">
+                <main class="content-wrapper">
 
-                    {{-- Breadcrumb --}}
-                    @hasSection('breadcrumb')
-                        @yield('breadcrumb')
-                    @else
-                        <x-ui.breadcrumb />
-                    @endif
+                    <div class="container-fluid">
 
-                    {{-- Flash Message --}}
-                    @include('components.common.flash-message')
+                        {{-- Breadcrumb --}}
+                        @hasSection('breadcrumb')
+                            @yield('breadcrumb')
+                        @else
+                            <x-ui.breadcrumb />
+                        @endif
 
-                    {{-- Page Content --}}
-                    @yield('content')
+                        {{-- Flash Message --}}
+                        @include('components.common.flash-message')
 
-                </div>
+                        {{-- Page Content --}}
+                        @yield('content')
 
-            </main>
+                    </div>
 
-            {{-- Footer --}}
-            @include('components.admin.footer')
+                </main>
+
+                {{-- Footer --}}
+                @include('components.admin.footer')
+
+            </div>
 
         </div>
 

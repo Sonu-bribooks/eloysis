@@ -3,7 +3,7 @@
     'title' => '',
     'size' => null,            // sm | lg | xl
     'centered' => true,
-    'scrollable' => false,
+    'scrollable' => true,
     'static' => false,
     'keyboard' => true,
 ])

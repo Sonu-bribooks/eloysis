@@ -2,19 +2,15 @@
 
     <div class="header-left">
 
-        <button class="sidebar-toggle" id="sidebarToggle">
+        <div class="header-brand">
 
-            <i class="bi bi-list"></i>
+            <a href="{{ route('admin.dashboard') }}" class="brand-link">
 
-        </button>
+                <img src="{{ asset('assets/common/images/logo.png') }}"
+                     alt="Logo"
+                     class="brand-logo">
 
-        <div class="page-title">
-
-            <h5 class="mb-0">
-
-                @yield('title', 'Dashboard')
-
-            </h5>
+            </a>
 
         </div>
 
@@ -22,40 +18,23 @@
 
     <div class="header-right">
 
-        {{-- Search --}}
-        <div class="header-search">
-
-            <div class="input-group">
-
-                <span class="input-group-text">
-
-                    <i class="bi bi-search"></i>
-
-                </span>
-
-                <input type="text"
-                    class="form-control"
-                    placeholder="Search...">
-
-            </div>
-
-        </div>
-
+        {{-- Theme Toggle --}}
         <x-ui.theme-toggle />
 
         {{-- Notifications --}}
         <div class="dropdown">
 
             <button class="header-icon"
-                data-bs-toggle="dropdown">
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
 
                 <i class="bi bi-bell"></i>
 
-                <span class="badge bg-danger">0</span>
+                <span class="badge bg-danger rounded-pill">0</span>
 
             </button>
 
-            <ul class="dropdown-menu dropdown-menu-end">
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
 
                 <li>
 
@@ -69,7 +48,7 @@
 
                 <li>
 
-                    <span class="dropdown-item-text text-muted">
+                    <span class="dropdown-item-text text-muted fs-7">
 
                         No notifications found
 
@@ -86,21 +65,22 @@
 
             <button
                 class="profile-btn"
-                data-bs-toggle="dropdown">
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
 
                 <img
-                    src="https://ui-avatars.com/api/?name={{ urlencode(auth('admin')->user()->name) }}&background=0D6EFD&color=fff"
+                    src="https://ui-avatars.com/api/?name={{ urlencode(auth('admin')->user()->name) }}&background=E0F2FE&color=0284C7"
                     alt="Profile">
 
-                <div>
+                <div class="d-none d-sm-block text-start">
 
-                    <strong>
+                    <strong class="d-block leading-tight fs-7">
 
                         {{ auth('admin')->user()->name }}
 
                     </strong>
 
-                    <small>
+                    <small class="text-muted fs-8">
 
                         {{ ucfirst(auth('admin')->user()->role->role_name) }}
 
@@ -108,11 +88,11 @@
 
                 </div>
 
-                <i class="bi bi-chevron-down"></i>
+                <i class="bi bi-chevron-down ms-1 fs-8 text-muted"></i>
 
             </button>
 
-            <ul class="dropdown-menu dropdown-menu-end">
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
 
                 <li>
 
@@ -120,7 +100,7 @@
                         href="#"
                         class="dropdown-item">
 
-                        <i class="bi bi-person"></i>
+                        <i class="bi bi-person me-2"></i>
 
                         My Profile
 
@@ -134,7 +114,7 @@
                         href="#"
                         class="dropdown-item">
 
-                        <i class="bi bi-gear"></i>
+                        <i class="bi bi-gear me-2"></i>
 
                         Settings
 
@@ -159,7 +139,7 @@
                         <button
                             class="dropdown-item text-danger">
 
-                            <i class="bi bi-box-arrow-right"></i>
+                            <i class="bi bi-box-arrow-right me-2"></i>
 
                             Logout
 

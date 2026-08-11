@@ -1,34 +1,25 @@
 <aside class="admin-sidebar" id="adminSidebar">
 
-    {{-- Logo --}}
-    <div class="sidebar-brand">
+    {{-- User Banner Card (Matching Reference Design) --}}
+    <div class="sidebar-user-card">
 
-        <a href="{{ route('admin.dashboard') }}">
+        <div class="user-card-banner">
 
-            <img src="{{ asset('assets/common/images/logo.png') }}"
-                 alt="Logo"
-                 class="sidebar-logo">
+            <div class="user-avatar-wrapper">
 
-            <!-- <span>{{ config('app.name') }}</span> -->
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(auth('admin')->user()->name) }}&background=0284C7&color=fff"
+                     alt="{{ auth('admin')->user()->name }}"
+                     class="user-avatar-img">
 
-        </a>
-
-    </div>
-
-    {{-- User Info --}}
-    <div class="sidebar-user">
-
-        <div class="user-avatar">
-
-            <img src="https://ui-avatars.com/api/?name={{ urlencode(auth('admin')->user()->name) }}&background=0D6EFD&color=fff">
+            </div>
 
         </div>
 
-        <div class="user-info">
+        <div class="user-card-body">
 
-            <h6>{{ auth('admin')->user()->name }}</h6>
+            <h6 class="user-name">{{ auth('admin')->user()->name }}</h6>
 
-            <small>{{ auth('admin')->user()->role->role_name }}</small>
+            <small class="user-role">{{ ucfirst(auth('admin')->user()->role->role_name ?? 'Admin') }}</small>
 
         </div>
 
@@ -39,10 +30,17 @@
 
         <ul>
 
+            <li class="menu-title">
+
+                NAVIGATION
+
+            </li>
+
             {{-- Dashboard --}}
             <li>
 
                 <a href="{{ route('admin.dashboard') }}"
+                   title="Dashboard"
                    class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
 
                     <i class="bi bi-speedometer2"></i>
@@ -54,22 +52,18 @@
             </li>
 
             {{-- Website --}}
-            <li class="menu-title">
-
-                Website
-
-            </li>
-
             <li>
 
                 <a href="#websiteMenu"
-                   data-bs-toggle="collapse">
+                   title="Website Management"
+                   data-bs-toggle="collapse"
+                   aria-expanded="false">
 
                     <i class="bi bi-globe"></i>
 
                     <span>Website Management</span>
 
-                    <i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-chevron-right ms-auto menu-chevron"></i>
 
                 </a>
 
@@ -84,21 +78,21 @@
                     <li>
                         <a href="#">
                             <i class="bi bi-newspaper me-2"></i>
-                             <span>News</span>
+                            <span>News</span>
                         </a>
                     </li>
 
                     <li>
                         <a href="#">
                             <i class="bi bi-calendar-event me-2"></i>
-                             <span>Events</span>
+                            <span>Events</span>
                         </a>
                     </li>
 
                     <li>
                         <a href="#">
                             <i class="bi bi-image me-2"></i>
-                             <span>Gallery</span>
+                            <span>Gallery</span>
                         </a>
                     </li>
 
@@ -113,77 +107,73 @@
             </li>
 
             {{-- Academic --}}
-            <li class="menu-title">
-
-                Academic
-
-            </li>
-
             <li>
 
                 <a href="#academicMenu"
-                   data-bs-toggle="collapse">
+                   title="Academic Management"
+                   data-bs-toggle="collapse"
+                   aria-expanded="{{ request()->is('admin/academic*') || request()->is('admin/classes*') || request()->is('admin/sections*') || request()->is('admin/subjects*') || request()->is('admin/teachers*') ? 'true' : 'false' }}">
 
                     <i class="bi bi-mortarboard"></i>
 
                     <span>Academic Management</span>
 
-                    <i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-chevron-right ms-auto menu-chevron"></i>
 
                 </a>
 
-                <ul class="collapse" id="academicMenu">
+                <ul class="collapse {{ request()->is('admin/academic*') || request()->is('admin/classes*') || request()->is('admin/sections*') || request()->is('admin/subjects*') || request()->is('admin/teachers*') ? 'show' : '' }}" id="academicMenu">
                     <li>
-                        <a href="{{ route('admin.academic.index') }}">
+                        <a href="{{ route('admin.academic.index') }}" class="{{ request()->routeIs('admin.academic.index') ? 'active' : '' }}">
                             <i class="bi bi-calendar3 me-2"></i> 
                             <span>Academic Session </span>
                         </a>
                     </li>
 
                     <li>
-                        <a href="{{route('admin.classes.index')}}">
+                        <a href="{{route('admin.classes.index')}}" class="{{ request()->routeIs('admin.classes.index') ? 'active' : '' }}">
                             <i class="bi bi-building me-2"></i> 
                             <span>Classes </span>
                         </a>
                     </li>
 
                     <li>
-                        <a href="{{route('admin.sections.index')}}">
+                        <a href="{{route('admin.sections.index')}}" class="{{ request()->routeIs('admin.sections.index') ? 'active' : '' }}">
                             <i class="bi bi-diagram-3 me-2"></i> 
                             <span> Sections </span>
                         </a>
                     </li>
 
                     <li>
-                        <a href="{{ route('admin.class-sections.index') }}">
+                        <a href="{{ route('admin.class-sections.index') }}" class="{{ request()->routeIs('admin.class-sections.index') ? 'active' : '' }}">
                             <i class="bi bi-diagram-2 me-2"></i> 
                             <span>Class Sections </span>
                         </a>
                     </li>
 
                     <li>
-                        <a href="{{ route('admin.subjects.index') }}">
+                        <a href="{{ route('admin.subjects.index') }}" class="{{ request()->routeIs('admin.subjects.index') ? 'active' : '' }}">
                             <i class="bi bi-book me-2"></i> 
                             <span> Subjects </span>
                         </a>
                     </li>
 
                     <li>
-                        <a href="{{ route('admin.clsubject.index') }}">
+                        <a href="{{ route('admin.clsubject.index') }}" class="{{ request()->routeIs('admin.clsubject.index') ? 'active' : '' }}">
                             <i class="bi bi-journal-bookmark me-2"></i> 
                             <span>Class Subjects </span>
                         </a>
                     </li>
 
                     <li>
-                        <a href="{{ route('admin.teachers.index') }}">
+                        <a href="{{ route('admin.teachers.index') }}" class="{{ request()->routeIs('admin.teachers.index') ? 'active' : '' }}">
                             <i class="bi bi-person-workspace me-2"></i> 
                             <span> Teachers </span>
                         </a>
                     </li>
 
-                     <li>
-                        <a href="{{ route('admin.teacher-subject.index') }}">
+                    <li>
+                        <a href="{{ route('admin.teacher-subject.index') }}" class="{{ request()->routeIs('admin.teacher-subject.index') ? 'active' : '' }}">
                             <i class="bi bi-person-video2 me-2"></i> 
                             <span>Teacher Subjects </span>
                         </a>
@@ -197,25 +187,26 @@
             <li>
 
                 <a href="#studentMenu"
-                   data-bs-toggle="collapse">
+                   title="Students Management"
+                   data-bs-toggle="collapse"
+                   aria-expanded="{{ request()->is('admin/students*') || request()->is('admin/student-promotions*') || request()->is('admin/attendance*') ? 'true' : 'false' }}">
 
                     <i class="bi bi-people"></i>
 
                     <span>Students Management</span>
 
-                    <i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-chevron-right ms-auto menu-chevron"></i>
 
                 </a>
 
-                <ul class="collapse" id="studentMenu">
+                <ul class="collapse {{ request()->is('admin/students*') || request()->is('admin/student-promotions*') || request()->is('admin/attendance*') ? 'show' : '' }}" id="studentMenu">
 
-                    <li><a href="{{ route('admin.students.index') }}"><i class="bi bi-list-ul me-2"></i> <span>Student List </span></a></li>
-                    <li><a href="{{ route('admin.student-promotions.index') }}"><i class="bi bi-mortarboard-fill me-2"></i> <span>Student Promotion </span></a></li>
+                    <li><a href="{{ route('admin.students.index') }}" class="{{ request()->routeIs('admin.students.index') ? 'active' : '' }}"><i class="bi bi-list-ul me-2"></i> <span>Student List </span></a></li>
+                    <li><a href="{{ route('admin.student-promotions.index') }}" class="{{ request()->routeIs('admin.student-promotions.index') ? 'active' : '' }}"><i class="bi bi-mortarboard-fill me-2"></i> <span>Student Promotion </span></a></li>
                     
-
                     <li><a href="#"><i class="bi bi-person-plus me-2"></i> <span>Admissions </span></a></li>
 
-                    <li><a href="{{ route('admin.attendance.index') }}"><i class="bi bi-calendar-check me-2"></i> <span>Attendance </span></a></li>
+                    <li><a href="{{ route('admin.attendance.index') }}" class="{{ request()->routeIs('admin.attendance.index') ? 'active' : '' }}"><i class="bi bi-calendar-check me-2"></i> <span>Attendance </span></a></li>
 
                 </ul>
 
@@ -225,13 +216,15 @@
             <li>
 
                 <a href="#examMenu"
-                   data-bs-toggle="collapse">
+                   title="Examinations"
+                   data-bs-toggle="collapse"
+                   aria-expanded="false">
 
                     <i class="bi bi-journal-check"></i>
 
                     <span>Examinations</span>
 
-                    <i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-chevron-right ms-auto menu-chevron"></i>
 
                 </a>
 
@@ -247,29 +240,31 @@
 
             </li>
 
-            {{-- Users --}}
+            {{-- Administration --}}
             <li class="menu-title">
 
-                Administration
+                ADMINISTRATION
 
             </li>
 
             <li>
 
                 <a href="#userMenu"
-                   data-bs-toggle="collapse">
+                   title="User Management"
+                   data-bs-toggle="collapse"
+                   aria-expanded="{{ request()->is('admin/roles*') || request()->is('admin/staffs*') ? 'true' : 'false' }}">
 
                     <i class="bi bi-shield-lock"></i>
 
                     <span>User Management</span>
 
-                    <i class="bi bi-chevron-down ms-auto"></i>
+                    <i class="bi bi-chevron-right ms-auto menu-chevron"></i>
 
                 </a>
 
-                <ul class="collapse" id="userMenu">
+                <ul class="collapse {{ request()->is('admin/roles*') || request()->is('admin/staffs*') ? 'show' : '' }}" id="userMenu">
                     <li>
-                        <a href="{{ route('admin.roles.index') }}">
+                        <a href="{{ route('admin.roles.index') }}" class="{{ request()->routeIs('admin.roles.index') ? 'active' : '' }}">
                             <i class="bi bi-person-badge me-2"></i> 
                             <span> Roles </span>
                         </a>
@@ -283,7 +278,7 @@
                     </li>
 
                     <li>
-                        <a href="{{ route('admin.staffs.index')}}">
+                        <a href="{{ route('admin.staffs.index')}}" class="{{ request()->routeIs('admin.staffs.index') ? 'active' : '' }}">
                             <i class="bi bi-person-gear me-2"></i> 
                             <span> Admin Users </span>
                         </a>
@@ -295,7 +290,7 @@
             {{-- Reports --}}
             <li>
 
-                <a href="#">
+                <a href="#" title="Reports">
 
                     <i class="bi bi-bar-chart"></i>
 
@@ -308,7 +303,7 @@
             {{-- Settings --}}
             <li>
 
-                <a href="#">
+                <a href="#" title="Settings">
 
                     <i class="bi bi-gear"></i>
 
