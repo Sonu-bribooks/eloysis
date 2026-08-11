@@ -188,7 +188,7 @@
                             <span>Teacher Subjects </span>
                         </a>
                     </li>
-                    
+
                 </ul>
 
             </li>
@@ -215,7 +215,7 @@
 
                     <li><a href="#"><i class="bi bi-person-plus me-2"></i> <span>Admissions </span></a></li>
 
-                    <li><a href="#"><i class="bi bi-calendar-check me-2"></i> <span>Attendance </span></a></li>
+                    <li><a href="{{ route('admin.attendance.index') }}"><i class="bi bi-calendar-check me-2"></i> <span>Attendance </span></a></li>
 
                 </ul>
 

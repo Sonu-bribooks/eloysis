@@ -1,0 +1,329 @@
+/* ============================================================
+   LIGHT THEME
+   ============================================================ */
+
+:root,
+[data-theme="light"] {
+
+    --theme-body-bg: #f5f7fb;
+    --theme-card-bg: #ffffff;
+    --theme-header-bg: #ffffff;
+
+    --theme-text: #1f2937;
+    --theme-text-secondary: #6b7280;
+    --theme-text-muted: #9ca3af;
+
+    --theme-border: #e5e7eb;
+
+    --theme-input-bg: #ffffff;
+    --theme-input-text: #1f2937;
+    --theme-input-border: #d1d5db;
+
+    --theme-table-bg: #ffffff;
+    --theme-table-header-bg: #f8fafc;
+    --theme-table-hover: #f8fafc;
+
+    --theme-sidebar-bg: #1e293b;
+    --theme-sidebar-text: #e2e8f0;
+
+    --theme-modal-bg: #ffffff;
+
+    --theme-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+
+/* ============================================================
+   DARK THEME
+   ============================================================ */
+
+[data-theme="dark"] {
+
+    --theme-body-bg: #111827;
+    --theme-card-bg: #1f2937;
+    --theme-header-bg: #1f2937;
+
+    --theme-text: #f3f4f6;
+    --theme-text-secondary: #d1d5db;
+    --theme-text-muted: #9ca3af;
+
+    --theme-border: #374151;
+
+    --theme-input-bg: #111827;
+    --theme-input-text: #f3f4f6;
+    --theme-input-border: #4b5563;
+
+    --theme-table-bg: #1f2937;
+    --theme-table-header-bg: #111827;
+    --theme-table-hover: #273449;
+
+    --theme-sidebar-bg: #111827;
+    --theme-sidebar-text: #e5e7eb;
+
+    --theme-modal-bg: #1f2937;
+
+    --theme-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+
+/* ============================================================
+   BODY
+   ============================================================ */
+
+body {
+
+    background-color: var(--theme-body-bg);
+
+    color: var(--theme-text);
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+
+}
+
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.admin-header {
+
+    background-color: var(--theme-header-bg);
+
+    color: var(--theme-text);
+
+    border-color: var(--theme-border);
+
+}
+
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+
+.admin-sidebar {
+
+    background-color: var(--theme-sidebar-bg);
+
+    color: var(--theme-sidebar-text);
+
+}
+
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+
+.card,
+.theme-card {
+
+    background-color: var(--theme-card-bg);
+
+    color: var(--theme-text);
+
+    border-color: var(--theme-border);
+
+    box-shadow: var(--theme-shadow);
+
+}
+
+
+/* ============================================================
+   TEXT
+   ============================================================ */
+
+.text-dark {
+
+    color: var(--theme-text) !important;
+
+}
+
+.text-muted {
+
+    color: var(--theme-text-secondary) !important;
+
+}
+
+
+/* ============================================================
+   INPUTS
+   ============================================================ */
+
+.form-control,
+.form-select {
+
+    background-color: var(--theme-input-bg);
+
+    color: var(--theme-input-text);
+
+    border-color: var(--theme-input-border);
+
+}
+
+
+.form-control:focus,
+.form-select:focus {
+
+    background-color: var(--theme-input-bg);
+
+    color: var(--theme-input-text);
+
+}
+
+
+.form-control::placeholder {
+
+    color: var(--theme-text-muted);
+
+}
+
+
+/* ============================================================
+   TABLE
+   ============================================================ */
+
+.table {
+
+    color: var(--theme-text);
+
+    --bs-table-bg:
+        var(--theme-table-bg);
+
+    --bs-table-color:
+        var(--theme-text);
+
+    --bs-table-border-color:
+        var(--theme-border);
+
+}
+
+
+.table thead th {
+
+    background-color: var(--theme-table-header-bg);
+
+    color: var(--theme-text);
+
+}
+
+
+.table tbody tr:hover {
+
+    background-color:
+        var(--theme-table-hover);
+
+}
+
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+
+.modal-content {
+
+    background-color: var(--theme-modal-bg);
+
+    color: var(--theme-text);
+
+    border-color: var(--theme-border);
+
+}
+
+
+.modal-header,
+.modal-footer {
+
+    border-color: var(--theme-border);
+
+}
+
+
+/* ============================================================
+   DROPDOWN
+   ============================================================ */
+
+.dropdown-menu {
+
+    background-color: var(--theme-card-bg);
+
+    border-color: var(--theme-border);
+
+}
+
+
+.dropdown-item {
+
+    color: var(--theme-text);
+
+}
+
+
+.dropdown-item:hover {
+
+    background-color:
+        var(--theme-table-hover);
+
+    color: var(--theme-text);
+
+}
+
+
+/* ============================================================
+   FORM LABEL
+   ============================================================ */
+
+.form-label {
+
+    color: var(--theme-text);
+
+}
+
+
+/* ============================================================
+   BORDERS
+   ============================================================ */
+
+.border,
+.border-top,
+.border-bottom {
+
+    border-color:
+        var(--theme-border) !important;
+
+}
+
+.theme-toggle {
+
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background-color:
+        var(--theme-card-bg);
+
+    color:
+        var(--theme-text);
+
+    border: 1px solid var(--theme-border);
+
+    border-radius: 8px;
+
+}
+
+
+.theme-toggle:hover {
+
+    background-color:
+        var(--theme-table-hover);
+
+    color:
+        var(--theme-text);
+
+}

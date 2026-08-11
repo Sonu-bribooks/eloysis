@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\ResultController;
 
 use App\Http\Controllers\Admin\{RoleController,AcademicSessionController,AcademicClassController,
 AcademicSectionController,SubjectController,TeacherController,StaffController,ClassSubjectController,
-TeacherSubjectController,StudentPromotionController,ClassSectionController};
+TeacherSubjectController,StudentPromotionController,ClassSectionController,StudentAttendanceController};
 
 require __DIR__ . '/website.php';
 // require __DIR__ . '/admin.php';
@@ -143,13 +143,24 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->group(function () {
 
                 Route::get('/', 'index')->name('index');
-
                 Route::get('/students', 'students')->name('students');
-
                 Route::post('/promote', 'promote')->name('promote');
 
             });
 
+        //**********************Student Attendance******************************* */
+
+        Route::prefix('attendance')
+            ->name('attendance.')
+            ->controller(StudentAttendanceController::class)
+            ->group(function () {
+
+                Route::get('/', 'index')->name('index');
+                Route::get('/students', 'students')->name('students');
+                Route::post('/save', 'save')->name('save');
+                Route::get('/history', 'history')->name('history');
+
+            });
 
         Route::resource('exams', ExamController::class);
         Route::resource('questions', QuestionController::class);

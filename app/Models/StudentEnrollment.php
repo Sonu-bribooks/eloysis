@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class StudentEnrollment extends Model
 {
@@ -49,6 +50,14 @@ class StudentEnrollment extends Model
     {
         return $this->belongsTo(
             Section::class
+        );
+    }
+
+    public function attendances(): HasMany
+    {
+        return $this->hasMany(
+            StudentAttendance::class,
+            'student_enrollment_id'
         );
     }
 }

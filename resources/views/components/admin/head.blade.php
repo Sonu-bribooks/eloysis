@@ -45,6 +45,28 @@
     <link rel="stylesheet"
         href="{{ asset('assets/admin/css/app.css') }}">
 
+    <script>
+
+        (() => {
+
+            const theme =
+                localStorage.getItem('admin_theme')
+                || 'light';
+
+            document.documentElement
+                .setAttribute(
+                    'data-theme',
+                    theme
+                );
+
+        })();
+
+    </script>
+    
+    {{-- Theme CSS --}}
+    <link rel="stylesheet"
+        href="{{ asset('assets/admin/css/theme.css') }}">
+
     {{-- Page CSS --}}
     @stack('styles')
 

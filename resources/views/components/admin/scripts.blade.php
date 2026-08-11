@@ -16,6 +16,7 @@
 <script src="{{ asset('assets/admin/js/sidebar.js') }}"></script>
 <script src="{{ asset('assets/admin/js/app.js') }}"></script>
 <script src="{{ asset('assets/admin/js/auth.js') }}"></script>
+<script src="{{ asset('assets/admin/js/theme.js') }}"></script>
 
 <script> 
 

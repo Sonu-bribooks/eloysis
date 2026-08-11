@@ -41,6 +41,8 @@
 
         </div>
 
+        <x-ui.theme-toggle />
+
         {{-- Notifications --}}
         <div class="dropdown">
 
