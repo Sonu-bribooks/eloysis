@@ -9,6 +9,7 @@ use App\Repositories\BaseRepository;
 class StudentAttendanceRepository extends BaseRepository
 {
     protected StudentEnrollment $enrollmentModel;
+
     /**
      * Create a new class instance.
      */
@@ -38,7 +39,7 @@ class StudentAttendanceRepository extends BaseRepository
 
                 'attendances' => function ($query) use ($filters) {
 
-                    if (!empty($filters['attendance_date'])) {
+                    if (! empty($filters['attendance_date'])) {
 
                         $query->where(
                             'attendance_date',
@@ -56,7 +57,7 @@ class StudentAttendanceRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['academic_session_id'])) {
+        if (! empty($filters['academic_session_id'])) {
 
             $query->where(
                 'academic_session_id',
@@ -71,7 +72,7 @@ class StudentAttendanceRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['class_id'])) {
+        if (! empty($filters['class_id'])) {
 
             $query->where(
                 'class_id',
@@ -86,7 +87,7 @@ class StudentAttendanceRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['section_id'])) {
+        if (! empty($filters['section_id'])) {
 
             $query->where(
                 'section_id',
@@ -109,7 +110,7 @@ class StudentAttendanceRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
 
             $search = $filters['search'];
 
@@ -120,34 +121,32 @@ class StudentAttendanceRepository extends BaseRepository
                     'like',
                     "%{$search}%"
                 )
+                    ->orWhereHas('student', function ($query) use ($search) {
 
-                ->orWhereHas('student', function ($query) use ($search) {
-
-                    $query->where(
-                        'admission_no',
-                        'like',
-                        "%{$search}%"
-                    );
-
-                })
-
-                ->orWhereHas('student.user', function ($query) use ($search) {
-
-                    $query->where('name', 'like', "%{$search}%")
-
-                        ->orWhere(
-                            'email',
-                            'like',
-                            "%{$search}%"
-                        )
-
-                        ->orWhere(
-                            'mobile',
+                        $query->where(
+                            'admission_no',
                             'like',
                             "%{$search}%"
                         );
 
-                });
+                    })
+                    ->orWhereHas('student.user', function ($query) use ($search) {
+
+                        $query->where('name', 'like', "%{$search}%")
+
+                            ->orWhere(
+                                'email',
+                                'like',
+                                "%{$search}%"
+                            )
+
+                            ->orWhere(
+                                'mobile',
+                                'like',
+                                "%{$search}%"
+                            );
+
+                    });
 
             });
 
@@ -157,7 +156,6 @@ class StudentAttendanceRepository extends BaseRepository
             ->orderBy('roll_number')
             ->get();
     }
-
 
     /**
      * Get attendance for a particular enrollment and date
@@ -177,7 +175,6 @@ class StudentAttendanceRepository extends BaseRepository
             )
             ->first();
     }
-
 
     /**
      * Save or update attendance
@@ -204,7 +201,6 @@ class StudentAttendanceRepository extends BaseRepository
         );
     }
 
-
     /**
      * Get attendance history
      */
@@ -227,7 +223,7 @@ class StudentAttendanceRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['attendance_date'])) {
+        if (! empty($filters['attendance_date'])) {
 
             $query->where(
                 'attendance_date',
@@ -242,7 +238,7 @@ class StudentAttendanceRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['academic_session_id'])) {
+        if (! empty($filters['academic_session_id'])) {
 
             $query->whereHas(
                 'enrollment',
@@ -264,7 +260,7 @@ class StudentAttendanceRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['class_id'])) {
+        if (! empty($filters['class_id'])) {
 
             $query->whereHas(
                 'enrollment',
@@ -286,7 +282,7 @@ class StudentAttendanceRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['section_id'])) {
+        if (! empty($filters['section_id'])) {
 
             $query->whereHas(
                 'enrollment',

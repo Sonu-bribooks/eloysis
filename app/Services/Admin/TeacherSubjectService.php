@@ -2,7 +2,6 @@
 
 namespace App\Services\Admin;
 
-use App\Models\TeacherSubject;
 use App\Repositories\Admin\TeacherSubjectRepository;
 use Illuminate\Support\Facades\DB;
 
@@ -19,12 +18,17 @@ class TeacherSubjectService
     /**
      * Get student listing
      */
-    public function getList(array $filters = [])
-    {
-        return $this->TeacherSubjectRepository->getList($filters);
+    public function getList(
+        array $filters = [],
+        int $perPage = 10,
+        int $page = 1,
+        ?int $orderColumn = null,
+        string $orderDirection = 'asc'
+    ) {
+        return $this->TeacherSubjectRepository->getList($filters, $perPage, $page, $orderColumn, $orderDirection);
     }
 
-     /**
+    /**
      * Create Academic Subject
      */
     public function create(array $data)
@@ -69,7 +73,7 @@ class TeacherSubjectService
         }
     }
 
-     /**
+    /**
      * Delete Subject
      */
     public function delete(int $id)
@@ -99,6 +103,4 @@ class TeacherSubjectService
     {
         return $this->TeacherSubjectRepository->changeStatus($id);
     }
-
-
 }

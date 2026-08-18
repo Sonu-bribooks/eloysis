@@ -15,56 +15,47 @@ class TeacherRepository extends BaseRepository
         parent::__construct($teacher);
     }
 
-    public function getList(array $filters = [])
-    {
-        // return $this->model
-        //     ->with('user')
-        //     ->when(
-        //         !empty($filters['search']),
-        //         function ($query) use ($filters) {
+    public function getList(
+        array $filters = [],
+        int $perPage = 10,
+        int $page = 1,
+        ?int $orderColumn = null,
+        string $orderDirection = 'asc'
+    ) {
+        $sortableColumns = [
+            1 => 'user_id',
+            3 => 'employee_id',
+            5 => 'specialization',
+        ];
 
-        //             $search = $filters['search'];
-
-        //             $query->whereHas('user', function ($query) use ($search) {
-
-        //                 $query
-        //                     ->where('name', 'like', "%{$search}%")
-        //                     ->orWhere('email', 'like', "%{$search}%")
-        //                     ->orWhere('mobile', 'like', "%{$search}%");
-
-        //             });
-
-        //         }
-        //     )
-        //     ->paginate(
-        //         $filters['per_page'] ?? 10
-        //     );
-
-        return $this->model
+        $query = $this->model
             ->with('user')
-            ->when(!empty($filters['search']), function ($query) use ($filters) {
-
+            ->when(! empty($filters['search']), function ($query) use ($filters) {
                 $search = $filters['search'];
 
                 $query->where(function ($q) use ($search) {
                     $q->where('employee_id', 'like', "%{$search}%")
-                      ->orWhere('specialization', 'like', "%{$search}%")
-                      ->orWhereHas('user', function ($userQuery) use ($search) {
-                        $userQuery->where('name', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%")
-                            ->orWhere('mobile', 'like', "%{$search}%");
-                      });
+                        ->orWhere('specialization', 'like', "%{$search}%")
+                        ->orWhereHas('user', function ($userQuery) use ($search) {
+                            $userQuery->where('name', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%")
+                                ->orWhere('mobile', 'like', "%{$search}%");
+                        });
                 });
             })
             ->when(isset($filters['filter_status']) && $filters['filter_status'] !== '', function ($query) use ($filters) {
-                $query->whereHas('user', function($userQuery) use($filters) {
+                $query->whereHas('user', function ($userQuery) use ($filters) {
                     $userQuery->where('status', $filters['filter_status']);
                 });
-            })
-            ->latest()
-            ->paginate(
-                $filters['per_page'] ?? 10
-            );
+            });
+
+        if ($orderColumn !== null && isset($sortableColumns[$orderColumn])) {
+            $query->orderBy($sortableColumns[$orderColumn], $orderDirection === 'desc' ? 'desc' : 'asc');
+        } else {
+            $query->latest('id');
+        }
+
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function findWithUser(int $id)
@@ -82,92 +73,67 @@ class TeacherRepository extends BaseRepository
 
             'user_id' => $userId,
 
-            'employee_id' =>
-                $data['employee_id'],
+            'employee_id' => $data['employee_id'],
 
-            'qualification' =>
-                $data['qualification'] ?? null,
+            'qualification' => $data['qualification'] ?? null,
 
-            'specialization' =>
-                $data['specialization'] ?? null,
+            'specialization' => $data['specialization'] ?? null,
 
-            'joining_date' =>
-                $data['joining_date'] ?? null,
+            'joining_date' => $data['joining_date'] ?? null,
 
-            'dob' =>
-                $data['dob'] ?? null,
+            'dob' => $data['dob'] ?? null,
 
-            'gender' =>
-                $data['gender'] ?? null,
+            'gender' => $data['gender'] ?? null,
 
-            'experience_years' =>
-                $data['experience_years'] ?? null,
+            'experience_years' => $data['experience_years'] ?? null,
 
-            'address' =>
-                $data['address'] ?? null,
+            'address' => $data['address'] ?? null,
 
-            'city' =>
-                $data['city'] ?? null,
+            'city' => $data['city'] ?? null,
 
-            'state' =>
-                $data['state'] ?? null,
+            'state' => $data['state'] ?? null,
 
-            'pincode' =>
-                $data['pincode'] ?? null,
+            'pincode' => $data['pincode'] ?? null,
 
-            'emergency_contact_name' =>
-                $data['emergency_contact_name'] ?? null,
+            'emergency_contact_name' => $data['emergency_contact_name'] ?? null,
 
-            'emergency_contact_mobile' =>
-                $data['emergency_contact_mobile'] ?? null,
+            'emergency_contact_mobile' => $data['emergency_contact_mobile'] ?? null,
 
         ]);
     }
 
-    public function updateProfile(int $id,array $data) {
+    public function updateProfile(int $id, array $data)
+    {
 
         $teacher = $this->find($id);
 
         $teacher->update([
 
-            'employee_id' =>
-                $data['employee_id'],
+            'employee_id' => $data['employee_id'],
 
-            'qualification' =>
-                $data['qualification'] ?? null,
+            'qualification' => $data['qualification'] ?? null,
 
-            'specialization' =>
-                $data['specialization'] ?? null,
+            'specialization' => $data['specialization'] ?? null,
 
-            'joining_date' =>
-                $data['joining_date'] ?? null,
+            'joining_date' => $data['joining_date'] ?? null,
 
-            'dob' =>
-                $data['dob'] ?? null,
+            'dob' => $data['dob'] ?? null,
 
-            'gender' =>
-                $data['gender'] ?? null,
+            'gender' => $data['gender'] ?? null,
 
-            'experience_years' =>
-                $data['experience_years'] ?? null,
+            'experience_years' => $data['experience_years'] ?? null,
 
-            'address' =>
-                $data['address'] ?? null,
+            'address' => $data['address'] ?? null,
 
-            'city' =>
-                $data['city'] ?? null,
+            'city' => $data['city'] ?? null,
 
-            'state' =>
-                $data['state'] ?? null,
+            'state' => $data['state'] ?? null,
 
-            'pincode' =>
-                $data['pincode'] ?? null,
+            'pincode' => $data['pincode'] ?? null,
 
-            'emergency_contact_name' =>
-                $data['emergency_contact_name'] ?? null,
+            'emergency_contact_name' => $data['emergency_contact_name'] ?? null,
 
-            'emergency_contact_mobile' =>
-                $data['emergency_contact_mobile'] ?? null,
+            'emergency_contact_mobile' => $data['emergency_contact_mobile'] ?? null,
 
         ]);
 

@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Http\Requests\BaseRequest;
-use Illuminate\Validation\Rule;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 class StudentPromotionRequest extends BaseRequest
 {
@@ -50,13 +49,12 @@ class StudentPromotionRequest extends BaseRequest
                 'exists:sections,id',
             ],
 
-
         ];
     }
 
     public function messages(): array
     {
-         return [
+        return [
             'enrollment_ids.required' => 'Please select at least one student to promote.',
             'enrollment_ids.array' => 'The selected students data is invalid.',
             'enrollment_ids.min' => 'Please select at least one student to promote.',

@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\Permission;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class SuperAdminSeeder extends Seeder
@@ -19,8 +18,9 @@ class SuperAdminSeeder extends Seeder
         // 1) Get super admin role
         $superAdminRole = Role::where('slug', 'super_admin')->first();
 
-        if (!$superAdminRole) {
+        if (! $superAdminRole) {
             $this->command->error('Super admin role not found. Please run RoleSeeder first.');
+
             return;
         }
 
@@ -32,11 +32,11 @@ class SuperAdminSeeder extends Seeder
         $superAdmin = User::updateOrCreate(
             ['email' => 'superadmin@example.com'], // change later
             [
-                'name'              => 'Super Admin',
-                'mobile'            => '9999999999', // optional if your users table has mobile
-                'role_id'           => $superAdminRole->id,
-                'password'          => Hash::make('Admin@123'), // change after first login
-                'status'            => 1,
+                'name' => 'Super Admin',
+                'mobile' => '9999999999', // optional if your users table has mobile
+                'role_id' => $superAdminRole->id,
+                'password' => Hash::make('Admin@123'), // change after first login
+                'status' => 1,
                 'email_verified_at' => now(), // if column exists
             ]
         );

@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Http\Requests\BaseRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class AcademicSectionRequest extends BaseRequest
@@ -24,20 +24,21 @@ class AcademicSectionRequest extends BaseRequest
     public function rules(): array
     {
         $id = $this->route('section')?->id;
+
         // dd($id);
         return [
             'name' => [
                 'required',
                 'string',
                 'max:50',
-                Rule::unique('sections','name')->ignore($id),
+                Rule::unique('sections', 'name')->ignore($id),
             ],
 
             'code' => [
                 'required',
                 'string',
                 'max:20',
-                Rule::unique('sections','code')->ignore($id),
+                Rule::unique('sections', 'code')->ignore($id),
             ],
 
             'status' => [
@@ -51,10 +52,10 @@ class AcademicSectionRequest extends BaseRequest
     {
         return [
 
-            'name.required'     => 'Section name is required.',
-            'name.unique'       => 'This section already exists for the selected class.',
+            'name.required' => 'Section name is required.',
+            'name.unique' => 'This section already exists for the selected class.',
 
-            'code.max'          => 'Section code may not be greater than 20 characters.',
+            'code.max' => 'Section code may not be greater than 20 characters.',
 
         ];
     }

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->foreignId('class_id')
                 ->constrained('academic_classes')
                 ->cascadeOnDelete();
-            
+
             $table->foreignId('section_id')
                 ->nullable()
                 ->constrained('sections')
@@ -38,7 +38,7 @@ return new class extends Migration
             $table->unique([
                 'teacher_id',
                 'class_id',
-                'subject_id'
+                'subject_id',
             ], 'teacher_class_subject_unique');
         });
     }

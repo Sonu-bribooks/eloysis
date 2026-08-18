@@ -33,7 +33,7 @@ return new class extends Migration
             $table->enum('gender', [
                 'male',
                 'female',
-                'other'
+                'other',
             ])->nullable();
 
             $table->unsignedTinyInteger('experience_years')

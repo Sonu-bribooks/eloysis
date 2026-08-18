@@ -3,12 +3,13 @@
 namespace App\Services\Admin;
 
 use App\Repositories\Admin\SubjectRepository;
-use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class SubjectService
 {
     protected SubjectRepository $SubjectRepository;
+
     /**
      * Create a new class instance.
      */
@@ -20,10 +21,14 @@ class SubjectService
     /**
      * Get Academic Subject
      */
-    public function getAcademicSubjects(array $filters = [], int $perPage = 10) {
-
-        return $this->SubjectRepository->getAcademicSubjects($filters, $perPage);
-
+    public function getAcademicSubjects(
+        array $filters = [],
+        int $perPage = 10,
+        int $page = 1,
+        ?int $orderColumn = null,
+        string $orderDirection = 'asc'
+    ) {
+        return $this->SubjectRepository->getAcademicSubjects($filters, $perPage, $page, $orderColumn, $orderDirection);
     }
 
     /**
@@ -71,7 +76,7 @@ class SubjectService
         }
     }
 
-     /**
+    /**
      * Delete Subject
      */
     public function delete(int $id)

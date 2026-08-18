@@ -26,11 +26,11 @@ class ContactMessage extends Model
 
     ];
 
-     protected $casts = [
+    protected $casts = [
 
-        'created_at'=>'datetime',
+        'created_at' => 'datetime',
 
-        'updated_at'=>'datetime',
+        'updated_at' => 'datetime',
 
     ];
 
@@ -42,16 +42,16 @@ class ContactMessage extends Model
 
     public function scopePending($query)
     {
-        return $query->where('status','pending');
+        return $query->where('status', 'pending');
     }
 
     public function scopeRead($query)
     {
-        return $query->where('status','read');
+        return $query->where('status', 'read');
     }
 
     public function scopeReplied($query)
     {
-        return $query->where('status','replied');
+        return $query->where('status', 'replied');
     }
 }

@@ -1,9 +1,8 @@
 const Staff = {
 
     modal: null,
-
     viewModal: null,
-
+    table: null,
 
     init() {
 
@@ -15,587 +14,226 @@ const Staff = {
             document.getElementById('staffViewModal')
         );
 
-
+        this.initDataTable();
         this.bindEvents();
 
-        this.load();
-
     },
 
+    /*
+    |--------------------------------------------------------------------------
+    | DataTable
+    |--------------------------------------------------------------------------
+    */
 
-    bindEvents() {
+    initDataTable() {
 
+        this.table = $('#staffTable').DataTable({
 
-        /*
-        |--------------------------------------------------------------------------
-        | Filter
-        |--------------------------------------------------------------------------
-        */
+            processing: true,
+            serverSide: true,
 
-        $('#filterForm').on(
-            'submit',
-            (e) => {
-
-                e.preventDefault();
-
-                this.load();
-
-            }
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Reset Filter
-        |--------------------------------------------------------------------------
-        */
-
-        $('#btnReset').on(
-            'click',
-            () => {
-
-                $('#filterForm')[0].reset();
-
-                this.load();
-
-            }
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Add Staff
-        |--------------------------------------------------------------------------
-        */
-
-        $('#btnAddStaff').on(
-            'click',
-            () => {
-
-                this.openCreate();
-
-            }
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Form Submit
-        |--------------------------------------------------------------------------
-        */
-
-        $('#staffForm').on(
-            'submit',
-            (e) => {
-
-                e.preventDefault();
-
-                this.save();
-
-            }
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Pagination
-        |--------------------------------------------------------------------------
-        */
-
-        $(document).on(
-            'click',
-            '#staffPagination .page-link',
-            (e) => {
-
-                e.preventDefault();
-
-                const page =
-                    $(e.currentTarget).data('page');
-
-                if (page) {
-
-                    this.load(page);
-
+            ajax: {
+                url: STAFF_LIST_URL,
+                type: 'GET',
+                data: function (d) {
+                    d.filter_status = $('#filter_status').val();
+                },
+                error: function (xhr) {
+                    Toast.error(
+                        xhr.responseJSON?.message ?? 'Unable to load admins.'
+                    );
                 }
-
-            }
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Edit
-        |--------------------------------------------------------------------------
-        */
-
-        $(document).on(
-            'click',
-            '.btn-edit-staff',
-            (e) => {
-
-                const id =
-                    $(e.currentTarget).data('id');
-
-                this.edit(id);
-
-            }
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | View
-        |--------------------------------------------------------------------------
-        */
-
-        $(document).on(
-            'click',
-            '.btn-view-staff',
-            (e) => {
-
-                const id =
-                    $(e.currentTarget).data('id');
-
-                this.view(id);
-
-            }
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Delete
-        |--------------------------------------------------------------------------
-        */
-
-        $(document).on(
-            'click',
-            '.btn-delete-staff',
-            (e) => {
-
-                const id =
-                    $(e.currentTarget).data('id');
-
-                this.delete(id);
-
-            }
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Status Toggle
-        |--------------------------------------------------------------------------
-        */
-
-        $(document).on(
-            'change',
-            '.btn-status',
-            (e) => {
-
-                const id =
-                    $(e.currentTarget).data('id');
-
-                this.toggleStatus(
-                    id,
-                    e.currentTarget
-                );
-
-            }
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Image preview
-        |--------------------------------------------------------------------------
-        */
-        $('#profile_image').on('change', function () {
-
-            const file = this.files[0];
-
-            if (!file) {
-
-                $('#profilePreview').attr(
-                    'src',
-                    DEFAULT_AVATAR
-                );
-
-                return;
-
-            }
-
-
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-
-                $('#profilePreview')
-                    .attr('src', e.target.result);
-                // .removeClass('d-none');
-
-            };
-
-            reader.readAsDataURL(file);
-
-        });
-
-    },
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Load Listing
-    |--------------------------------------------------------------------------
-    */
-
-    load(page = 1) {
-
-        let data =
-            $('#filterForm').serialize();
-
-        data += `&page=${page}`;
-
-
-        Ajax.request({
-
-            url: STAFF_LIST_URL,
-
-            method: 'GET',
-
-            data: data,
-
-            beforeSend: () => {
-
-                $('#teacherTableBody').html(`
-
-                    <tr>
-
-                        <td
-                            colspan="8"
-                            class="text-center py-4">
-
-                            Loading...
-
-                        </td>
-
-                    </tr>
-
-                `);
-
             },
 
+            pageLength: 10,
+            lengthMenu: [
+                [10, 25, 50, 100],
+                [10, 25, 50, 100]
+            ],
+            searching: true,
+            ordering: true,
 
-            success: (response) => {
+            columns: [
+                {
+                    data: null,
+                    name: null,
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    data: 'user.name',
+                    name: 'user_id',
+                    render: function (data, type, row) {
+                        const user = row.user || {};
+                        const profileImage = user.profile_image_url ?? DEFAULT_AVATAR;
 
-                this.render(
-                    response.data
-                );
-
-            },
-
-
-            error: (xhr) => {
-
-                Toast.error(
-
-                    xhr.responseJSON?.message
-                    ??
-                    'Unable to load admins.'
-
-                );
-
-            }
-
-        });
-
-    },
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Render Table
-    |--------------------------------------------------------------------------
-    */
-
-    render(result) {
-
-        const rows =
-            result.data;
-
-
-        let html = '';
-
-
-        if (!rows.length) {
-
-            html = `
-
-                <tr>
-
-                    <td
-                        colspan="8"
-                        class="text-center py-4">
-
-                        No Admins Found
-
-                    </td>
-
-                </tr>
-
-            `;
-
-
-            $('#staffTableBody')
-                .html(html);
-
-
-            this.renderPagination(
-                result
-            );
-
-
-            return;
-
-        }
-
-
-        rows.forEach(
-            (row, index) => {
-
-
-                const user =
-                    row.user;
-
-                const profileImage =
-                    user.profile_image_url
-                    ?? DEFAULT_AVATAR;
-
-
-                html += `
-
-                    <tr>
-
-
-                        <td>
-
-                            ${result.from + index}
-
-                        </td>
-
-
-                        <td>
-
-                            <div
-                                class="d-flex align-items-center">
-
+                        return `
+                            <div class="d-flex align-items-center">
                                 <img
                                     src="${profileImage}"
                                     width="38"
                                     height="38"
                                     class="rounded-circle me-2"
                                     style="object-fit: cover;">
-
                                 <div>
-
-                                    <div
-                                        class="fw-semibold">
-
+                                    <div class="fw-semibold">
                                         ${user.name ?? '-'}
-
                                     </div>
-
-                                    <small
-                                        class="text-muted">
-
+                                    <small class="text-muted">
                                         ${user.email ?? '-'}
-
                                     </small>
-
                                 </div>
-
-
                             </div>
-
-                        </td>
-
-
-                        <td>
-
-                            ${user.mobile ?? '-'}
-
-                        </td>
-
-
-                        <td>
-
-                            ${row.employee_id ?? '-'}
-
-                        </td>
-
-
-                        <td>
-
-                            ${row.designation ?? '-'}
-
-                        </td>
-
-                        <td>
-
-                            ${row.department ?? '-'}
-
-                        </td>
-
-
-                        <td>
-
-                           ${Helper.statusSwitch(row.id, user?.status)}
-
-                        </td>
-
-
-                        <td>
-
-
+                        `;
+                    }
+                },
+                {
+                    data: 'user.mobile',
+                    name: 'mobile',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return row.user?.mobile ?? '-';
+                    }
+                },
+                {
+                    data: 'employee_id',
+                    name: 'employee_id',
+                    render: function (data, type, row) {
+                        return row.employee_id ?? '-';
+                    }
+                },
+                {
+                    data: 'designation',
+                    name: 'designation',
+                    render: function (data, type, row) {
+                        return row.designation ?? '-';
+                    }
+                },
+                {
+                    data: 'department',
+                    name: 'department',
+                    render: function (data, type, row) {
+                        return row.department ?? '-';
+                    }
+                },
+                {
+                    data: 'user.status',
+                    name: 'status',
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row) {
+                        return Helper.statusSwitch(row.id, row.user?.status);
+                    }
+                },
+                {
+                    data: null,
+                    name: null,
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row) {
+                        return `
                             <button
-
                                 type="button"
-
                                 class="btn btn-sm btn-info btn-view-staff"
-
                                 data-id="${row.id}">
-
-                                <i
-
-                                    class="bi bi-eye">
-
-                                </i>
-
+                                <i class="bi bi-eye"></i>
                             </button>
-
-
                             <button
-
                                 type="button"
-
                                 class="btn btn-sm btn-warning btn-edit-staff"
-
                                 data-id="${row.id}">
-
-                                <i
-
-                                    class="bi bi-pencil">
-
-                                </i>
-
+                                <i class="bi bi-pencil"></i>
                             </button>
-
-
                             <button
-
                                 type="button"
-
                                 class="btn btn-sm btn-danger btn-delete-staff"
-
                                 data-id="${row.id}">
-
-                                <i
-
-                                    class="bi bi-trash">
-
-                                </i>
-
+                                <i class="bi bi-trash"></i>
                             </button>
+                        `;
+                    }
+                }
+            ]
 
-
-                        </td>
-
-
-                    </tr>
-
-                `;
-
-            }
-
-        );
-
-
-        $('#staffTableBody')
-            .html(html);
-
-
-        this.renderPagination(
-            result
-        );
+        });
 
     },
-
 
     /*
     |--------------------------------------------------------------------------
-    | Pagination
+    | Events
     |--------------------------------------------------------------------------
     */
 
-    renderPagination(pagination) {
+    bindEvents() {
 
-        let html = '';
+        // Filter
+        $('#filterForm').on('submit', (e) => {
+            e.preventDefault();
+            this.table.ajax.reload();
+        });
 
+        // Reset
+        $('#btnReset').on('click', () => {
+            $('#filterForm')[0].reset();
+            this.table.search('').ajax.reload();
+        });
 
-        pagination.links.forEach(
-            (link) => {
+        // Add Staff
+        $('#btnAddStaff').on('click', () => {
+            this.openCreate();
+        });
 
+        // Save Form
+        $('#staffForm').on('submit', (e) => {
+            e.preventDefault();
+            this.save();
+        });
 
-                html += `
+        // Edit
+        $(document).on('click', '.btn-edit-staff', (e) => {
+            this.edit($(e.currentTarget).data('id'));
+        });
 
-                    <button
+        // View
+        $(document).on('click', '.btn-view-staff', (e) => {
+            this.view($(e.currentTarget).data('id'));
+        });
 
-                        class="btn btn-sm
+        // Delete
+        $(document).on('click', '.btn-delete-staff', (e) => {
+            this.delete($(e.currentTarget).data('id'));
+        });
 
-                        ${link.active
+        // Status Toggle
+        $(document).on('change', '.btn-status', (e) => {
+            this.toggleStatus($(e.currentTarget).data('id'), e.currentTarget);
+        });
 
-                        ?
+        // Status Filter
+        $('#filter_status').on('change', () => {
+            this.table.ajax.reload();
+        });
 
-                        'btn-primary active'
-
-                        :
-
-                        'btn-light'
-
-                    }
-
-                        page-link"
-
-                        data-page="${link.page ?? ''}"
-
-                        ${link.page === null
-
-                        ?
-
-                        'disabled'
-
-                        :
-
-                        ''
-
-                    }>
-
-                        ${link.label}
-
-                    </button>
-
-                `;
-
+        // Image preview
+        $('#profile_image').on('change', function () {
+            const file = this.files[0];
+            if (!file) {
+                $('#profilePreview').attr('src', DEFAULT_AVATAR);
+                return;
             }
 
-        );
-
-
-        $('#staffPagination')
-            .html(html);
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                $('#profilePreview').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(file);
+        });
 
     },
-
 
     /*
     |--------------------------------------------------------------------------
@@ -606,22 +244,14 @@ const Staff = {
     openCreate() {
 
         $('#staffForm')[0].reset();
-
         $('#staff_id').val('');
+        $('#staffModalLabel').text('Add Admin');
+        $('#profilePreview').attr('src', DEFAULT_AVATAR);
 
-        $('#staffModalLabel')
-            .text('Add Admin');
-
-
-        Helper.clearErrors(
-            $('#staffForm')
-        );
-
-
+        Helper.clearErrors($('#staffForm'));
         this.modal.show();
 
     },
-
 
     /*
     |--------------------------------------------------------------------------
@@ -631,130 +261,43 @@ const Staff = {
 
     edit(id) {
 
-        const url =
-            STAFF_SHOW_URL.replace(
-                ':id',
-                id
-            );
-
+        const url = STAFF_SHOW_URL.replace(':id', id);
 
         $.ajax({
-
             url: url,
-
             type: 'GET',
-
-
             success: (response) => {
+                const staff = response.data;
+                const user = staff.user;
 
-                const staff =
-                    response.data;
+                $('#staff_id').val(staff.id);
+                $('#name').val(user.name);
+                $('#email').val(user.email);
+                $('#mobile').val(user.mobile);
+                $('#employee_id').val(staff.employee_id);
+                $('#designation').val(staff.designation);
+                $('#department').val(staff.department);
+                $('#joining_date').val(staff.joining_date);
+                $('#status').val(user.status ? 1 : 0);
+                $('#address').val(staff.address);
+                $('#city').val(staff.city);
+                $('#state').val(staff.state);
+                $('#pincode').val(staff.pincode);
+                $('#password').val('');
+                $('#password_confirmation').val('');
+                $('#profilePreview').attr('src', user.profile_image_url ?? DEFAULT_AVATAR);
+                $('#dob').val(staff.dob ? staff.dob.substring(0, 10) : '');
+                $('#gender').val(staff.gender);
 
-
-                const user =
-                    staff.user;
-
-
-                $('#staff_id')
-                    .val(staff.id);
-
-
-                $('#name')
-                    .val(user.name);
-
-
-                $('#email')
-                    .val(user.email);
-
-
-                $('#mobile')
-                    .val(user.mobile);
-
-
-                $('#employee_id')
-                    .val(staff.employee_id);
-
-
-                $('#designation')
-                    .val(staff.designation);
-
-
-                $('#department')
-                    .val(staff.department);
-
-
-                $('#joining_date')
-                    .val(staff.joining_date);
-
-
-                $('#status')
-                    .val(
-                        user.status ? 1 : 0
-                    );
-                $('#address')
-                    .val(staff.address);
-
-
-                $('#city')
-                    .val(staff.city);
-
-
-                $('#state')
-                    .val(staff.state);
-
-
-                $('#pincode')
-                    .val(staff.pincode);
-
-                $('#password')
-                    .val('');
-
-
-                $('#password_confirmation')
-                    .val('');
-
-                $('#profilePreview').attr(
-                    'src',
-                    user.profile_image_url
-                );
-
-                $('#dob')
-                    .val(
-                        staff.dob
-                            ? staff.dob.substring(0, 10)
-                            : ''
-                    );
-
-
-                $('#gender')
-                    .val(staff.gender);
-
-
-                $('#staffModalLabel')
-                    .text('Edit Admin');
-
-
+                $('#staffModalLabel').text('Edit Admin');
                 this.modal.show();
-
             },
-
-
             error: (xhr) => {
-
-                Toast.error(
-
-                    xhr.responseJSON?.message
-                    ??
-                    'Unable to load admin.'
-
-                );
-
+                Toast.error(xhr.responseJSON?.message ?? 'Unable to load admin.');
             }
-
         });
 
     },
-
 
     /*
     |--------------------------------------------------------------------------
@@ -764,84 +307,29 @@ const Staff = {
 
     save() {
 
-        const id =
-            $('#staff_id').val();
+        const id = $('#staff_id').val();
+        const isEdit = id !== '';
 
-
-        const isEdit =
-            id !== '';
-
-
-        const url =
-            isEdit
-
-                ?
-
-                STAFF_UPDATE_URL.replace(
-                    ':id',
-                    id
-                )
-
-                :
-
-                STAFF_STORE_URL;
-
+        const url = isEdit
+            ? STAFF_UPDATE_URL.replace(':id', id)
+            : STAFF_STORE_URL;
 
         Ajax.request({
-
             form: '#staffForm',
-
             url: url,
-
             method: 'POST',
-
-
-            extraData: isEdit
-                ? {
-                    _method: 'PUT'
-                }
-                : {},
-
-
+            extraData: isEdit ? { _method: 'PUT' } : {},
             success: (response) => {
-
                 this.modal.hide();
-
-
-                $('#staffForm')[0]
-                    .reset();
-
-
+                $('#staffForm')[0].reset();
                 Toast.success(
-
-                    response.message
-                    ??
-
-                    (
-
-                        isEdit
-
-                            ?
-
-                            'Admin updated successfully.'
-
-                            :
-
-                            'Admin created successfully.'
-
-                    )
-
+                    response.message ?? (isEdit ? 'Admin updated successfully.' : 'Admin created successfully.')
                 );
-
-
-                this.load();
-
+                this.table.ajax.reload(null, false);
             }
-
         });
 
     },
-
 
     /*
     |--------------------------------------------------------------------------
@@ -849,65 +337,36 @@ const Staff = {
     |--------------------------------------------------------------------------
     */
 
-
     delete(id) {
 
         Swal.fire({
-
-            title: 'Delete Academic Staff?',
-
+            title: 'Delete Admin?',
             text: 'This action cannot be undone.',
-
             icon: 'warning',
-
             showCancelButton: true,
-
             confirmButtonText: 'Yes, Delete',
-
-            cancelButtonText: 'Cancel',
-
+            cancelButtonText: 'Cancel'
         }).then((result) => {
-
             if (!result.isConfirmed) {
-
                 return;
-
             }
 
             Ajax.request({
-
                 url: STAFF_DELETE_URL.replace(':id', id),
-
                 method: 'POST',
-
                 data: (() => {
-
                     let formData = new FormData();
-
                     formData.append('_method', 'DELETE');
-
                     return formData;
-
                 })(),
-
                 success: (response) => {
-                    // console.log('Delete Success');
-
-                    // console.log(response);
-
                     Toast.success(response.message ?? 'Admin deleted successfully.');
-
-                    this.load(1);
-
+                    this.table.ajax.reload(null, false);
                 }
-
             });
-
         });
 
     },
-
-
 
     /*
     |--------------------------------------------------------------------------
@@ -917,54 +376,22 @@ const Staff = {
 
     toggleStatus(id, element) {
 
-        const url =
-            STAFF_STATUS_URL.replace(
-                ':id',
-                id
-            );
-
+        const url = STAFF_STATUS_URL.replace(':id', id);
 
         $.ajax({
-
             url: url,
-
             type: 'PATCH',
-
-
             success: (response) => {
-
-                Toast.success(
-
-                    response.message
-                    ??
-                    'Status updated successfully.'
-
-                );
-
-
-                this.load();
-
+                Toast.success(response.message ?? 'Status updated successfully.');
+                this.table.ajax.reload(null, false);
             },
-
-
             error: () => {
-
-                $(element).prop(
-                    'checked',
-                    !$(element).prop('checked')
-                );
-
-
-                Toast.error(
-                    'Unable to update status.'
-                );
-
+                $(element).prop('checked', !$(element).prop('checked'));
+                Toast.error('Unable to update status.');
             }
-
         });
 
     },
-
 
     /*
     |--------------------------------------------------------------------------
@@ -974,101 +401,33 @@ const Staff = {
 
     view(id) {
 
-        const url =
-            STAFF_SHOW_URL.replace(
-                ':id',
-                id
-            );
-
+        const url = STAFF_SHOW_URL.replace(':id', id);
 
         $.ajax({
-
             url: url,
-
             type: 'GET',
-
-
             success: (response) => {
+                const staff = response.data;
+                const user = staff.user;
 
-                const staff =
-                    response.data;
-
-                const user =
-                    staff.user;
-
-
-                $('#viewName')
-                    .text(user.name);
-
-
-                $('#viewEmail')
-                    .text(
-                        user.email ?? '-'
-                    );
-
-
-                $('#viewMobile')
-                    .text(
-                        user.mobile ?? '-'
-                    );
-
-
-                $('#viewEmployeeId')
-                    .text(
-                        staff.employee_id ?? '-'
-                    );
+                $('#viewName').text(user.name);
+                $('#viewEmail').text(user.email ?? '-');
+                $('#viewMobile').text(user.mobile ?? '-');
+                $('#viewEmployeeId').text(staff.employee_id ?? '-');
                 $('#viewEmployee').text(staff.employee_id ?? '-');
-
-                $('#viewDesignation')
-                    .text(
-                        staff.designation ?? '-'
-                    );
-
-
-                $('#viewDepartment')
-                    .text(
-                        staff.department ?? '-'
-                    );
-
-
-                $('#viewJoiningDate')
-                    .text(
-                        staff.joining_date ?? '-'
-                    );
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Status
-                |--------------------------------------------------------------------------
-                */
+                $('#viewDesignation').text(staff.designation ?? '-');
+                $('#viewDepartment').text(staff.department ?? '-');
+                $('#viewJoiningDate').text(staff.joining_date ?? '-');
 
                 $('#viewStatus').html(
-
                     user.status
-
                         ? '<span class="badge bg-success">Active</span>'
-
                         : '<span class="badge bg-danger">Inactive</span>'
-
                 );
 
-
-                /*
-                |--------------------------------------------------------------------------
-                | Profile Image
-                |--------------------------------------------------------------------------
-                */
-
-
                 $('#viewProfileImage').attr(
-
                     'src',
-
-                    user.profile_image_url
-                        ? user.profile_image_url
-                        : DEFAULT_AVATAR
-
+                    user.profile_image_url ? user.profile_image_url : DEFAULT_AVATAR
                 );
 
                 $('.teacher-profile-header').css(
@@ -1076,70 +435,24 @@ const Staff = {
                     `url(${user.profile_image_url})`
                 );
 
-                $('#viewDob').text(
-
-                    Helper.formatDate(
-                        staff.dob
-                    )
-
-                );
-
-                $('#viewCity').text(
-                    staff.city ?? '-'
-                );
-
-
-                $('#viewState').text(
-                    staff.state ?? '-'
-                );
-
-
-                $('#viewPincode').text(
-                    staff.pincode ?? '-'
-                );
-
-
-                $('#viewAddress').text(
-                    staff.address ?? '-'
-                );
-
-                $('#viewGender').text(
-
-                    staff.gender
-                        ? Helper.capitalize(
-                            staff.gender
-                        )
-                        : '-'
-
-                );
-
+                $('#viewDob').text(Helper.formatDate(staff.dob));
+                $('#viewCity').text(staff.city ?? '-');
+                $('#viewState').text(staff.state ?? '-');
+                $('#viewPincode').text(staff.pincode ?? '-');
+                $('#viewAddress').text(staff.address ?? '-');
+                $('#viewGender').text(staff.gender ? Helper.capitalize(staff.gender) : '-');
 
                 this.viewModal.show();
-
             },
-
-
             error: (xhr) => {
-
-                Toast.error(
-
-                    xhr.responseJSON?.message
-                    ??
-                    'Unable to load admin details.'
-
-                );
-
+                Toast.error(xhr.responseJSON?.message ?? 'Unable to load admin details.');
             }
-
         });
 
     }
 
 };
 
-
 $(function () {
-
     Staff.init();
-
 });

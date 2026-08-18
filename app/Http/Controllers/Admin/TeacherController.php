@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\TeacherRequest;
 use App\Models\TeacherProfile;
@@ -12,12 +11,14 @@ use Illuminate\Http\Request;
 class TeacherController extends BaseController
 {
     protected TeacherService $teacherService;
-    public function __construct(TeacherService $teacherService) {
+
+    public function __construct(TeacherService $teacherService)
+    {
 
         $this->teacherService = $teacherService;
     }
 
-     /**
+    /**
      * Teacher listing page
      */
     public function index()
@@ -30,14 +31,27 @@ class TeacherController extends BaseController
      */
     public function list(Request $request)
     {
+        $filters = [
+            'search' => $request->input('search.value'),
+            'filter_status' => $request->input('filter_status'),
+        ];
+
+        $length = max((int) $request->input('length', 10), 1);
+        $start = max((int) $request->input('start', 0), 0);
+        $page = (int) floor($start / $length) + 1;
+
+        $orderColumn = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir', 'asc');
+
         $teachers = $this->teacherService->getList(
-            $request->all()
+            filters: $filters,
+            perPage: $length,
+            page: $page,
+            orderColumn: $orderColumn !== null ? (int) $orderColumn : null,
+            orderDirection: $orderDirection
         );
 
-        return $this->success(
-            'Teacher list fetched successfully.',
-            $teachers
-        );
+        return $this->datatable($teachers, (int) $request->input('draw', 1));
     }
 
     /**
@@ -76,9 +90,8 @@ class TeacherController extends BaseController
         );
     }
 
-
     /**
-     * Update teacher 
+     * Update teacher
      */
     public function update(
         TeacherRequest $request,
@@ -136,5 +149,4 @@ class TeacherController extends BaseController
             'Academic Teacher status updated successfully.'
         );
     }
-
 }

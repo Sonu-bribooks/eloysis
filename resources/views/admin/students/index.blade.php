@@ -30,19 +30,8 @@
     {{-- Filters --}}
     <x-ui.table.filters id="filterForm">
 
-        {{-- Search --}}
-        <div class="col-md-3">
-
-            <x-ui.form-input
-                name="search"
-                id="search"
-                placeholder="Search Student..." />
-
-        </div>
-
-       
         {{-- Academic Session --}}
-        <div class="col-md-2">
+        <div class="col-md-3">
 
             <x-ui.select
                 name="academic_session_id"
@@ -54,7 +43,7 @@
 
 
         {{-- Class --}}
-        <div class="col-md-2">
+        <div class="col-md-3">
 
             <x-ui.select
                 name="class_id"
@@ -94,23 +83,8 @@
         </div>
 
 
-        {{-- Filter --}}
-        <div class="col-md-1">
-
-            <x-ui.button
-                type="submit"
-                id="btnFilter"
-                block>
-
-                <i class="bi bi-search"></i>
-
-            </x-ui.button>
-
-        </div>
-
-
         {{-- Reset --}}
-        <div class="col-md-1">
+        <div class="col-md-2">
 
             <x-ui.button
                 variant="secondary"
@@ -118,7 +92,7 @@
                 id="btnReset"
                 block>
 
-                <i class="bi bi-arrow-counterclockwise"></i>
+                <i class="bi bi-arrow-counterclockwise"></i> Reset
 
             </x-ui.button>
 
@@ -200,14 +174,6 @@
         </x-ui.table.tbody>
 
     </x-ui.datatable>
-
-
-    {{-- Pagination --}}
-    <x-ui.table.pagination
-        id="studentPagination"
-        class="pagination justify-content-end mt-3">
-
-    </x-ui.table.pagination>
 
 </div>
 

@@ -1,9 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Website\HomeController;
 use App\Http\Controllers\Website\ContactController;
-
+use App\Http\Controllers\Website\HomeController;
+use Illuminate\Support\Facades\Route;
 
 Route::controller(HomeController::class)->group(function () {
 
@@ -17,8 +16,6 @@ Route::controller(HomeController::class)->group(function () {
 
     Route::get('/events', 'events')->name('events');
 });
-
-
 
 Route::post('/contact', [ContactController::class, 'store'])
     ->name('contact.store');

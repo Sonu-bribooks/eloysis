@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Http\Requests\BaseRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class StudentRequest extends BaseRequest
@@ -16,7 +16,6 @@ class StudentRequest extends BaseRequest
         return true;
     }
 
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -24,8 +23,8 @@ class StudentRequest extends BaseRequest
      */
     public function rules(): array
     {
-       $studentId = $this->route('student')?->id;
-       $studentProfileId = $this->route('student')?->stu_profile_id;
+        $studentId = $this->route('student')?->id;
+        $studentProfileId = $this->route('student')?->stu_profile_id;
 
         return [
 
@@ -65,7 +64,6 @@ class StudentRequest extends BaseRequest
                 'max:20',
 
             ],
-
 
             /*
             |--------------------------------------------------------------------------
@@ -128,7 +126,6 @@ class StudentRequest extends BaseRequest
 
             ],
 
-
             /*
             |--------------------------------------------------------------------------
             | Enrollment
@@ -172,7 +169,6 @@ class StudentRequest extends BaseRequest
                 'date',
 
             ],
-
 
             /*
             |--------------------------------------------------------------------------
@@ -266,7 +262,6 @@ class StudentRequest extends BaseRequest
         ];
     }
 
-
     /**
      * Custom Validation Messages
      */
@@ -274,53 +269,37 @@ class StudentRequest extends BaseRequest
     {
         return [
 
-            'name.required' =>
-                'Please enter student name.',
+            'name.required' => 'Please enter student name.',
 
-            'email.required' =>
-                'Please enter email address.',
+            'email.required' => 'Please enter email address.',
 
-            'email.email' =>
-                'Please enter a valid email address.',
+            'email.email' => 'Please enter a valid email address.',
 
-            'email.unique' =>
-                'Email address already exists.',
+            'email.unique' => 'Email address already exists.',
 
-            'admission_no.required' =>
-                'Please enter admission number.',
+            'admission_no.required' => 'Please enter admission number.',
 
-            'admission_no.unique' =>
-                'Admission number already exists.',
+            'admission_no.unique' => 'Admission number already exists.',
 
-            'academic_session_id.required' =>
-                'Please select academic session.',
+            'academic_session_id.required' => 'Please select academic session.',
 
-            'academic_session_id.exists' =>
-                'Selected academic session is invalid.',
+            'academic_session_id.exists' => 'Selected academic session is invalid.',
 
-            'class_id.required' =>
-                'Please select class.',
+            'class_id.required' => 'Please select class.',
 
-            'class_id.exists' =>
-                'Selected class is invalid.',
+            'class_id.exists' => 'Selected class is invalid.',
 
-            'section_id.required' =>
-                'Please select section.',
+            'section_id.required' => 'Please select section.',
 
-            'section_id.exists' =>
-                'Selected section is invalid.',
+            'section_id.exists' => 'Selected section is invalid.',
 
-            'status.required' =>
-                'Please select status.',
+            'status.required' => 'Please select status.',
 
-            'profile_image.image' =>
-                'Profile image must be a valid image.',
+            'profile_image.image' => 'Profile image must be a valid image.',
 
-            'profile_image.mimes' =>
-                'Profile image must be jpg, jpeg, png or webp.',
+            'profile_image.mimes' => 'Profile image must be jpg, jpeg, png or webp.',
 
-            'profile_image.max' =>
-                'Profile image must not exceed 2 MB.',
+            'profile_image.max' => 'Profile image must not exceed 2 MB.',
 
         ];
     }

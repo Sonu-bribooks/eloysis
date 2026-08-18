@@ -3,19 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ClassSection extends Model
 {
     use SoftDeletes;
 
-     protected $fillable = [
+    protected $fillable = [
         'class_id',
         'section_id',
         'status',
     ];
-
 
     public function sectionClass(): BelongsTo
     {
@@ -24,6 +23,6 @@ class ClassSection extends Model
 
     public function section(): BelongsTo
     {
-        return $this->belongsTo(Section::class,'section_id');
+        return $this->belongsTo(Section::class, 'section_id');
     }
 }

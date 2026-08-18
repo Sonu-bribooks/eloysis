@@ -17,12 +17,12 @@ class PermissionMiddleware
     {
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('admin.login')
                 ->with('error', 'Please login to continue.');
         }
 
-        if (!$user->hasPermission($permission)) {
+        if (! $user->hasPermission($permission)) {
             abort(403, 'You do not have permission to access this page.');
         }
 

@@ -2,6 +2,8 @@ const Teacher = {
 
     modal: null,
     viewModal: null,
+    table: null,
+
     init() {
 
         this.modal = new bootstrap.Modal(
@@ -12,577 +14,242 @@ const Teacher = {
             document.getElementById('teacherViewModal')
         );
 
+        this.initDataTable();
         this.bindEvents();
-
-        this.load();
 
     },
 
+    /*
+    |--------------------------------------------------------------------------
+    | DataTable
+    |--------------------------------------------------------------------------
+    */
+
+    initDataTable() {
+
+        this.table = $('#teacherTable').DataTable({
+
+            processing: true,
+            serverSide: true,
+
+            ajax: {
+                url: TEACHER_LIST_URL,
+                type: 'GET',
+                data: function (d) {
+                    d.filter_status = $('#filter_status').val();
+                },
+                error: function (xhr) {
+                    Toast.error(
+                        xhr.responseJSON?.message ?? 'Unable to load teachers.'
+                    );
+                }
+            },
+
+            pageLength: 10,
+            lengthMenu: [
+                [10, 25, 50, 100],
+                [10, 25, 50, 100]
+            ],
+            searching: true,
+            ordering: true,
+
+            columns: [
+                {
+                    data: null,
+                    name: null,
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    data: 'user.name',
+                    name: 'user_id',
+                    render: function (data, type, row) {
+                        const user = row.user || {};
+                        const profileImage = user.profile_image_url ?? DEFAULT_AVATAR;
+
+                        return `
+                            <div class="d-flex align-items-center">
+                                <img
+                                    src="${profileImage}"
+                                    width="38"
+                                    height="38"
+                                    class="rounded-circle me-2"
+                                    style="object-fit: cover;">
+                                <div>
+                                    <div class="fw-semibold">
+                                        ${user.name ?? '-'}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                },
+                {
+                    data: 'user.email',
+                    name: 'email',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return row.user?.email ?? '-';
+                    }
+                },
+                {
+                    data: 'employee_id',
+                    name: 'employee_id',
+                    render: function (data, type, row) {
+                        return row.employee_id ?? '-';
+                    }
+                },
+                {
+                    data: 'user.mobile',
+                    name: 'mobile',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return row.user?.mobile ?? '-';
+                    }
+                },
+                {
+                    data: 'specialization',
+                    name: 'specialization',
+                    render: function (data, type, row) {
+                        return row.specialization ?? '-';
+                    }
+                },
+                {
+                    data: 'user.status',
+                    name: 'status',
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row) {
+                        return Helper.statusSwitch(row.id, row.user?.status);
+                    }
+                },
+                {
+                    data: null,
+                    name: null,
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row) {
+                        return `
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-info btn-view-teacher"
+                                data-id="${row.id}">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-warning btn-edit-teacher"
+                                data-id="${row.id}">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-danger btn-delete-teacher"
+                                data-id="${row.id}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        `;
+                    }
+                }
+            ]
+
+        });
+
+    },
+
+    /*
+    |--------------------------------------------------------------------------
+    | Events
+    |--------------------------------------------------------------------------
+    */
 
     bindEvents() {
 
-        /*
-        |--------------------------------------------------------------------------
-        | Filter Submit
-        |--------------------------------------------------------------------------
-        */
-
+        // Filter Submit
         $('#filterForm').on('submit', (e) => {
-
             e.preventDefault();
-
-            this.load();
-
+            this.table.ajax.reload();
         });
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Reset Filter
-        |--------------------------------------------------------------------------
-        */
-
+        // Reset Filter
         $('#btnReset').on('click', () => {
-
             $('#filterForm')[0].reset();
-
-            this.load();
-
+            this.table.search('').ajax.reload();
         });
 
-        /*
-        |--------------------------------------------------------------------------
-        | Add Teacher
-        |--------------------------------------------------------------------------
-        */
-
+        // Add Teacher
         $('#btnAddTeacher').on('click', () => {
-
             this.openCreate();
-
         });
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Form Submit
-        |--------------------------------------------------------------------------
-        */
-
+        // Form Submit
         $('#teacherForm').on('submit', (e) => {
-
             e.preventDefault();
-
             this.save();
-
         });
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Edit Teacher
-        |--------------------------------------------------------------------------
-        */
-
-        $(document).on(
-            'click',
-            '.btn-edit-teacher',
-            (e) => {
-
-                const id =
-                    $(e.currentTarget).data('id');
-
-                this.edit(id);
-
-            }
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | View Teacher
-        |--------------------------------------------------------------------------
-        */
-        $(document).on(
-            'click',
-            '.btn-view-teacher',
-            (e) => {
-
-                const id =
-                    $(e.currentTarget).data('id');
-
-                this.view(id);
-
-            }
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Pagination
-        |--------------------------------------------------------------------------
-        */
-
-        $(document).on(
-            'click',
-            '#teacherPagination .page-link',
-            (e) => {
-
-                e.preventDefault();
-
-                const page =
-                    $(e.currentTarget).data('page');
-
-                if (page) {
-
-                    this.load(page);
-
-                }
-
-            }
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Image preview
-        |--------------------------------------------------------------------------
-        */
-        $('#profile_image').on('change', function () {
-
-            const file = this.files[0];
-
-            if (!file) {
-
-                $('#profilePreview').attr(
-                    'src',
-                    DEFAULT_AVATAR
-                );
-
-                return;
-
-            }
-
-
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-
-                $('#profilePreview')
-                    .attr('src', e.target.result);
-                // .removeClass('d-none');
-
-            };
-
-            reader.readAsDataURL(file);
-
+        // Edit Teacher
+        $(document).on('click', '.btn-edit-teacher', (e) => {
+            this.edit($(e.currentTarget).data('id'));
         });
 
-        //change status
+        // View Teacher
+        $(document).on('click', '.btn-view-teacher', (e) => {
+            this.view($(e.currentTarget).data('id'));
+        });
+
+        // Change status
         $(document).on('change', '.btn-status', (e) => {
-
             this.changeStatus(e.currentTarget);
+        });
 
+        // Status Filter
+        $('#filter_status').on('change', () => {
+            this.table.ajax.reload();
         });
 
         // Delete 
         $(document).on('click', '.btn-delete-teacher', (e) => {
-
             this.destroy($(e.currentTarget).data('id'));
-
         });
 
-    },
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Load Teachers
-    |--------------------------------------------------------------------------
-    */
-
-    load(page = 1) {
-
-        let data =
-            $('#filterForm').serialize();
-
-        data += '&page=' + page;
-
-
-        Ajax.request({
-
-            url: TEACHER_LIST_URL,
-
-            method: 'GET',
-
-            data: data,
-
-            beforeSend: () => {
-
-                $('#teacherTableBody').html(`
-
-                    <tr>
-
-                        <td
-                            colspan="7"
-                            class="text-center py-4">
-
-                            Loading...
-
-                        </td>
-
-                    </tr>
-
-                `);
-
-            },
-
-            success: (response) => {
-
-                this.render(
-                    response.data
-                );
-
-            },
-
-            error: (xhr) => {
-
-                Toast.error(
-
-                    xhr.responseJSON?.message ??
-
-                    'Unable to load teachers.'
-
-                );
-
+        // Image preview
+        $('#profile_image').on('change', function () {
+            const file = this.files[0];
+            if (!file) {
+                $('#profilePreview').attr('src', DEFAULT_AVATAR);
+                return;
             }
 
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                $('#profilePreview').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(file);
         });
 
     },
 
-
     /*
     |--------------------------------------------------------------------------
-    | Render Table
+    | Open Create Modal
     |--------------------------------------------------------------------------
     */
-
-    render(result) {
-
-        const rows =
-            result.data;
-
-        let html = '';
-
-
-        if (!rows.length) {
-
-            html = `
-
-                <tr>
-
-                    <td
-                        colspan="7"
-                        class="text-center py-4">
-
-                        No Teachers Found
-
-                    </td>
-
-                </tr>
-
-            `;
-
-            $('#teacherTableBody')
-                .html(html);
-
-            $('#teacherPagination')
-                .html('');
-
-            return;
-
-        }
-
-
-        rows.forEach((row, index) => {
-
-            const user =
-                row.user;
-
-
-            html += `
-
-                <tr>
-
-                    <td>
-
-                        ${result.from + index}
-
-                    </td>
-
-
-                    <td>
-                        <div class="d-flex align-items-center gap-2">
-
-                            <img
-                                src="${row.user.profile_image_url}"
-                                class="rounded-circle"
-                                width="40"
-                                height="40"
-                                style="object-fit: cover;">
-
-                            <span>
-
-                               ${user?.name ?? '-'}
-
-                            </span>
-
-                        </div>
-
-                    </td>
-
-
-                    <td>
-
-                        ${user?.email ?? '-'}
-
-                    </td>
-
-
-                    <td>
-
-                        ${row.employee_id ?? '-'}
-
-                    </td>
-
-
-                    <td>
-
-                        ${user?.mobile ?? '-'}
-
-                    </td>
-                    <td>
-                        ${row.specialization ?? '-'}
-
-                    </td>
-                    <td>
-
-                      ${Helper.statusSwitch(row.id, user?.status)}
-
-                    </td>
-
-
-                    <td>
-
-                        <button
-
-                            type="button"
-
-                            class="btn
-                                   btn-sm
-                                   btn-outline-primary
-                                   btn-view-teacher"
-
-                            data-id="${row.id}">
-
-                            <i
-                                class="bi bi-eye">
-
-                            </i>
-
-                        </button>
-
-                        <button
-
-                            type="button"
-
-                            class="btn
-                                   btn-sm
-                                   btn-outline-warning
-                                   btn-edit-teacher"
-
-                            data-id="${row.id}">
-
-                            <i
-                                class="bi bi-pencil">
-
-                            </i>
-
-                        </button>
-
-
-                        <button
-
-                            type="button"
-
-                            class="btn
-                                   btn-sm
-                                   btn-outline-danger
-                                   btn-delete-teacher"
-
-                            data-id="${row.id}">
-
-                            <i
-                                class="bi bi-trash">
-
-                            </i>
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-            `;
-
-        });
-
-
-        $('#teacherTableBody')
-            .html(html);
-
-
-        this.renderPagination(result);
-
-    },
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Render Pagination
-    |--------------------------------------------------------------------------
-    */
-
-    renderPagination(pagination) {
-
-        let html = '';
-
-
-        pagination.links.forEach(link => {
-
-            html += `
-
-                <button
-
-                    type="button"
-
-                    class="btn btn-sm
-
-                        ${link.active
-
-                    ? 'btn-primary active'
-
-                    : 'btn-light'
-
-                }
-
-                        page-link"
-
-                    data-page="${link.page ?? ''}"
-
-                    ${link.page === null
-
-                    ? 'disabled'
-
-                    : ''
-
-                }>
-
-                    ${link.label}
-
-                </button>
-
-            `;
-
-        });
-
-
-        $('#teacherPagination')
-            .html(html);
-
-    },
-
-    /*
-   |--------------------------------------------------------------------------
-   | Open Create Modal
-   |--------------------------------------------------------------------------
-   */
 
     openCreate() {
 
-        const form =
-            $('#teacherForm')[0];
-
-        form.reset();
-
+        $('#teacherForm')[0].reset();
         $('#teacher_id').val('');
+        $('#teacherModalLabel').text('Add Teacher');
+        $('#profilePreview').attr('src', DEFAULT_AVATAR);
 
-        $('#teacherModalTitle')
-            .text('Add Teacher');
-
-        $('#btnSaveTeacher')
-            .text('Save Teacher');
-
-        Helper.clearErrors(form);
-
+        Helper.clearErrors($('#teacherForm'));
         this.modal.show();
 
     },
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Save Teacher
-    |--------------------------------------------------------------------------
-    */
-
-    save() {
-
-        const id =
-            $('#teacher_id').val();
-
-        if (id) {
-
-            this.update();
-
-            return;
-
-        }
-
-        this.store();
-
-    },
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Store Teacher
-    |--------------------------------------------------------------------------
-    */
-
-    store() {
-
-        Ajax.request({
-
-            form: '#teacherForm',
-
-            url: TEACHER_STORE_URL,
-
-            method: 'POST',
-
-            success: (response) => {
-
-                this.modal.hide();
-
-                $('#teacherForm')[0].reset();
-
-                this.load();
-
-            }
-
-        });
-
-    },
-
 
     /*
     |--------------------------------------------------------------------------
@@ -592,156 +259,75 @@ const Teacher = {
 
     edit(id) {
 
-        const url =
-            TEACHER_EDIT_URL.replace(':id', id);
+        const url = TEACHER_SHOW_URL.replace(':id', id);
 
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: (response) => {
+                const teacher = response.data;
+                const user = teacher.user;
+
+                $('#teacher_id').val(teacher.id);
+                $('#name').val(user.name);
+                $('#email').val(user.email);
+                $('#mobile').val(user.mobile);
+                $('#employee_id').val(teacher.employee_id);
+                $('#qualification').val(teacher.qualification);
+                $('#specialization').val(teacher.specialization);
+                $('#joining_date').val(teacher.joining_date);
+                $('#experience_years').val(teacher.experience_years);
+                $('#status').val(user.status ? 1 : 0);
+                $('#address').val(teacher.address);
+                $('#city').val(teacher.city);
+                $('#state').val(teacher.state);
+                $('#pincode').val(teacher.pincode);
+                $('#emergency_contact_name').val(teacher.emergency_contact_name);
+                $('#emergency_contact_mobile').val(teacher.emergency_contact_mobile);
+                $('#password').val('');
+                $('#password_confirmation').val('');
+                $('#profilePreview').attr('src', user.profile_image_url ?? DEFAULT_AVATAR);
+                $('#dob').val(teacher.dob ? teacher.dob.substring(0, 10) : '');
+                $('#gender').val(teacher.gender);
+
+                $('#teacherModalLabel').text('Edit Teacher');
+                this.modal.show();
+            },
+            error: (xhr) => {
+                Toast.error(xhr.responseJSON?.message ?? 'Unable to load teacher.');
+            }
+        });
+
+    },
+
+    /*
+    |--------------------------------------------------------------------------
+    | Save Teacher
+    |--------------------------------------------------------------------------
+    */
+
+    save() {
+
+        const id = $('#teacher_id').val();
+        const isEdit = id !== '';
+
+        const url = isEdit
+            ? TEACHER_UPDATE_URL.replace(':id', id)
+            : TEACHER_STORE_URL;
 
         Ajax.request({
-
+            form: '#teacherForm',
             url: url,
-
-            method: 'GET',
-
-            data: {},
-
+            method: 'POST',
+            extraData: isEdit ? { _method: 'PUT' } : {},
             success: (response) => {
-
-                const teacher =
-                    response.data;
-
-
-                const user =
-                    teacher.user;
-
-
-                $('#teacher_id')
-                    .val(teacher.id);
-
-
-                $('#name')
-                    .val(user.name);
-
-
-                $('#email')
-                    .val(user.email);
-
-
-                $('#mobile')
-                    .val(user.mobile);
-
-
-                $('#employee_id')
-                    .val(teacher.employee_id);
-
-
-                $('#qualification')
-                    .val(teacher.qualification);
-
-
-                $('#specialization')
-                    .val(teacher.specialization);
-
-
-                $('#joining_date')
-                    .val(
-                        teacher.joining_date
-                            ? teacher.joining_date.substring(0, 10)
-                            : ''
-                    );
-
-
-                $('#dob')
-                    .val(
-                        teacher.dob
-                            ? teacher.dob.substring(0, 10)
-                            : ''
-                    );
-
-
-                $('#gender')
-                    .val(teacher.gender);
-
-
-                $('#experience_years')
-                    .val(teacher.experience_years);
-
-
-                $('#address')
-                    .val(teacher.address);
-
-
-                $('#city')
-                    .val(teacher.city);
-
-
-                $('#state')
-                    .val(teacher.state);
-
-
-                $('#pincode')
-                    .val(teacher.pincode);
-
-
-                $('#emergency_contact_name')
-                    .val(
-                        teacher.emergency_contact_name
-                    );
-
-
-                $('#emergency_contact_mobile')
-                    .val(
-                        teacher.emergency_contact_mobile
-                    );
-
-
-                $('#status')
-                    .val(
-                        user.status ? '1' : '0'
-                    );
-
-
-                $('#password')
-                    .val('');
-
-
-                $('#password_confirmation')
-                    .val('');
-
-                $('#profilePreview').attr(
-                    'src',
-                    user.profile_image_url
+                this.modal.hide();
+                $('#teacherForm')[0].reset();
+                Toast.success(
+                    response.message ?? (isEdit ? 'Teacher updated successfully.' : 'Teacher created successfully.')
                 );
-
-
-                $('#teacherModalTitle')
-                    .text('Edit Teacher');
-
-
-                $('#btnSaveTeacher')
-                    .text('Update Teacher');
-
-
-                Helper.clearErrors(
-                    $('#teacherForm')
-                );
-
-
-                this.modal.show();
-
-            },
-
-            error: (xhr) => {
-
-                Toast.error(
-
-                    xhr.responseJSON?.message ??
-
-                    'Unable to fetch teacher details.'
-
-                );
-
+                this.table.ajax.reload(null, false);
             }
-
         });
 
     },
@@ -751,237 +337,103 @@ const Teacher = {
     | View Teacher
     |--------------------------------------------------------------------------
     */
+
     view(id) {
 
-        const url =
-            TEACHER_SHOW_URL.replace(':id', id);
+        const url = TEACHER_SHOW_URL.replace(':id', id);
 
-
-        Ajax.request({
-
+        $.ajax({
             url: url,
-
-            method: 'GET',
-
-            data: {},
-
+            type: 'GET',
             success: (response) => {
+                const teacher = response.data;
+                const user = teacher.user;
 
-                const teacher =
-                    response.data;
-
-
-                const user =
-                    teacher.user;
-
+                $('#viewName').text(user.name);
+                $('#viewEmail').text(user.email ?? '-');
+                $('#viewMobile').text(user.mobile ?? '-');
+                $('#viewEmployeeId').text(teacher.employee_id ?? '-');
+                $('#viewEmployee').text(teacher.employee_id ?? '-');
+                $('#viewQualification').text(teacher.qualification ?? '-');
+                $('#viewSpecialization').text(teacher.specialization ?? '-');
+                $('#viewJoiningDate').text(teacher.joining_date ?? '-');
+                $('#viewExperience').text(
+                    teacher.experience_years ? teacher.experience_years + ' Years' : '-'
+                );
+                $('#viewStatus').html(
+                    user.status
+                        ? '<span class="badge bg-success">Active</span>'
+                        : '<span class="badge bg-danger">Inactive</span>'
+                );
 
                 $('#viewProfileImage').attr(
-
                     'src',
-
-                    user.profile_image_url
-                        ? user.profile_image_url
-                        : DEFAULT_AVATAR
-
+                    user.profile_image_url ? user.profile_image_url : DEFAULT_AVATAR
                 );
 
-                $('.teacher-profile-header').css({
-                    'background-image': `url(${user.profile_image_url})`,
-                    'background-repeat': 'no-repeat',
-                    'background-position': 'center',
-                    // 'background-size': 'cover'
-                });
-
-
-                $('#viewName').text(
-                    user.name ?? '-'
+                $('.teacher-profile-header').css(
+                    'background-image',
+                    `url(${user.profile_image_url})`
                 );
 
-
-                $('#viewEmployeeId').text(
-
-                    teacher.employee_id
-                        ? `Employee ID: ${teacher.employee_id}`
-                        : 'Employee ID: -'
-
-                );
-
-
-                $('#viewEmail').text(
-                    user.email ?? '-'
-                );
-
-
-                $('#viewMobile').text(
-                    user.mobile ?? '-'
-                );
-
-
-                $('#viewQualification').text(
-                    teacher.qualification ?? '-'
-                );
-
-
-                $('#viewSpecialization').text(
-                    teacher.specialization ?? '-'
-                );
-
-
-                $('#viewGender').text(
-
-                    teacher.gender
-                        ? Helper.capitalize(
-                            teacher.gender
-                        )
-                        : '-'
-
-                );
-
-
-
-                $('#viewDob').text(
-
-                    Helper.formatDate(
-                        teacher.dob
-                    )
-
-                );
-
-
-                $('#viewJoiningDate').text(
-
-                    Helper.formatDate(
-                        teacher.joining_date
-                    )
-
-                );
-
-
-                $('#viewExperience').text(
-
-                    teacher.experience_years
-                        ? `${teacher.experience_years} Years`
-                        : '-'
-
-                );
-
-
-                $('#viewCity').text(
-                    teacher.city ?? '-'
-                );
-
-
-                $('#viewState').text(
-                    teacher.state ?? '-'
-                );
-
-
-                $('#viewPincode').text(
-                    teacher.pincode ?? '-'
-                );
-
-
-                $('#viewAddress').text(
-                    teacher.address ?? '-'
-                );
-
-
-                $('#viewEmergencyContactName').text(
-
-                    teacher.emergency_contact_name
-                    ?? '-'
-
-                );
-
-
-                $('#viewEmergencyContactMobile').text(
-
-                    teacher.emergency_contact_mobile
-                    ?? '-'
-
-                );
-
-
-                $('#viewStatus').html(
-
-                    user.status
-
-                        ? '<span class="badge bg-success">Active</span>'
-
-                        : '<span class="badge bg-danger">Inactive</span>'
-
-                );
-
+                $('#viewDob').text(Helper.formatDate(teacher.dob));
+                $('#viewCity').text(teacher.city ?? '-');
+                $('#viewState').text(teacher.state ?? '-');
+                $('#viewPincode').text(teacher.pincode ?? '-');
+                $('#viewAddress').text(teacher.address ?? '-');
+                $('#viewGender').text(teacher.gender ? Helper.capitalize(teacher.gender) : '-');
+                $('#viewEmergencyName').text(teacher.emergency_contact_name ?? '-');
+                $('#viewEmergencyMobile').text(teacher.emergency_contact_mobile ?? '-');
 
                 this.viewModal.show();
-
             },
-
             error: (xhr) => {
-
-                Toast.error(
-
-                    xhr.responseJSON?.message ??
-
-                    'Unable to fetch teacher details.'
-
-                );
-
+                Toast.error(xhr.responseJSON?.message ?? 'Unable to load teacher details.');
             }
-
         });
 
     },
+
     /*
     |--------------------------------------------------------------------------
-    | Update Teacher
+    | Delete Teacher
     |--------------------------------------------------------------------------
     */
 
-    update() {
+    destroy(id) {
 
-        const id =
-            $('#teacher_id').val();
-
-
-        const url =
-            TEACHER_UPDATE_URL.replace(
-                ':id',
-                id
-            );
-
-
-        Ajax.request({
-
-            form: '#teacherForm',
-
-            url: url,
-
-            method: 'POST',
-
-            extraData: {
-
-                _method: 'PUT'
-
-            },
-
-            success: (response) => {
-
-                this.modal.hide();
-
-                $('#teacherForm')[0].reset();
-
-                this.load();
-
+        Swal.fire({
+            title: 'Delete Teacher?',
+            text: 'This action cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Delete',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                return;
             }
 
+            Ajax.request({
+                url: TEACHER_DELETE_URL.replace(':id', id),
+                method: 'POST',
+                data: (() => {
+                    let formData = new FormData();
+                    formData.append('_method', 'DELETE');
+                    return formData;
+                })(),
+                success: (response) => {
+                    Toast.success(response.message ?? 'Teacher deleted successfully.');
+                    this.table.ajax.reload(null, false);
+                }
+            });
         });
 
     },
 
     /*
     |--------------------------------------------------------------------------
-    | Change status
+    | Change Status
     |--------------------------------------------------------------------------
     */
 
@@ -990,103 +442,26 @@ const Teacher = {
         const id = $(element).data('id');
 
         Ajax.request({
-
             url: TEACHER_STATUS_URL.replace(':id', id),
-
             method: 'POST',
-
             data: (() => {
-
                 let formData = new FormData();
-
                 formData.append('_method', 'PATCH');
-
                 return formData;
-
             })(),
-
             success: () => {
-
-                this.load(1);
-
+                Toast.success('Status updated successfully.');
+                this.table.ajax.reload(null, false);
             },
-
             error: () => {
-                // alert('ssssssssss');
-                // Toggle ko wapas previous state me le aao
                 element.checked = !element.checked;
-
             }
-
         });
 
-    },
-
-    /*
-    |--------------------------------------------------------------------------
-    | Delete
-    |--------------------------------------------------------------------------
-    */
-
-    destroy(id) {
-
-        Swal.fire({
-
-            title: 'Delete Academic Teacher?',
-
-            text: 'This action cannot be undone.',
-
-            icon: 'warning',
-
-            showCancelButton: true,
-
-            confirmButtonText: 'Yes, Delete',
-
-            cancelButtonText: 'Cancel',
-
-        }).then((result) => {
-
-            if (!result.isConfirmed) {
-
-                return;
-
-            }
-
-            Ajax.request({
-
-                url: TEACHER_DELETE_URL.replace(':id', id),
-
-                method: 'POST',
-
-                data: (() => {
-
-                    let formData = new FormData();
-
-                    formData.append('_method', 'DELETE');
-
-                    return formData;
-
-                })(),
-
-                success: (response) => {
-                    console.log('Delete Success');
-
-                    console.log(response);
-                    this.load(1);
-
-                }
-
-            });
-
-        });
-
-    },
+    }
 
 };
 
-
 $(function () {
-
     Teacher.init();
-
 });

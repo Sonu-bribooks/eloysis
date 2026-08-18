@@ -3,17 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Helpers\UploadHelper;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
@@ -32,7 +32,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'status'        => 'boolean',
+            'status' => 'boolean',
             'last_login_at' => 'datetime',
         ];
     }
@@ -48,7 +48,7 @@ class User extends Authenticatable
         'status',
         'last_login_at',
         'created_by',
-        'updated_by'
+        'updated_by',
     ];
 
     protected $hidden = [
@@ -57,7 +57,7 @@ class User extends Authenticatable
     ];
 
     protected $appends = [
-        'profile_image_url'
+        'profile_image_url',
     ];
 
     public function scopeActive($query)
@@ -74,7 +74,7 @@ class User extends Authenticatable
 
     public function getProfileImageUrlAttribute(): ?string
     {
-        return \App\Helpers\UploadHelper::url(
+        return UploadHelper::url(
             $this->profile_image
         );
     }
@@ -181,13 +181,13 @@ class User extends Authenticatable
             return true;
         }
 
-        if (!$this->relationLoaded('role')) {
+        if (! $this->relationLoaded('role')) {
             $this->loadMissing('role.permissions');
         } else {
             $this->loadMissing('role.permissions');
         }
 
-        if (!$this->role || !$this->role->status) {
+        if (! $this->role || ! $this->role->status) {
             return false;
         }
 
@@ -215,7 +215,7 @@ class User extends Authenticatable
 
         $this->loadMissing('role.permissions');
 
-        if (!$this->role) {
+        if (! $this->role) {
             return [];
         }
 
@@ -229,6 +229,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(TeacherSubject::class);
     }
-
-   
 }

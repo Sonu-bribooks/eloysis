@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Permission;
+use Illuminate\Database\Seeder;
 
 class PermissionSeeder extends Seeder
 {
@@ -79,9 +78,9 @@ class PermissionSeeder extends Seeder
             Permission::updateOrCreate(
                 ['slug' => $permission['slug']],
                 [
-                    'name'        => $permission['name'],
-                    'module'      => $permission['module'],
-                    'status'      => 1,
+                    'name' => $permission['name'],
+                    'module' => $permission['module'],
+                    'status' => 1,
                     'description' => null,
                 ]
             );

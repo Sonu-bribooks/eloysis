@@ -2,7 +2,6 @@
 
 namespace App\Services\Admin;
 
-use App\Models\ClassSubject;
 use App\Repositories\Admin\ClassSubjectRepository;
 use Illuminate\Support\Facades\DB;
 
@@ -11,21 +10,25 @@ class ClassSubjectService
     /**
      * Create a new class instance.
      */
-     public function __construct(
+    public function __construct(
         protected ClassSubjectRepository $classSubjectRepository,
-        
-    ) {
-    }
+
+    ) {}
 
     /**
      * Get student listing
      */
-    public function getList(array $filters = [])
-    {
-        return $this->classSubjectRepository->getList($filters);
+    public function getList(
+        array $filters = [],
+        int $perPage = 10,
+        int $page = 1,
+        ?int $orderColumn = null,
+        string $orderDirection = 'asc'
+    ) {
+        return $this->classSubjectRepository->getList($filters, $perPage, $page, $orderColumn, $orderDirection);
     }
 
-     /**
+    /**
      * Create Academic Subject
      */
     public function create(array $data)
@@ -70,7 +73,7 @@ class ClassSubjectService
         }
     }
 
-     /**
+    /**
      * Delete Subject
      */
     public function delete(int $id)
@@ -100,6 +103,4 @@ class ClassSubjectService
     {
         return $this->classSubjectRepository->changeStatus($id);
     }
-
-
 }

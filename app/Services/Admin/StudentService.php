@@ -2,16 +2,14 @@
 
 namespace App\Services\Admin;
 
+use App\Helpers\UploadHelper;
+use App\Models\Role;
+use App\Repositories\Admin\StudentEnrollmentRepository;
 use App\Repositories\Admin\StudentRepository;
 use App\Repositories\Admin\UserRepository;
-use App\Repositories\Admin\StudentEnrollmentRepository;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Role;
-use Illuminate\Support\Str;
-use App\Helpers\UploadHelper;
-
 
 class StudentService
 {
@@ -19,18 +17,19 @@ class StudentService
         protected StudentRepository $studentRepository,
         protected UserRepository $userRepository,
         protected StudentEnrollmentRepository $enrollmentRepository
-    ) {
-    }
-
+    ) {}
 
     /**
      * Get student listing
      */
-    public function getList(array $filters = [])
-    {
-        
-        // return $this->studentRepository->getList($filters);
-        return $this->enrollmentRepository->getList($filters);
+    public function getList(
+        array $filters = [],
+        int $perPage = 10,
+        int $page = 1,
+        ?int $orderColumn = null,
+        string $orderDirection = 'asc'
+    ) {
+        return $this->enrollmentRepository->getList($filters, $perPage, $page, $orderColumn, $orderDirection);
     }
 
     public function find(int $id)
@@ -38,7 +37,6 @@ class StudentService
         return $this->studentRepository
             ->findWithRelations($id);
     }
-
 
     /**
      * Create student
@@ -48,16 +46,16 @@ class StudentService
         return DB::transaction(function () use ($data) {
 
             $studentRole = Role::where(
-                    'slug',
-                    'student'
-                )->firstOrFail();
+                'slug',
+                'student'
+            )->firstOrFail();
             /*
             |--------------------------------------------------------------------------
             | Create User
             |--------------------------------------------------------------------------
             */
 
-            if(isset($data['profile_image'])){
+            if (isset($data['profile_image'])) {
                 $data['profile_image'] = UploadHelper::upload(
                     $data['profile_image'],
                     'assets/uploads/students'
@@ -84,9 +82,7 @@ class StudentService
                 'created_by' => Auth::guard('admin')->id(),
                 'profile_image' => $data['profile_image'] ?? null,
 
-
             ]);
-
 
             /*
             |--------------------------------------------------------------------------
@@ -106,34 +102,24 @@ class StudentService
 
                 'address' => $data['address'] ?? null,
                 'admission_date' => $data['admission_date'] ?? null,
-                'blood_group' =>
-                    $data['blood_group'] ?? null,
+                'blood_group' => $data['blood_group'] ?? null,
 
-                'father_name' =>
-                    $data['father_name'] ?? null,
+                'father_name' => $data['father_name'] ?? null,
 
-                'mother_name' =>
-                    $data['mother_name'] ?? null,
+                'mother_name' => $data['mother_name'] ?? null,
 
-                'guardian_name' =>
-                    $data['guardian_name'] ?? null,
+                'guardian_name' => $data['guardian_name'] ?? null,
 
-                'guardian_mobile' =>
-                    $data['guardian_mobile'] ?? null,
+                'guardian_mobile' => $data['guardian_mobile'] ?? null,
 
-                'guardian_email' =>
-                    $data['guardian_email'] ?? null,
-                'city' =>
-                    $data['city'] ?? null,
+                'guardian_email' => $data['guardian_email'] ?? null,
+                'city' => $data['city'] ?? null,
 
-                'state' =>
-                    $data['state'] ?? null,
+                'state' => $data['state'] ?? null,
 
-                'pincode' =>
-                    $data['pincode'] ?? null,
+                'pincode' => $data['pincode'] ?? null,
 
             ]);
-
 
             /*
             |--------------------------------------------------------------------------
@@ -145,25 +131,19 @@ class StudentService
                 'user_id' => $user->id,
                 'stu_profile_id' => $student->id,
 
-                'academic_session_id' =>
-                    $data['academic_session_id'],
+                'academic_session_id' => $data['academic_session_id'],
 
-                'class_id' =>
-                    $data['class_id'],
+                'class_id' => $data['class_id'],
 
-                'section_id' =>
-                    $data['section_id'],
+                'section_id' => $data['section_id'],
 
-                'roll_number' =>
-                    $data['roll_number'],
+                'roll_number' => $data['roll_number'],
 
-                'admission_date' =>
-                    $data['admission_date'] ?? now(),
+                'admission_date' => $data['admission_date'] ?? now(),
 
                 'status' => 1,
 
             ]);
-
 
             return $student;
 
@@ -171,7 +151,7 @@ class StudentService
 
     }
 
-    //*******************Student Action By Student profile start*************************************** */
+    // *******************Student Action By Student profile start*************************************** */
 
     // /**
     //  * Update student
@@ -186,7 +166,6 @@ class StudentService
     //         $student = $this->studentRepository
     //             ->findWithRelations($id);
 
-
     //         if (!$student) {
 
     //             throw new \Exception(
@@ -194,7 +173,6 @@ class StudentService
     //             );
 
     //         }
-
 
     //         /*
     //         |--------------------------------------------------------------------------
@@ -226,7 +204,6 @@ class StudentService
     //             $student->user->id, $userData
 
     //         );
-
 
     //         /*
     //         |--------------------------------------------------------------------------
@@ -281,7 +258,6 @@ class StudentService
 
     //         );
 
-
     //         /*
     //         |--------------------------------------------------------------------------
     //         | Update Latest Enrollment
@@ -291,7 +267,6 @@ class StudentService
     //         $enrollment = $student
     //             ->enrollments
     //             ->first();
-
 
     //         if ($enrollment) {
 
@@ -319,7 +294,6 @@ class StudentService
 
     //         }
 
-
     //         return $student->fresh([
     //             'user',
     //             'enrollments',
@@ -328,7 +302,6 @@ class StudentService
     //     });
 
     // }
-
 
     // /**
     //  * Delete student
@@ -340,7 +313,6 @@ class StudentService
     //         $student = $this->studentRepository
     //             ->findWithRelations($id);
 
-
     //         if (!$student) {
 
     //             throw new \Exception(
@@ -348,7 +320,6 @@ class StudentService
     //             );
 
     //         }
-
 
     //         /*
     //         |--------------------------------------------------------------------------
@@ -361,7 +332,6 @@ class StudentService
     //                 'stu_profile_id' => $student->id,
     //             ]);
 
-
     //         /*
     //         |--------------------------------------------------------------------------
     //         | Delete Student Profile
@@ -370,7 +340,6 @@ class StudentService
 
     //         $this->studentRepository
     //             ->delete($student->id);
-
 
     //         /*
     //         |--------------------------------------------------------------------------
@@ -385,13 +354,11 @@ class StudentService
     //         $this->userRepository
     //             ->delete($student->user->id);
 
-
     //         return true;
 
     //     });
 
     // }
-
 
     // /**
     //  * Change student status
@@ -402,7 +369,6 @@ class StudentService
 
     //     $student = $this->studentRepository
     //         ->findWithRelations($id);
-
 
     //     if (!$student) {
 
@@ -420,9 +386,9 @@ class StudentService
 
     // }
 
-    //***************Student Action By Student profile End********************************* */
+    // ***************Student Action By Student profile End********************************* */
 
-    //***************Student Action By Student Enrollment********************************* */
+    // ***************Student Action By Student Enrollment********************************* */
 
     /**
      * Update student
@@ -438,14 +404,13 @@ class StudentService
                 ->findWithRelations($id);
 
             // dd($enrollment,$enrollment->student );
-            if (!$enrollment) {
+            if (! $enrollment) {
 
                 throw new \Exception(
                     'Student not found.'
                 );
 
             }
-
 
             /*
             |--------------------------------------------------------------------------
@@ -454,22 +419,22 @@ class StudentService
             */
 
             $userData = [
-                'name'       => $data['name'],
-                'email'      => $data['email'],
-                'mobile'     => $data['mobile'] ?? null,
-                'status'     => $data['status'] ?? 1,
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'mobile' => $data['mobile'] ?? null,
+                'status' => $data['status'] ?? 1,
                 'updated_by' => Auth::guard('admin')->id(),
             ];
 
             // Password agar aaya ho
-            if (!empty($data['password'])) {
+            if (! empty($data['password'])) {
                 $userData['password'] = Hash::make($data['password']);
             }
 
             // Profile image agar upload hui ho
-            if (isset($data['profile_image']) && !empty($data['profile_image'])) {
+            if (isset($data['profile_image']) && ! empty($data['profile_image'])) {
                 $userData['profile_image'] = UploadHelper::replace($data['profile_image'],
-                                            $enrollment->student->user->profile_image,'assets/uploads/students');
+                    $enrollment->student->user->profile_image, 'assets/uploads/students');
             }
 
             $this->userRepository->update(
@@ -477,7 +442,6 @@ class StudentService
                 $enrollment->user_id, $userData
 
             );
-
 
             /*
             |--------------------------------------------------------------------------
@@ -490,55 +454,40 @@ class StudentService
                 $enrollment->stu_profile_id,
 
                 [
-                    'admission_no' =>
-                        $data['admission_no'],
+                    'admission_no' => $data['admission_no'],
 
-                    'dob' =>
-                        $data['dob'] ?? null,
+                    'dob' => $data['dob'] ?? null,
 
-                    'gender' =>
-                        $data['gender'] ?? null,
+                    'gender' => $data['gender'] ?? null,
 
-                    'address' =>
-                        $data['address'] ?? null,
+                    'address' => $data['address'] ?? null,
                     'admission_date' => $data['admission_date'] ?? null,
-                    'blood_group' =>
-                        $data['blood_group'] ?? null,
+                    'blood_group' => $data['blood_group'] ?? null,
 
-                    'father_name' =>
-                        $data['father_name'] ?? null,
+                    'father_name' => $data['father_name'] ?? null,
 
-                    'mother_name' =>
-                        $data['mother_name'] ?? null,
+                    'mother_name' => $data['mother_name'] ?? null,
 
-                    'guardian_name' =>
-                        $data['guardian_name'] ?? null,
+                    'guardian_name' => $data['guardian_name'] ?? null,
 
-                    'guardian_mobile' =>
-                        $data['guardian_mobile'] ?? null,
+                    'guardian_mobile' => $data['guardian_mobile'] ?? null,
 
-                    'guardian_email' =>
-                        $data['guardian_email'] ?? null,
-                    'city' =>
-                        $data['city'] ?? null,
+                    'guardian_email' => $data['guardian_email'] ?? null,
+                    'city' => $data['city'] ?? null,
 
-                    'state' =>
-                        $data['state'] ?? null,
+                    'state' => $data['state'] ?? null,
 
-                    'pincode' =>
-                        $data['pincode'] ?? null,
+                    'pincode' => $data['pincode'] ?? null,
 
                 ]
 
             );
-
 
             /*
             |--------------------------------------------------------------------------
             | Update Latest Enrollment
             |--------------------------------------------------------------------------
             */
-
 
             if ($enrollment) {
 
@@ -548,24 +497,19 @@ class StudentService
 
                     [
 
-                        'academic_session_id' =>
-                            $data['academic_session_id'],
+                        'academic_session_id' => $data['academic_session_id'],
 
-                        'class_id' =>
-                            $data['class_id'],
+                        'class_id' => $data['class_id'],
 
-                        'section_id' =>
-                            $data['section_id'],
+                        'section_id' => $data['section_id'],
 
-                        'roll_number' =>
-                            $data['roll_number'],
+                        'roll_number' => $data['roll_number'],
 
                     ]
 
                 );
 
             }
-
 
             return $enrollment->fresh([
                 'student.user',
@@ -574,7 +518,6 @@ class StudentService
         });
 
     }
-
 
     /**
      * Delete student
@@ -586,15 +529,13 @@ class StudentService
             $enrollment = $this->enrollmentRepository
                 ->findWithRelations($id);
 
-
-            if (!$enrollment) {
+            if (! $enrollment) {
 
                 throw new \Exception(
                     'Student not found.'
                 );
 
             }
-
 
             /*
             |--------------------------------------------------------------------------
@@ -605,7 +546,6 @@ class StudentService
             $this->enrollmentRepository
                 ->delete($enrollment->id);
 
-
             /*
             |--------------------------------------------------------------------------
             | Delete Student Profile
@@ -614,7 +554,6 @@ class StudentService
 
             $this->studentRepository
                 ->delete($enrollment->stu_profile_id);
-
 
             /*
             |--------------------------------------------------------------------------
@@ -629,13 +568,11 @@ class StudentService
             $this->userRepository
                 ->delete($enrollment->user_id);
 
-
             return true;
 
         });
 
     }
-
 
     /**
      * Change student status
@@ -647,8 +584,7 @@ class StudentService
         $enrollment = $this->enrollmentRepository
             ->findWithRelations($id);
 
-
-        if (!$enrollment) {
+        if (! $enrollment) {
 
             throw new \Exception(
                 'Student not found.'
@@ -665,5 +601,4 @@ class StudentService
         );
 
     }
-
 }

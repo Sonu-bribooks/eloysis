@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\AcademicSectionRequest;
+use App\Models\Section;
 use App\Services\Admin\AcademicSectionService;
 use Illuminate\Http\Request;
-use App\Models\Section;
-
 
 class AcademicSectionController extends BaseController
 {
     protected AcademicSectionService $AcademicSectionService;
 
-    public function __construct(AcademicSectionService $AcademicSectionService) {
+    public function __construct(AcademicSectionService $AcademicSectionService)
+    {
         $this->AcademicSectionService = $AcademicSectionService;
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -24,20 +24,30 @@ class AcademicSectionController extends BaseController
     {
         return view('admin.sections.index');
     }
-    
-    public function list(Request $request) {
-       
-        $filters = $request->only([
-            'search',
-            'filter_status',
-            'page'
-        ]);
-         
-        $sections = $this->AcademicSectionService->getAcademicSections($filters);
-        return $this->success(
-            'Academic Class Sections list fetched successfully.',
-            $sections
+
+    public function list(Request $request)
+    {
+        $filters = [
+            'search' => $request->input('search.value'),
+            'filter_status' => $request->input('filter_status'),
+        ];
+
+        $length = max((int) $request->input('length', 10), 1);
+        $start = max((int) $request->input('start', 0), 0);
+        $page = (int) floor($start / $length) + 1;
+
+        $orderColumn = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir', 'asc');
+
+        $sections = $this->AcademicSectionService->getAcademicSections(
+            $filters,
+            $length,
+            $page,
+            $orderColumn !== null ? (int) $orderColumn : null,
+            $orderDirection
         );
+
+        return $this->datatable($sections, (int) $request->input('draw', 1));
     }
 
     /**
@@ -46,6 +56,7 @@ class AcademicSectionController extends BaseController
     public function create()
     {
         $class = class_options();
+
         // dd($class);
         return $this->success(
             'Section Create modal open successfully',
@@ -61,6 +72,7 @@ class AcademicSectionController extends BaseController
         $sections = $this->AcademicSectionService->create(
             $request->validated()
         );
+
         return $this->success(
             'Academic Class Sections create successfully.',
             $sections
@@ -81,6 +93,7 @@ class AcademicSectionController extends BaseController
     public function edit(Section $section)
     {
         $section['class_info'] = class_options();
+
         // dd($section);
         return $this->success(
             'Academic Class Sections fetch successfully.',

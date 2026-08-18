@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Http\Requests\BaseRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class TeacherSubjectRequest extends BaseRequest
@@ -99,18 +99,17 @@ class TeacherSubjectRequest extends BaseRequest
         return [
 
             'teacher_id.required' => 'Please select a teacher.',
-            'teacher_id.exists'   => 'Selected teacher is invalid.',
+            'teacher_id.exists' => 'Selected teacher is invalid.',
 
-            'class_id.required'   => 'Please select a class.',
-            'class_id.exists'     => 'Selected class is invalid.',
+            'class_id.required' => 'Please select a class.',
+            'class_id.exists' => 'Selected class is invalid.',
 
             'subject_id.required' => 'Please select a subject.',
-            'subject_id.exists'   => 'Selected subject is invalid.',
-            'subject_id.unique'   => 'This subject has already been assigned to the selected teacher for this class.',
+            'subject_id.exists' => 'Selected subject is invalid.',
+            'subject_id.unique' => 'This subject has already been assigned to the selected teacher for this class.',
 
-            'status.required'     => 'Please select status.',
+            'status.required' => 'Please select status.',
 
         ];
     }
-
 }

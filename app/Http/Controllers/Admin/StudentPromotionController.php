@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\BaseController;
-use Illuminate\Http\Request;
 use App\Http\Requests\Admin\StudentPromotionRequest;
 use App\Services\Admin\StudentPromotionService;
+use Illuminate\Http\Request;
 
 class StudentPromotionController extends BaseController
 {
@@ -15,9 +14,7 @@ class StudentPromotionController extends BaseController
      */
     public function __construct(
         protected StudentPromotionService $promotionService
-    ) {
-        
-    }
+    ) {}
 
     /**
      * Promotion Page
@@ -37,13 +34,14 @@ class StudentPromotionController extends BaseController
     /**
      * Load Students
      */
-    public function students(Request $request) {
+    public function students(Request $request)
+    {
 
         $students = $this->promotionService->students(
             $request->only([
                 'academic_session_id',
                 'class_id',
-                'section_id'
+                'section_id',
             ])
         );
 

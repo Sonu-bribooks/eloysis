@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Services\Admin\SubjectService;
+use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\SubjectRequest;
 use App\Models\Subject;
-use App\Http\Controllers\BaseController;
+use App\Services\Admin\SubjectService;
 use Illuminate\Http\Request;
 
 class SubjectController extends BaseController
 {
     protected SubjectService $SubjectService;
 
-    public function __construct(SubjectService $SubjectService) {
-        
+    public function __construct(SubjectService $SubjectService)
+    {
+
         $this->SubjectService = $SubjectService;
     }
 
@@ -25,20 +25,30 @@ class SubjectController extends BaseController
     {
         return view('admin.subjects.index');
     }
-    
-    public function list(Request $request) {
-       
-        $filters = $request->only([
-            'search',
-            'filter_status',
-            'page'
-        ]);
-         
-        $subjects = $this->SubjectService->getAcademicSubjects($filters);
-        return $this->success(
-            'Academic Class subjects list fetched successfully.',
-            $subjects
+
+    public function list(Request $request)
+    {
+        $filters = [
+            'search' => $request->input('search.value'),
+            'filter_status' => $request->input('filter_status'),
+        ];
+
+        $length = max((int) $request->input('length', 10), 1);
+        $start = max((int) $request->input('start', 0), 0);
+        $page = (int) floor($start / $length) + 1;
+
+        $orderColumn = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir', 'asc');
+
+        $subjects = $this->SubjectService->getAcademicSubjects(
+            $filters,
+            $length,
+            $page,
+            $orderColumn !== null ? (int) $orderColumn : null,
+            $orderDirection
         );
+
+        return $this->datatable($subjects, (int) $request->input('draw', 1));
     }
 
     /**
@@ -46,7 +56,7 @@ class SubjectController extends BaseController
      */
     public function create()
     {
-        
+
         return $this->success(
             'subject Create modal open successfully',
         );
@@ -60,6 +70,7 @@ class SubjectController extends BaseController
         $subjects = $this->SubjectService->create(
             $request->validated()
         );
+
         return $this->success(
             'Academic Class subjects create successfully.',
             $subjects
@@ -125,5 +136,4 @@ class SubjectController extends BaseController
             'Academic Class subject status updated successfully.'
         );
     }
-
 }

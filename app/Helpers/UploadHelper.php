@@ -16,7 +16,7 @@ class UploadHelper
         string $folder = 'assets/uploads'
     ): string {
 
-        $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+        $fileName = Str::uuid().'.'.$file->getClientOriginalExtension();
 
         return $file->storeAs(
             $folder,
@@ -51,7 +51,7 @@ class UploadHelper
 
         if (
             empty($path) ||
-            !Storage::disk('public')->exists($path)
+            ! Storage::disk('public')->exists($path)
         ) {
 
             return false;
@@ -70,7 +70,7 @@ class UploadHelper
 
         if (
             empty($path) ||
-            !Storage::disk('public')->exists($path)
+            ! Storage::disk('public')->exists($path)
         ) {
 
             return asset(
@@ -80,6 +80,6 @@ class UploadHelper
         }
 
         // return Storage::url($path);
-        return asset('storage/' . $path);
+        return asset('storage/'.$path);
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Http\Requests\BaseRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class StudentAttendanceRequest extends BaseRequest
@@ -44,13 +44,14 @@ class StudentAttendanceRequest extends BaseRequest
     public function rules(): array
     {
         $isSaveRequest = $this->isMethod('post');
-       return [
+
+        return [
 
             /*
-            |--------------------------------------------------------------------------
-            | Academic Session
-            |--------------------------------------------------------------------------
-            */
+             |--------------------------------------------------------------------------
+             | Academic Session
+             |--------------------------------------------------------------------------
+             */
 
             'academic_session_id' => [
                 'required',
@@ -59,10 +60,10 @@ class StudentAttendanceRequest extends BaseRequest
             ],
 
             /*
-            |--------------------------------------------------------------------------
-            | Class
-            |--------------------------------------------------------------------------
-            */
+             |--------------------------------------------------------------------------
+             | Class
+             |--------------------------------------------------------------------------
+             */
 
             'class_id' => [
                 'required',
@@ -71,10 +72,10 @@ class StudentAttendanceRequest extends BaseRequest
             ],
 
             /*
-            |--------------------------------------------------------------------------
-            | Section
-            |--------------------------------------------------------------------------
-            */
+             |--------------------------------------------------------------------------
+             | Section
+             |--------------------------------------------------------------------------
+             */
 
             'section_id' => [
                 'nullable',
@@ -83,10 +84,10 @@ class StudentAttendanceRequest extends BaseRequest
             ],
 
             /*
-            |--------------------------------------------------------------------------
-            | Attendance Date
-            |--------------------------------------------------------------------------
-            */
+             |--------------------------------------------------------------------------
+             | Attendance Date
+             |--------------------------------------------------------------------------
+             */
 
             'attendance_date' => [
                 'required',
@@ -94,21 +95,20 @@ class StudentAttendanceRequest extends BaseRequest
             ],
 
             /*
-            |--------------------------------------------------------------------------
-            | Attendance
-            |--------------------------------------------------------------------------
-            */
+             |--------------------------------------------------------------------------
+             | Attendance
+             |--------------------------------------------------------------------------
+             */
 
             'attendance' => $isSaveRequest
                 ? ['required', 'array', 'min:1']
                 : ['nullable', 'array'],
 
-
             /*
-            |--------------------------------------------------------------------------
-            | Enrollment ID
-            |--------------------------------------------------------------------------
-            */
+             |--------------------------------------------------------------------------
+             | Enrollment ID
+             |--------------------------------------------------------------------------
+             */
 
             'attendance.*.student_enrollment_id' => [
                 'required_if:attendance,*',
@@ -118,10 +118,10 @@ class StudentAttendanceRequest extends BaseRequest
             ],
 
             /*
-            |--------------------------------------------------------------------------
-            | Attendance Status
-            |--------------------------------------------------------------------------
-            */
+             |--------------------------------------------------------------------------
+             | Attendance Status
+             |--------------------------------------------------------------------------
+             */
 
             'attendance.*.status' => [
                 'required_if:attendance,*',
@@ -134,10 +134,10 @@ class StudentAttendanceRequest extends BaseRequest
             ],
 
             /*
-            |--------------------------------------------------------------------------
-            | Remarks
-            |--------------------------------------------------------------------------
-            */
+             |--------------------------------------------------------------------------
+             | Remarks
+             |--------------------------------------------------------------------------
+             */
 
             'attendance.*.remarks' => [
                 'nullable',
@@ -148,54 +148,40 @@ class StudentAttendanceRequest extends BaseRequest
         ];
     }
 
-      /**
+    /**
      * Custom validation messages.
      */
     public function messages(): array
     {
         return [
 
-            'academic_session_id.required' =>
-                'Academic session is required.',
+            'academic_session_id.required' => 'Academic session is required.',
 
-            'academic_session_id.exists' =>
-                'Selected academic session is invalid.',
+            'academic_session_id.exists' => 'Selected academic session is invalid.',
 
-            'class_id.required' =>
-                'Class is required.',
+            'class_id.required' => 'Class is required.',
 
-            'class_id.exists' =>
-                'Selected class is invalid.',
+            'class_id.exists' => 'Selected class is invalid.',
 
-            'attendance_date.required' =>
-                'Attendance date is required.',
+            'attendance_date.required' => 'Attendance date is required.',
 
-            'attendance_date.date' =>
-                'Please provide a valid attendance date.',
+            'attendance_date.date' => 'Please provide a valid attendance date.',
 
-            'attendance.required' =>
-                'Please select at least one student.',
+            'attendance.required' => 'Please select at least one student.',
 
-            'attendance.min' =>
-                'Please select at least one student.',
+            'attendance.min' => 'Please select at least one student.',
 
-            'attendance.*.student_enrollment_id.required' =>
-                'Student enrollment is required.',
+            'attendance.*.student_enrollment_id.required' => 'Student enrollment is required.',
 
-            'attendance.*.student_enrollment_id.exists' =>
-                'Selected student enrollment is invalid.',
+            'attendance.*.student_enrollment_id.exists' => 'Selected student enrollment is invalid.',
 
-            'attendance.*.student_enrollment_id.distinct' =>
-                'Duplicate student enrollment is not allowed.',
+            'attendance.*.student_enrollment_id.distinct' => 'Duplicate student enrollment is not allowed.',
 
-            'attendance.*.status.required' =>
-                'Attendance status is required.',
+            'attendance.*.status.required' => 'Attendance status is required.',
 
-            'attendance.*.status.in' =>
-                'Invalid attendance status.',
+            'attendance.*.status.in' => 'Invalid attendance status.',
 
-            'attendance.*.remarks.max' =>
-                'Remarks cannot exceed 500 characters.',
+            'attendance.*.remarks.max' => 'Remarks cannot exceed 500 characters.',
 
         ];
     }

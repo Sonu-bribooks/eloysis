@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Http\Requests\BaseRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class ClassSectionRequest extends BaseRequest
@@ -24,6 +24,7 @@ class ClassSectionRequest extends BaseRequest
     public function rules(): array
     {
         $id = $this->route('class-sections')?->id;
+
         return [
             'class_id' => [
                 'required',
@@ -35,7 +36,7 @@ class ClassSectionRequest extends BaseRequest
                 'required',
                 'integer',
                 'exists:sections,id',
-                 Rule::unique('class_sections')
+                Rule::unique('class_sections')
                     ->where(fn ($query) => $query->where('class_id', $this->class_id))
                     ->ignore($id),
 
@@ -52,11 +53,10 @@ class ClassSectionRequest extends BaseRequest
     {
         return [
             'class_id.required' => 'Please select a class.',
-            'class_id.exists'   => 'Selected class is invalid.',
+            'class_id.exists' => 'Selected class is invalid.',
 
-            'section_id.required'     => 'Section name is required.',
-            'section_id.unique'       => 'This section already exists for the selected class.',
-
+            'section_id.required' => 'Section name is required.',
+            'section_id.unique' => 'This section already exists for the selected class.',
 
         ];
     }

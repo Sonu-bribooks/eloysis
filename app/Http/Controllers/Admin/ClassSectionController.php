@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\ClassSectionRequest;
+use App\Models\ClassSection;
 use App\Services\Admin\ClassSectionService;
 use Illuminate\Http\Request;
-use App\Models\ClassSection;
 
 class ClassSectionController extends BaseController
 {
-    public function __construct(protected ClassSectionService $classSectionService) {
-       
-    }
+    public function __construct(protected ClassSectionService $classSectionService) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -27,20 +25,30 @@ class ClassSectionController extends BaseController
             ]
         );
     }
-    
-    public function list(Request $request) {
-       
-        $filters = $request->only([
-            'search',
-            'filter_status',
-            'page'
-        ]);
-         
-        $sections = $this->classSectionService->getLists($filters);
-        return $this->success(
-            'Academic Class Sections list fetched successfully.',
-            $sections
+
+    public function list(Request $request)
+    {
+        $filters = [
+            'search' => $request->input('search.value'),
+            'filter_status' => $request->input('filter_status'),
+        ];
+
+        $length = max((int) $request->input('length', 10), 1);
+        $start = max((int) $request->input('start', 0), 0);
+        $page = (int) floor($start / $length) + 1;
+
+        $orderColumn = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir', 'asc');
+
+        $sections = $this->classSectionService->getLists(
+            $filters,
+            $length,
+            $page,
+            $orderColumn !== null ? (int) $orderColumn : null,
+            $orderDirection
         );
+
+        return $this->datatable($sections, (int) $request->input('draw', 1));
     }
 
     /**
@@ -49,9 +57,10 @@ class ClassSectionController extends BaseController
     public function create()
     {
         $data = [
-            'class'   => class_options(),
-            'section' => section_options()
+            'class' => class_options(),
+            'section' => section_options(),
         ];
+
         // dd($class);
         return $this->success(
             'Section Create modal open successfully',
@@ -67,6 +76,7 @@ class ClassSectionController extends BaseController
         $sections = $this->classSectionService->create(
             $request->validated()
         );
+
         return $this->success(
             'Academic Class Sections create successfully.',
             $sections
@@ -87,8 +97,8 @@ class ClassSectionController extends BaseController
     public function edit(ClassSection $class_section)
     {
         $class_section['class_info'] = class_options();
-        $class_section['section_info']    = section_options();
-       
+        $class_section['section_info'] = section_options();
+
         return $this->success(
             'Academic Class Sections fetch successfully.',
             $class_section

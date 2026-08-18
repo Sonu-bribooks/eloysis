@@ -23,7 +23,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->unique([
                 'class_id',
-                'subject_id'
+                'subject_id',
             ]);
         });
     }

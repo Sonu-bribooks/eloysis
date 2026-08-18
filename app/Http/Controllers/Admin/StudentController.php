@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\StudentRequest;
+use App\Models\StudentEnrollment;
+use App\Models\StudentProfile;
 use App\Services\Admin\StudentService;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Models\{StudentProfile,StudentEnrollment};
 
 class StudentController extends BaseController
 {
     public function __construct(
         protected StudentService $studentService
-    ) {
-    }
+    ) {}
 
-     /**
+    /**
      * Student Management Page
      */
     public function index()
@@ -32,27 +30,32 @@ class StudentController extends BaseController
         );
     }
 
-
-    /**
-     * Student Listing
-     */
     public function list(Request $request)
     {
+        $filters = [
+            'search' => $request->input('search.value'),
+            'status' => $request->input('status'),
+            'academic_session_id' => $request->input('academic_session_id'),
+            'class_id' => $request->input('class_id'),
+            'section_id' => $request->input('section_id'),
+        ];
+
+        $length = max((int) $request->input('length', 10), 1);
+        $start = max((int) $request->input('start', 0), 0);
+        $page = (int) floor($start / $length) + 1;
+
+        $orderColumn = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir', 'asc');
+
         $students = $this->studentService->getList(
-            $request->only([
-                'search',
-                'status',
-                'academic_session_id',
-                'class_id',
-                'section_id',
-                'per_page',
-            ])
+            $filters,
+            $length,
+            $page,
+            $orderColumn !== null ? (int) $orderColumn : null,
+            $orderDirection
         );
 
-        return $this->success(
-            'Student list fetched successfully.',
-            $students
-        );
+        return $this->datatable($students, (int) $request->input('draw', 1));
     }
 
     /**
@@ -85,7 +88,7 @@ class StudentController extends BaseController
         );
     }
 
-    //**********************Student actions By student Profile************************************** */
+    // **********************Student actions By student Profile************************************** */
     // /**
     //  * Show Student
     //  */
@@ -147,7 +150,6 @@ class StudentController extends BaseController
     //     ]);
     // }
 
-
     // /**
     //  * Update Student
     //  */
@@ -165,7 +167,6 @@ class StudentController extends BaseController
     //     );
     // }
 
-
     // /**
     //  * Delete Student
     //  */
@@ -179,7 +180,6 @@ class StudentController extends BaseController
     //         'Student deleted successfully.'
     //     );
     // }
-
 
     // /**
     //  * Update Student Status
@@ -196,11 +196,11 @@ class StudentController extends BaseController
     //     );
     // }
 
-    //*****************Student actions By student Profile end*********************************** */
+    // *****************Student actions By student Profile end*********************************** */
 
-    //*******************Student actions By student Enrollment ************************************ */
+    // *******************Student actions By student Enrollment ************************************ */
 
-     /**
+    /**
      * Show Student
      */
     public function show(StudentEnrollment $student)
@@ -212,7 +212,6 @@ class StudentController extends BaseController
             'studentClass',
             'section',
         ]);
-
 
         $enrollment = $student;
 
@@ -237,14 +236,13 @@ class StudentController extends BaseController
 
             'enrollment' => $student,
 
-        //    'academicSessions' => academic_session_options(1),
+            //    'academicSessions' => academic_session_options(1),
             'academicSessions' => academic_session_options(),
             'classes' => class_options(),
             'sections' => section_options(),
 
         ]);
     }
-
 
     /**
      * Update Student
@@ -263,7 +261,6 @@ class StudentController extends BaseController
         );
     }
 
-
     /**
      * Delete Student
      */
@@ -277,7 +274,6 @@ class StudentController extends BaseController
             'Student deleted successfully.'
         );
     }
-
 
     /**
      * Update Student Status

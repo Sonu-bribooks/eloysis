@@ -14,8 +14,8 @@ abstract class BaseRepository
     }
 
     /**
-    * Get query builder.
-    */
+     * Get query builder.
+     */
     public function query()
     {
         return $this->model->newQuery();

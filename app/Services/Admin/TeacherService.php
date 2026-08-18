@@ -2,32 +2,39 @@
 
 namespace App\Services\Admin;
 
+use App\Helpers\UploadHelper;
 use App\Models\Role;
 use App\Repositories\Admin\TeacherRepository;
 use App\Repositories\Admin\UserRepository;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use App\Helpers\UploadHelper;
 
 class TeacherService
 {
     protected TeacherRepository $teacherRepository;
+
     protected UserRepository $userRepository;
+
     public function __construct(
         TeacherRepository $teacherRepository,
         UserRepository $userRepository
     ) {
-        $this->teacherRepository  = $teacherRepository;
+        $this->teacherRepository = $teacherRepository;
         $this->userRepository = $userRepository;
     }
 
     /**
      * Get teacher list
      */
-    public function getList(array $filters = [])
-    {
-        return $this->teacherRepository->getList($filters);
+    public function getList(
+        array $filters = [],
+        int $perPage = 10,
+        int $page = 1,
+        ?int $orderColumn = null,
+        string $orderDirection = 'asc'
+    ) {
+        return $this->teacherRepository->getList($filters, $perPage, $page, $orderColumn, $orderDirection);
     }
 
     /**
@@ -56,7 +63,7 @@ class TeacherService
             |--------------------------------------------------------------------------
             */
 
-            if(isset($data['profile_image'])){
+            if (isset($data['profile_image'])) {
                 $data['profile_image'] = UploadHelper::upload(
                     $data['profile_image'],
                     'assets/uploads/teachers'
@@ -118,7 +125,7 @@ class TeacherService
             |--------------------------------------------------------------------------
             */
 
-            if(isset($data['profile_image'])){
+            if (isset($data['profile_image'])) {
 
                 $data['profile_image'] = UploadHelper::replace(
 
@@ -137,8 +144,7 @@ class TeacherService
 
                 'email' => $data['email'],
 
-                'mobile' =>
-                    $data['mobile'] ?? null,
+                'mobile' => $data['mobile'] ?? null,
 
                 'status' => $data['status'],
 
@@ -146,7 +152,7 @@ class TeacherService
                 'updated_by' => Auth::guard('admin')->id(),
             ];
 
-            if (!empty($data['password'])) {
+            if (! empty($data['password'])) {
 
                 $userData['password'] =
                     Hash::make(

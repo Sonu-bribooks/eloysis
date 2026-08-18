@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Http\Requests\BaseRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class RoleRequest extends BaseRequest
@@ -24,7 +24,7 @@ class RoleRequest extends BaseRequest
         if ($this->filled('role_name') && empty($this->slug)) {
 
             $this->merge([
-                'slug' => Str::slug($this->name)
+                'slug' => Str::slug($this->name),
             ]);
 
         }
@@ -37,7 +37,7 @@ class RoleRequest extends BaseRequest
      */
     public function rules(): array
     {
-       $roleId = $this->route('role')?->id;
+        $roleId = $this->route('role')?->id;
 
         return [
 
@@ -89,5 +89,4 @@ class RoleRequest extends BaseRequest
 
         ];
     }
-
 }

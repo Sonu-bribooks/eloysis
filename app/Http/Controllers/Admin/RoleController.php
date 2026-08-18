@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\BaseController;
-use Illuminate\Http\Request;
 use App\Http\Requests\Admin\RoleRequest;
 use App\Models\Role;
 use App\Services\Admin\RoleService;
+use Illuminate\Http\Request;
 
 class RoleController extends BaseController
 {
@@ -25,22 +24,32 @@ class RoleController extends BaseController
     {
 
         return view('admin.roles.index');
-        
+
     }
 
     public function list(Request $request)
     {
-        $filters = $request->only([
-            'search',
-            'filter_status',
-            'page'
-        ]);
+        $filters = [
+            'search' => $request->input('search.value'),
+            'filter_status' => $request->input('filter_status'),
+        ];
 
-        $roles = $this->roleService->getRoles($filters);
-        return $this->success(
-            'Role list fetched successfully.',
-            $roles
+        $length = max((int) $request->input('length', 10), 1);
+        $start = max((int) $request->input('start', 0), 0);
+        $page = (int) floor($start / $length) + 1;
+
+        $orderColumn = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir', 'asc');
+
+        $roles = $this->roleService->getRoles(
+            $filters,
+            $length,
+            $page,
+            $orderColumn !== null ? (int) $orderColumn : null,
+            $orderDirection
         );
+
+        return $this->datatable($roles, (int) $request->input('draw', 1));
     }
 
     /**
@@ -106,7 +115,7 @@ class RoleController extends BaseController
             'Role deleted successfully.'
         );
     }
-    
+
     /**
      * Change status
      */

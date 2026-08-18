@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\AcademicSessionRequest;
-use Illuminate\Http\Request;
 use App\Models\AcademicSession;
 use App\Services\Admin\AcademicSessionService;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class AcademicSessionController extends BaseController
 {
@@ -29,17 +28,27 @@ class AcademicSessionController extends BaseController
 
     public function list(Request $request)
     {
-        $filters = $request->only([
-            'search',
-            'filter_status',
-            'page'
-        ]);
+        $filters = [
+            'search' => $request->input('search.value'),
+            'filter_status' => $request->input('filter_status'),
+        ];
 
-        $sessions = $this->academicSessionService->getAcademicSession($filters);
-        return $this->success(
-            'Session list fetched successfully.',
-            $sessions
+        $length = max((int) $request->input('length', 10), 1);
+        $start = max((int) $request->input('start', 0), 0);
+        $page = (int) floor($start / $length) + 1;
+
+        $orderColumn = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir', 'asc');
+
+        $sessions = $this->academicSessionService->getAcademicSession(
+            $filters,
+            $length,
+            $page,
+            $orderColumn !== null ? (int) $orderColumn : null,
+            $orderDirection
         );
+
+        return $this->datatable($sessions, (int) $request->input('draw', 1));
     }
 
     /**
@@ -105,7 +114,7 @@ class AcademicSessionController extends BaseController
      */
     public function destroy(AcademicSession $academic)
     {
-        
+
         if ($academic->is_current) {
             return $this->error(
                 'Current academic session cannot be deleted.',

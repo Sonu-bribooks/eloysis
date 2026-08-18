@@ -15,8 +15,21 @@ class StudentEnrollmentRepository extends BaseRepository
         parent::__construct($studentEnrollment);
     }
 
-    public function getList(array $filters = [])
-    {
+    public function getList(
+        array $filters = [],
+        int $perPage = 10,
+        int $page = 1,
+        ?int $orderColumn = null,
+        string $orderDirection = 'asc'
+    ) {
+        $sortableColumns = [
+            1 => 'student_id',
+            3 => 'academic_session_id',
+            4 => 'roll_number',
+            5 => 'class_id',
+            6 => 'section_id',
+        ];
+
         $query = $this->model
             ->with([
                 'student.user:id,name,email,mobile,profile_image,status',
@@ -31,7 +44,7 @@ class StudentEnrollmentRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['academic_session_id'])) {
+        if (! empty($filters['academic_session_id'])) {
 
             $query->where(
                 'academic_session_id',
@@ -55,45 +68,36 @@ class StudentEnrollmentRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
 
             $search = $filters['search'];
 
             $query->where(function ($query) use ($search) {
 
-                // $query->where(
-                //     'admission_no',
-                //     'like',
-                //     "%{$search}%"
-                // )
-
-                $query->Where(
+                $query->where(
                     'roll_number',
                     'like',
                     "%{$search}%"
                 )
+                    ->orWhereHas('student.user', function ($query) use ($search) {
 
-                ->orWhereHas('student.user', function ($query) use ($search) {
+                        $query->where(
+                            'name',
+                            'like',
+                            "%{$search}%"
+                        )
+                            ->orWhere(
+                                'email',
+                                'like',
+                                "%{$search}%"
+                            )
+                            ->orWhere(
+                                'mobile',
+                                'like',
+                                "%{$search}%"
+                            );
 
-                    $query->where(
-                        'name',
-                        'like',
-                        "%{$search}%"
-                    )
-
-                    ->orWhere(
-                        'email',
-                        'like',
-                        "%{$search}%"
-                    )
-
-                    ->orWhere(
-                        'mobile',
-                        'like',
-                        "%{$search}%"
-                    );
-
-                });
+                    });
 
             });
 
@@ -127,7 +131,7 @@ class StudentEnrollmentRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['class_id'])) {
+        if (! empty($filters['class_id'])) {
 
             $query->where(
                 'class_id',
@@ -142,7 +146,7 @@ class StudentEnrollmentRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['section_id'])) {
+        if (! empty($filters['section_id'])) {
 
             $query->where(
                 'section_id',
@@ -151,11 +155,13 @@ class StudentEnrollmentRepository extends BaseRepository
 
         }
 
-        return $query
-            ->latest('id')
-            ->paginate(
-                $filters['per_page'] ?? 10
-            );
+        if ($orderColumn !== null && isset($sortableColumns[$orderColumn])) {
+            $query->orderBy($sortableColumns[$orderColumn], $orderDirection === 'desc' ? 'desc' : 'asc');
+        } else {
+            $query->latest('id');
+        }
+
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**

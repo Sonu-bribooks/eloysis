@@ -29,16 +29,6 @@
     {{-- Filters --}}
     <x-ui.table.filters id="filterForm">
 
-        <div class="col-md-4">
-
-            <x-ui.form-input
-                name="search"
-                id="search"
-                placeholder="Search Name, Email or Employee ID..." />
-
-        </div>
-
-
         <div class="col-md-3">
 
             <x-ui.select
@@ -55,21 +45,6 @@
             </x-ui.select>
 
         </div>
-
-
-        <div class="col-md-2">
-
-            <x-ui.button
-                type="submit"
-                id="btnFilter"
-                block>
-
-                Filter
-
-            </x-ui.button>
-
-        </div>
-
 
         <div class="col-md-2">
 
@@ -100,7 +75,7 @@
             </x-ui.table.col>
 
 
-            <x-ui.table.col sortable>
+            <x-ui.table.col>
 
                 Teacher Name
 
@@ -156,13 +131,6 @@
         </x-ui.table.tbody>
 
     </x-ui.datatable>
-
-
-    <x-ui.table.pagination
-        id="teacherPagination"
-        class="pagination justify-content-end mt-3">
-
-    </x-ui.table.pagination>
 
 </div>
 

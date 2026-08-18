@@ -29,15 +29,6 @@
     {{-- Filters --}}
     <x-ui.table.filters id="filterForm">
 
-        <div class="col-md-4">
-
-            <x-ui.form-input
-                name="search"
-                id="search"
-                placeholder="Search Subject..." />
-
-        </div>
-
         <div class="col-md-3">
 
             <x-ui.select
@@ -52,19 +43,6 @@
                 placeholder="Select Status">
 
             </x-ui.select>
-
-        </div>
-
-        <div class="col-md-2">
-
-            <x-ui.button
-                type="submit"
-                id="btnFilter"
-                block>
-
-                Filter
-
-            </x-ui.button>
 
         </div>
 
@@ -98,7 +76,7 @@
             </x-ui.table.col>
 
 
-            <x-ui.table.col sortable>
+            <x-ui.table.col>
 
                 Subject Name
 
@@ -134,7 +112,6 @@
         </x-ui.table.tbody>
 
     </x-ui.datatable>
-    <x-ui.table.pagination id="subjectPagination" class="pagination justify-content-end mt-3"> </x-ui.table.pagination>
 
 </div>
 

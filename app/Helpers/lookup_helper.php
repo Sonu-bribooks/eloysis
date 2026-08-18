@@ -1,9 +1,13 @@
 <?php
 
-use App\Models\Role;
-use App\Models\AcademicSession;
 use App\Models\AcademicClass;
-use App\Models\{Section,Subject,TeacherProfile,ClassSubject,ClassSection};
+use App\Models\AcademicSession;
+use App\Models\ClassSection;
+use App\Models\ClassSubject;
+use App\Models\Role;
+use App\Models\Section;
+use App\Models\Subject;
+use App\Models\TeacherProfile;
 
 if (! function_exists('role_options')) {
 
@@ -104,7 +108,6 @@ if (! function_exists('class_subject_options')) {
     }
 }
 
-
 if (! function_exists('teacher_options')) {
 
     function teacher_options(): array
@@ -118,8 +121,8 @@ if (! function_exists('teacher_options')) {
             ->mapWithKeys(function ($teacher) {
 
                 return [
-                    $teacher->user->id => $teacher->user->name .
-                        ' (' . $teacher->employee_id . ')'
+                    $teacher->user->id => $teacher->user->name.
+                        ' ('.$teacher->employee_id.')',
                 ];
 
             })

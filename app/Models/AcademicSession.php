@@ -3,9 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AcademicSession extends Model
 {
@@ -25,8 +24,8 @@ class AcademicSession extends Model
 
     protected $casts = [
         'start_date' => 'date',
-        'end_date'   => 'date',
-        'status'     => 'boolean',
+        'end_date' => 'date',
+        'status' => 'boolean',
         'is_current' => 'boolean',
     ];
 

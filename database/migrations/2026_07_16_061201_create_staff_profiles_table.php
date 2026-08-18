@@ -30,7 +30,7 @@ return new class extends Migration
             $table->enum('gender', [
                 'male',
                 'female',
-                'other'
+                'other',
             ])->nullable();
 
             $table->string('address', 255)->nullable();

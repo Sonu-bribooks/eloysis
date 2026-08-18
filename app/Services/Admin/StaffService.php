@@ -2,14 +2,14 @@
 
 namespace App\Services\Admin;
 
+use App\Helpers\UploadHelper;
 use App\Models\Role;
 use App\Models\StaffProfile;
 use App\Repositories\Admin\StaffRepository;
 use App\Repositories\Admin\UserRepository;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use App\Helpers\UploadHelper;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class StaffService
@@ -24,7 +24,7 @@ class StaffService
         //
     }
 
-     /**
+    /**
      * Create Staff / Admin
      */
     public function create(array $data)
@@ -42,14 +42,13 @@ class StaffService
                 'admin'
             )->firstOrFail();
 
-
             /*
             |--------------------------------------------------------------------------
             | Create User
             |--------------------------------------------------------------------------
             */
 
-            if(isset($data['profile_image'])){
+            if (isset($data['profile_image'])) {
                 $data['profile_image'] = UploadHelper::upload(
                     $data['profile_image'],
                     'assets/uploads/staff'
@@ -89,39 +88,27 @@ class StaffService
 
                 'user_id' => $user->id,
 
-                'employee_id' =>
-                    $data['employee_id'] ?? null,
+                'employee_id' => $data['employee_id'] ?? null,
 
-                'designation' =>
-                    $data['designation'] ?? null,
+                'designation' => $data['designation'] ?? null,
 
-                'department' =>
-                    $data['department'] ?? null,
+                'department' => $data['department'] ?? null,
 
-                'joining_date' =>
-                    $data['joining_date'] ?? null,
-                
-                'dob' =>
-                    $data['dob'] ?? null,
+                'joining_date' => $data['joining_date'] ?? null,
 
-                'gender' =>
-                    $data['gender'] ?? null,
+                'dob' => $data['dob'] ?? null,
 
-                'address' =>
-                    $data['address'] ?? null,
+                'gender' => $data['gender'] ?? null,
 
-                'city' =>
-                    $data['city'] ?? null,
+                'address' => $data['address'] ?? null,
 
-                'state' =>
-                    $data['state'] ?? null,
+                'city' => $data['city'] ?? null,
 
-                'pincode' =>
-                    $data['pincode'] ?? null,
-                        
+                'state' => $data['state'] ?? null,
+
+                'pincode' => $data['pincode'] ?? null,
 
             ]);
-
 
             return $staff;
 
@@ -131,94 +118,73 @@ class StaffService
     /**
      * Staff Listing
      */
-    public function list(array $filters = [])
-    {
-        return $this->staffRepository->query()
+    public function list(
+        array $filters = [],
+        int $perPage = 10,
+        int $page = 1,
+        ?int $orderColumn = null,
+        string $orderDirection = 'asc'
+    ) {
+        $sortableColumns = [
+            1 => 'user_id',
+            3 => 'employee_id',
+            4 => 'designation',
+            5 => 'department',
+        ];
+
+        $query = $this->staffRepository->query()
             ->with([
                 'user',
             ])
-
-            /*
-            |--------------------------------------------------------------------------
-            | Search
-            |--------------------------------------------------------------------------
-            */
-
             ->when(
-                !empty($filters['search']),
+                ! empty($filters['search']),
                 function ($query) use ($filters) {
-
                     $search = $filters['search'];
 
                     $query->where(function ($q) use ($search) {
-
                         // Staff Table
                         $q->where('designation', 'like', "%{$search}%")
                             ->orWhere('department', 'like', "%{$search}%")
-
+                            ->orWhere('employee_id', 'like', "%{$search}%")
                             // User Table
                             ->orWhereHas('user', function ($userQuery) use ($search) {
-
                                 $userQuery->where('name', 'like', "%{$search}%")
                                     ->orWhere('email', 'like', "%{$search}%")
                                     ->orWhere('mobile', 'like', "%{$search}%");
-
                             });
-
                     });
-
                 }
             )
-
-            /*
-            |--------------------------------------------------------------------------
-            | User Filters
-            |--------------------------------------------------------------------------
-            */
-
             ->whereHas('user', function ($query) use ($filters) {
-
                 if (
                     isset($filters['filter_status']) &&
                     $filters['filter_status'] !== ''
                 ) {
-
                     $query->where(
                         'status',
                         $filters['filter_status']
                     );
-
                 }
-
             })
-
-            /*
-            |--------------------------------------------------------------------------
-            | Employee ID Filter
-            |--------------------------------------------------------------------------
-            */
-
             ->when(
-                !empty($filters['employee_id']),
+                ! empty($filters['employee_id']),
                 function ($query) use ($filters) {
-
                     $query->where(
                         'employee_id',
                         'like',
-                        '%' . $filters['employee_id'] . '%'
+                        '%'.$filters['employee_id'].'%'
                     );
-
                 }
-            )
-
-            ->latest()
-
-            ->paginate(
-                $filters['per_page'] ?? 10
             );
+
+        if ($orderColumn !== null && isset($sortableColumns[$orderColumn])) {
+            $query->orderBy($sortableColumns[$orderColumn], $orderDirection === 'desc' ? 'desc' : 'asc');
+        } else {
+            $query->latest('id');
+        }
+
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
-
-
 
     /**
      * Update Staff
@@ -231,13 +197,13 @@ class StaffService
             $staff,
             $data
         ) {
-           
+
             /*
             |--------------------------------------------------------------------------
             | Update User
             |--------------------------------------------------------------------------
             */
-            if(isset($data['profile_image'])){
+            if (isset($data['profile_image'])) {
 
                 $data['profile_image'] = UploadHelper::replace(
 
@@ -256,8 +222,7 @@ class StaffService
 
                 'email' => $data['email'],
 
-                'mobile' =>
-                    $data['mobile'] ?? null,
+                'mobile' => $data['mobile'] ?? null,
 
                 'status' => $data['status'],
 
@@ -265,7 +230,7 @@ class StaffService
                 'updated_by' => Auth::guard('admin')->id(),
             ];
 
-            if (!empty($data['password'])) {
+            if (! empty($data['password'])) {
 
                 $userData['password'] =
                     Hash::make(
@@ -280,7 +245,6 @@ class StaffService
 
             );
 
-
             /*
             |--------------------------------------------------------------------------
             | Update Staff Profile
@@ -293,40 +257,29 @@ class StaffService
 
                 [
 
-                    'employee_id' =>
-                        $data['employee_id'] ?? null,
+                    'employee_id' => $data['employee_id'] ?? null,
 
-                    'designation' =>
-                        $data['designation'] ?? null,
+                    'designation' => $data['designation'] ?? null,
 
-                    'department' =>
-                        $data['department'] ?? null,
+                    'department' => $data['department'] ?? null,
 
-                    'joining_date' =>
-                        $data['joining_date'] ?? null,
+                    'joining_date' => $data['joining_date'] ?? null,
 
-                    'dob' =>
-                        $data['dob'] ?? null,
+                    'dob' => $data['dob'] ?? null,
 
-                    'gender' =>
-                        $data['gender'] ?? null,
+                    'gender' => $data['gender'] ?? null,
 
-                    'address' =>
-                        $data['address'] ?? null,
+                    'address' => $data['address'] ?? null,
 
-                    'city' =>
-                        $data['city'] ?? null,
+                    'city' => $data['city'] ?? null,
 
-                    'state' =>
-                        $data['state'] ?? null,
+                    'state' => $data['state'] ?? null,
 
-                    'pincode' =>
-                        $data['pincode'] ?? null,
+                    'pincode' => $data['pincode'] ?? null,
 
                 ]
 
             );
-
 
             return $staff->fresh([
                 'user',
@@ -335,7 +288,6 @@ class StaffService
         });
 
     }
-
 
     /**
      * Delete Staff
@@ -354,7 +306,6 @@ class StaffService
                 $staff->id
             );
 
-
             /*
             |--------------------------------------------------------------------------
             | Delete User
@@ -368,13 +319,11 @@ class StaffService
                 $staff->user_id
             );
 
-
             return true;
 
         });
 
     }
-
 
     /**
      * Toggle User Status
@@ -385,13 +334,11 @@ class StaffService
 
         $user = $staff->user;
 
-
         $this->userRepository->changeStatus(
 
             $user->id
 
         );
-
 
         return true;
 

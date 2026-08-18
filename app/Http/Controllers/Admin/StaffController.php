@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Admin\StaffRequest;
 use App\Models\StaffProfile;
@@ -11,11 +10,9 @@ use Illuminate\Http\Request;
 
 class StaffController extends BaseController
 {
-
     public function __construct(
         protected StaffService $staffService
-    ) {
-    }
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -25,19 +22,33 @@ class StaffController extends BaseController
         return view('admin.staffs.index');
     }
 
-     /**
+    /**
      * Staff Listing AJAX
      */
     public function list(Request $request)
     {
+        $filters = [
+            'search' => $request->input('search.value'),
+            'filter_status' => $request->input('filter_status'),
+            'employee_id' => $request->input('employee_id'),
+        ];
+
+        $length = max((int) $request->input('length', 10), 1);
+        $start = max((int) $request->input('start', 0), 0);
+        $page = (int) floor($start / $length) + 1;
+
+        $orderColumn = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir', 'asc');
+
         $staff = $this->staffService->list(
-            $request->all()
+            filters: $filters,
+            perPage: $length,
+            page: $page,
+            orderColumn: $orderColumn !== null ? (int) $orderColumn : null,
+            orderDirection: $orderDirection
         );
 
-        return $this->success(
-            'Staff fetched successfully.',
-            $staff
-        );
+        return $this->datatable($staff, (int) $request->input('draw', 1));
     }
 
     /**

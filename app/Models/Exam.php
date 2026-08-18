@@ -32,15 +32,15 @@ class Exam extends Model
     ];
 
     protected $casts = [
-        'start_at'                  => 'datetime',
-        'end_at'                    => 'datetime',
-        'negative_marking'          => 'boolean',
-        'shuffle_questions'         => 'boolean',
-        'shuffle_options'           => 'boolean',
-        'show_result_immediately'   => 'boolean',
-        'total_marks'               => 'decimal:2',
-        'passing_marks'             => 'decimal:2',
-        'negative_marks_per_wrong'  => 'decimal:2',
+        'start_at' => 'datetime',
+        'end_at' => 'datetime',
+        'negative_marking' => 'boolean',
+        'shuffle_questions' => 'boolean',
+        'shuffle_options' => 'boolean',
+        'show_result_immediately' => 'boolean',
+        'total_marks' => 'decimal:2',
+        'passing_marks' => 'decimal:2',
+        'negative_marks_per_wrong' => 'decimal:2',
     ];
 
     /**

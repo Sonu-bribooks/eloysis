@@ -58,7 +58,6 @@ return new class extends Migration
                 ->nullOnDelete();
             $table->timestamps();
 
-
             $table->index('class_id');
             $table->index('subject_id');
             $table->index('status');

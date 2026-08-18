@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class StaffProfile extends Model
 {
     use SoftDeletes;
-    
+
     protected $fillable = [
 
         'user_id',
@@ -16,12 +16,11 @@ class StaffProfile extends Model
         'designation',
         'department',
         'joining_date',
-         'dob',
+        'dob',
         'gender',
-        'address','city', 'state', 'pincode'
+        'address', 'city', 'state', 'pincode',
 
     ];
-
 
     public function user()
     {
@@ -29,5 +28,4 @@ class StaffProfile extends Model
             User::class
         );
     }
-
 }

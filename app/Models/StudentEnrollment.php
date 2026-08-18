@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StudentEnrollment extends Model
 {
@@ -18,7 +18,7 @@ class StudentEnrollment extends Model
         'class_id',
         'section_id',
         'status',
-        'promoted_by'
+        'promoted_by',
     ];
 
     public function student()
@@ -36,7 +36,6 @@ class StudentEnrollment extends Model
         );
     }
 
-
     public function studentClass()
     {
         return $this->belongsTo(
@@ -44,7 +43,6 @@ class StudentEnrollment extends Model
             'class_id'
         );
     }
-
 
     public function section()
     {

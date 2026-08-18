@@ -11,33 +11,33 @@ class HomePageService
     {
         return [
 
-            'institute'   => $this->getInstitute(),
+            'institute' => $this->getInstitute(),
 
-            'sliders'     => $this->getSliders(),
+            'sliders' => $this->getSliders(),
 
             'quick_links' => $this->getQuickLinks(),
 
-            'about'       => $this->getAbout(),
+            'about' => $this->getAbout(),
 
-            'features'    => $this->getFeatures(),
+            'features' => $this->getFeatures(),
 
-            'classes'     => $this->getClasses(),
+            'classes' => $this->getClasses(),
 
-            'statistics'  => $this->getStatistics(),
+            'statistics' => $this->getStatistics(),
 
-            'news'        => $this->getNews(),
+            'news' => $this->getNews(),
 
-            'events'      => $this->getEvents(),
+            'events' => $this->getEvents(),
 
-            'principal'   => $this->getPrincipal(),
+            'principal' => $this->getPrincipal(),
 
-            'gallery'     => $this->getGallery(),
+            'gallery' => $this->getGallery(),
 
-            'footer'      => $this->getFooter(),
+            'footer' => $this->getFooter(),
 
             'testimonials' => $this->getTestimonials(),
 
-            'contact'     => $this->getContact(),
+            'contact' => $this->getContact(),
 
         ];
     }
@@ -46,14 +46,13 @@ class HomePageService
     {
 
         // WebsiteSetting::first()
-        return  [
+        return [
 
             'name' => 'ABC Public School',
 
             'tagline' => 'Learn Today, Lead Tomorrow',
 
             'logo' => asset('assets/website/images/logo.png'),
-
 
         ];
     }
@@ -93,7 +92,6 @@ class HomePageService
     {
         return [
 
-
             [
                 'title' => 'Admission Open',
                 'description' => 'Apply for new admission.',
@@ -117,7 +115,6 @@ class HomePageService
                 'url' => '#',
                 'color' => 'warning',
             ],
-
 
         ];
     }
@@ -148,37 +145,37 @@ class HomePageService
             [
                 'icon' => 'bi bi-mortarboard-fill',
                 'title' => 'Expert Teachers',
-                'description' => 'Experienced and qualified faculty members.'
+                'description' => 'Experienced and qualified faculty members.',
             ],
 
             [
                 'icon' => 'bi bi-laptop',
                 'title' => 'Smart Classes',
-                'description' => 'Technology-enabled interactive classrooms.'
+                'description' => 'Technology-enabled interactive classrooms.',
             ],
 
             [
                 'icon' => 'bi bi-book-fill',
                 'title' => 'Digital Library',
-                'description' => 'Access to books and digital learning resources.'
+                'description' => 'Access to books and digital learning resources.',
             ],
 
             [
                 'icon' => 'bi bi-pencil-square',
                 'title' => 'Online Exams',
-                'description' => 'Secure and fast online examination system.'
+                'description' => 'Secure and fast online examination system.',
             ],
 
             [
                 'icon' => 'bi bi-award-fill',
                 'title' => 'Best Results',
-                'description' => 'Excellent academic performance every year.'
+                'description' => 'Excellent academic performance every year.',
             ],
 
             [
                 'icon' => 'bi bi-dribbble',
                 'title' => 'Sports Activities',
-                'description' => 'Overall development through sports and games.'
+                'description' => 'Overall development through sports and games.',
             ],
 
         ];
@@ -210,22 +207,22 @@ class HomePageService
             [
                 'count' => '2500+',
                 'title' => 'Students',
-                'icon'  => 'bi bi-people-fill',
+                'icon' => 'bi bi-people-fill',
             ],
             [
                 'count' => '120+',
                 'title' => 'Teachers',
-                'icon'  => 'bi bi-person-workspace',
+                'icon' => 'bi bi-person-workspace',
             ],
             [
                 'count' => '12',
                 'title' => 'Classes',
-                'icon'  => 'bi bi-building',
+                'icon' => 'bi bi-building',
             ],
             [
                 'count' => '98%',
                 'title' => 'Result',
-                'icon'  => 'bi bi-trophy-fill',
+                'icon' => 'bi bi-trophy-fill',
             ],
         ];
     }
@@ -237,7 +234,7 @@ class HomePageService
             [
                 'title' => 'Admission Open for Session 2026-27',
                 'image' => 'news/news-1.jpg',
-                'date'  => '26 Jun 2026',
+                'date' => '26 Jun 2026',
                 'description' => 'Admissions are now open for all classes. Apply before the last date.',
                 'url' => '#',
             ],
@@ -245,7 +242,7 @@ class HomePageService
             [
                 'title' => 'Annual Sports Day Celebration',
                 'image' => 'news/news-2.jpeg',
-                'date'  => '20 Jun 2026',
+                'date' => '20 Jun 2026',
                 'description' => 'Students participated in various sports activities with great enthusiasm.',
                 'url' => '#',
             ],
@@ -253,7 +250,7 @@ class HomePageService
             [
                 'title' => 'Class 10 Board Result Declared',
                 'image' => 'news/news-3.jpg',
-                'date'  => '15 Jun 2026',
+                'date' => '15 Jun 2026',
                 'description' => 'Congratulations to all students for achieving excellent results.',
                 'url' => '#',
             ],
@@ -356,7 +353,7 @@ class HomePageService
                 'linkedin' => '#',
             ],
 
-            'copyright' => '© ' . date('Y') . ' ABC Public School. All Rights Reserved.',
+            'copyright' => '© '.date('Y').' ABC Public School. All Rights Reserved.',
         ];
     }
 

@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\BaseController;
-use Illuminate\Http\Request;
 use App\Http\Requests\Admin\StudentAttendanceRequest;
 use App\Services\Admin\StudentAttendanceService;
 
@@ -23,11 +21,11 @@ class StudentAttendanceController extends BaseController
      */
     public function index()
     {
-        return view('admin.attendance.index',[
-                'academicSessions' => academic_session_options(1),
-                'classes' => class_options(),
-                'sections' => section_options(),
-            ]);
+        return view('admin.attendance.index', [
+            'academicSessions' => academic_session_options(1),
+            'classes' => class_options(),
+            'sections' => section_options(),
+        ]);
     }
 
     /**

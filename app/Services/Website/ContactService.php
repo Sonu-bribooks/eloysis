@@ -13,15 +13,15 @@ class ContactService
     {
         return ContactMessage::create([
 
-            'name'       => $data['name'],
+            'name' => $data['name'],
 
-            'email'      => $data['email'],
+            'email' => $data['email'],
 
-            'phone'      => $data['phone'] ?? null,
+            'phone' => $data['phone'] ?? null,
 
-            'subject'    => $data['subject'],
+            'subject' => $data['subject'],
 
-            'message'    => $data['message'],
+            'message' => $data['message'],
 
             'ip_address' => request()->ip(),
 

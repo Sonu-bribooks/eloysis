@@ -3,9 +3,9 @@
 namespace App\Services\Admin;
 
 use App\Repositories\Admin\RoleRepository;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Exception;
 
 class RoleService
 {
@@ -19,9 +19,14 @@ class RoleService
     /**
      * Get Roles
      */
-    public function getRoles(array $filters = [], int $perPage = 10)
-    {
-        return $this->roleRepository->getRoles($filters, $perPage);
+    public function getRoles(
+        array $filters = [],
+        int $perPage = 10,
+        int $page = 1,
+        ?int $orderColumn = null,
+        string $orderDirection = 'asc'
+    ) {
+        return $this->roleRepository->getRoles($filters, $perPage, $page, $orderColumn, $orderDirection);
     }
 
     /**

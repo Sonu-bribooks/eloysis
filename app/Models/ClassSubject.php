@@ -4,13 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ClassSubject extends Model
 {
     use SoftDeletes;
 
-     protected $fillable = [
+    protected $fillable = [
         'class_id',
         'subject_id',
         'status',
@@ -25,5 +24,4 @@ class ClassSubject extends Model
     {
         return $this->belongsTo(Subject::class);
     }
-
 }

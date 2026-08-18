@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Website;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\BaseController;
 use App\Services\Website\HomePageService;
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class HomeController extends BaseController

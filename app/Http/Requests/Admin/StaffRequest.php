@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Http\Requests\BaseRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class StaffRequest extends BaseRequest
@@ -130,7 +130,7 @@ class StaffRequest extends BaseRequest
 
             ],
 
-             'dob' => [
+            'dob' => [
 
                 'nullable',
 
@@ -198,7 +198,6 @@ class StaffRequest extends BaseRequest
         ];
     }
 
-
     /**
      * Custom Validation Messages
      */
@@ -206,32 +205,23 @@ class StaffRequest extends BaseRequest
     {
         return [
 
-            'name.required' =>
-                'Please enter staff name.',
+            'name.required' => 'Please enter staff name.',
 
-            'email.required' =>
-                'Please enter email address.',
+            'email.required' => 'Please enter email address.',
 
-            'email.email' =>
-                'Please enter a valid email address.',
+            'email.email' => 'Please enter a valid email address.',
 
-            'email.unique' =>
-                'Email address already exists.',
+            'email.unique' => 'Email address already exists.',
 
-            'status.required' =>
-                'Please select status.',
+            'status.required' => 'Please select status.',
 
-            'employee_id.unique' =>
-                'Employee ID already exists.',
+            'employee_id.unique' => 'Employee ID already exists.',
 
-            'profile_image.image' =>
-                'Profile image must be a valid image.',
+            'profile_image.image' => 'Profile image must be a valid image.',
 
-            'profile_image.mimes' =>
-                'Profile image must be jpg, jpeg, png or webp.',
+            'profile_image.mimes' => 'Profile image must be jpg, jpeg, png or webp.',
 
-            'profile_image.max' =>
-                'Profile image must not be greater than 2 MB.',
+            'profile_image.max' => 'Profile image must not be greater than 2 MB.',
 
         ];
     }

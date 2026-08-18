@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Role;
+use Illuminate\Database\Seeder;
 
 class RoleSeeder extends Seeder
 {
@@ -15,28 +14,28 @@ class RoleSeeder extends Seeder
     {
         $roles = [
             [
-                'role_name'   => 'Super Admin',
-                'slug'        => 'super_admin',
+                'role_name' => 'Super Admin',
+                'slug' => 'super_admin',
                 'description' => 'Full system access',
-                'status'      => 1,
+                'status' => 1,
             ],
             [
-                'role_name'   => 'Admin',
-                'slug'        => 'admin',
+                'role_name' => 'Admin',
+                'slug' => 'admin',
                 'description' => 'Administrative access',
-                'status'      => 1,
+                'status' => 1,
             ],
             [
-                'role_name'   => 'Teacher',
-                'slug'        => 'teacher',
+                'role_name' => 'Teacher',
+                'slug' => 'teacher',
                 'description' => 'Teacher access',
-                'status'      => 1,
+                'status' => 1,
             ],
             [
-                'role_name'   => 'Student',
-                'slug'        => 'student',
+                'role_name' => 'Student',
+                'slug' => 'student',
                 'description' => 'Student app user',
-                'status'      => 1,
+                'status' => 1,
             ],
         ];
 
@@ -44,9 +43,9 @@ class RoleSeeder extends Seeder
             Role::updateOrCreate(
                 ['slug' => $role['slug']],
                 [
-                    'role_name'   => $role['role_name'],
+                    'role_name' => $role['role_name'],
                     'description' => $role['description'],
-                    'status'      => $role['status'],
+                    'status' => $role['status'],
                 ]
             );
         }

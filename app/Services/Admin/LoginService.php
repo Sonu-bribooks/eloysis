@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services\Admin;
+
 use Illuminate\Support\Facades\Auth;
 
 class LoginService
@@ -22,28 +23,29 @@ class LoginService
             : 'username';
 
         if (! Auth::guard('admin')->attempt([
-            $field     => $login,
-            'password' => $credentials['password']
+            $field => $login,
+            'password' => $credentials['password'],
         ])) {
 
             return [
                 'status' => false,
-                'message' => 'Invalid username/email or password.'
+                'message' => 'Invalid username/email or password.',
             ];
         }
 
         $user = Auth::guard('admin')->user();
 
-         if (! in_array($user->role->slug, [
+        if (! in_array($user->role->slug, [
             'super_admin',
             'admin',
-            'teacher'
+            'teacher',
         ])) {
 
             Auth::guard('admin')->logout();
+
             return [
                 'status' => false,
-                'message' => 'You are not authorized to access admin panel.'
+                'message' => 'You are not authorized to access admin panel.',
             ];
         }
 
@@ -52,13 +54,14 @@ class LoginService
 
             return [
                 'status' => false,
-                'message' => 'Your account is inactive.'
+                'message' => 'Your account is inactive.',
             ];
         }
+
         return [
             'status' => true,
             'user' => $user,
-            'message' => 'Login successful.'
+            'message' => 'Login successful.',
         ];
     }
 }

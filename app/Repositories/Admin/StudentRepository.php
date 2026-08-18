@@ -15,7 +15,7 @@ class StudentRepository extends BaseRepository
         parent::__construct($student);
     }
 
-     /**
+    /**
      * Get paginated students
      */
     public function getList(array $filters = [])
@@ -31,7 +31,7 @@ class StudentRepository extends BaseRepository
                         'studentClass:id,class_name',
                         'section:id,name',
                     ])
-                    ->latest('id');
+                        ->latest('id');
 
                 },
 
@@ -43,7 +43,7 @@ class StudentRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
 
             $search = $filters['search'];
 
@@ -67,7 +67,6 @@ class StudentRepository extends BaseRepository
 
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | Status Filter
@@ -90,14 +89,13 @@ class StudentRepository extends BaseRepository
 
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | Academic Session
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['academic_session_id'])) {
+        if (! empty($filters['academic_session_id'])) {
 
             $query->whereHas('enrollments', function ($query) use ($filters) {
 
@@ -110,14 +108,13 @@ class StudentRepository extends BaseRepository
 
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | Class
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['class_id'])) {
+        if (! empty($filters['class_id'])) {
 
             $query->whereHas('enrollments', function ($query) use ($filters) {
 
@@ -130,14 +127,13 @@ class StudentRepository extends BaseRepository
 
         }
 
-
         /*
         |--------------------------------------------------------------------------
         | Section
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['section_id'])) {
+        if (! empty($filters['section_id'])) {
 
             $query->whereHas('enrollments', function ($query) use ($filters) {
 
@@ -150,7 +146,6 @@ class StudentRepository extends BaseRepository
 
         }
 
-
         return $query
             ->latest('id')
             ->paginate(
@@ -158,7 +153,6 @@ class StudentRepository extends BaseRepository
             );
 
     }
-
 
     /**
      * Find student with relations

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class StudentProfile extends Model
 {
     use SoftDeletes;
-    
+
     protected $fillable = [
         'user_id',
         'admission_date',
@@ -23,9 +23,9 @@ class StudentProfile extends Model
         'guardian_name',
         'guardian_mobile',
         'guardian_email',
-        'city', 'state', 'pincode'
+        'city', 'state', 'pincode',
     ];
- 
+
     protected $casts = [
         'dob' => 'date',
     ];

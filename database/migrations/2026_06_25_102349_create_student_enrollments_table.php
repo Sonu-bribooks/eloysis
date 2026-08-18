@@ -44,7 +44,7 @@ return new class extends Migration
 
             $table->unique([
                 'stu_profile_id',
-                'academic_session_id'
+                'academic_session_id',
             ]);
         });
     }

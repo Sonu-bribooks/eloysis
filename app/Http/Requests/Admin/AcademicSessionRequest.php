@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Http\Requests\BaseRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class AcademicSessionRequest extends BaseRequest
@@ -28,7 +28,7 @@ class AcademicSessionRequest extends BaseRequest
 
         return [
 
-           'session_name' => [
+            'session_name' => [
                 'required',
                 'string',
                 'regex:/^\d{4}-\d{4}$/',

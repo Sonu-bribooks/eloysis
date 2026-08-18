@@ -3,9 +3,8 @@
 namespace App\Services\Admin;
 
 use App\Repositories\Admin\AcademicClassRepository;
-use Illuminate\Support\Facades\DB;
 use Exception;
-
+use Illuminate\Support\Facades\DB;
 
 class AcademicClassService
 {
@@ -14,17 +13,28 @@ class AcademicClassService
     /**
      * Create a new class instance.
      */
-    public function __construct(AcademicClassRepository $academicClassRepository) {
+    public function __construct(AcademicClassRepository $academicClassRepository)
+    {
         $this->AcademicClassRepository = $academicClassRepository;
     }
 
     /**
      * Get Academic Class
      */
-    public function getAcademicClasses(array $filters = [], int $perPage = 10) {
-
-        return $this->AcademicClassRepository->getAcademicClasses($filters, $perPage);
-
+    public function getAcademicClasses(
+        array $filters = [],
+        int $page = 1,
+        int $perPage = 10,
+        ?int $orderColumn = null,
+        string $orderDirection = 'asc'
+    ) {
+        return $this->AcademicClassRepository->getAcademicClasses(
+            $filters,
+            $page,
+            $perPage,
+            $orderColumn,
+            $orderDirection
+        );
     }
 
     /**
@@ -72,7 +82,7 @@ class AcademicClassService
         }
     }
 
-     /**
+    /**
      * Delete Class
      */
     public function delete(int $id)

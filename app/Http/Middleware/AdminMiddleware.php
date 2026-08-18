@@ -17,8 +17,8 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::guard('admin')->user();
-    
-        if (!$user) {
+
+        if (! $user) {
             return redirect()->route('admin.login')
                 ->with('error', 'Please login to continue.');
         }
@@ -27,7 +27,7 @@ class AdminMiddleware
         if (! in_array($user->role->slug, [
             'super_admin',
             'admin',
-            'teacher'
+            'teacher',
         ])) {
 
             Auth::guard('admin')->logout();

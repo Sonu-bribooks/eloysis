@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Http\Requests\BaseRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class ClassSubjectRequest extends BaseRequest
@@ -23,7 +23,8 @@ class ClassSubjectRequest extends BaseRequest
      */
     public function rules(): array
     {
-       $id = $this->route('section')?->id;
+        $id = $this->route('section')?->id;
+
         // dd($id);
         return [
             'class_id' => [
@@ -51,11 +52,10 @@ class ClassSubjectRequest extends BaseRequest
     {
         return [
             'class_id.required' => 'Please select a class.',
-            'class_id.exists'   => 'Selected class is invalid.',
+            'class_id.exists' => 'Selected class is invalid.',
 
-            'subject_id.required'     => 'Please select a subject.',
-            'subject_id.unique'       => 'This subject already exists for the selected class.',
-
+            'subject_id.required' => 'Please select a subject.',
+            'subject_id.unique' => 'This subject already exists for the selected class.',
 
         ];
     }

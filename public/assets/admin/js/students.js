@@ -1,115 +1,226 @@
 const Student = {
 
-    // modal: null,
-    // viewModal: null,
+    table: null,
 
     init() {
 
-
+        this.initDataTable();
         this.bindEvents();
-
-        this.load();
 
     },
 
+    /*
+    |--------------------------------------------------------------------------
+    | DataTable
+    |--------------------------------------------------------------------------
+    */
+
+    initDataTable() {
+
+        this.table = $('#studentTable').DataTable({
+
+            processing: true,
+            serverSide: true,
+
+            ajax: {
+                url: STUDENT_LIST_URL,
+                type: 'GET',
+                data: function (d) {
+                    d.academic_session_id = $('#academic_session_id').val();
+                    d.class_id = $('#class_id').val();
+                    d.section_id = $('#section_id').val();
+                    d.status = $('#status').val();
+                },
+                error: function (xhr) {
+                    Toast.error(
+                        xhr.responseJSON?.message ?? 'Unable to load students.'
+                    );
+                }
+            },
+
+            pageLength: 10,
+            lengthMenu: [
+                [10, 25, 50, 100],
+                [10, 25, 50, 100]
+            ],
+            searching: true,
+            ordering: true,
+
+            columns: [
+                {
+                    data: null,
+                    name: null,
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1;
+                    }
+                },
+                {
+                    data: 'student.user.name',
+                    name: 'student_id',
+                    render: function (data, type, row) {
+                        const user = row.student?.user ?? {};
+                        const profileImage = user.profile_image_url ?? DEFAULT_AVATAR;
+
+                        return `
+                            <div class="d-flex align-items-center">
+                                <img
+                                    src="${profileImage}"
+                                    width="38"
+                                    height="38"
+                                    class="rounded-circle me-2"
+                                    style="object-fit: cover;">
+                                <div>
+                                    <div class="fw-semibold">
+                                        ${user.name ?? '-'}
+                                    </div>
+                                    <small class="text-muted">
+                                        ${user.email ?? '-'}
+                                    </small>
+                                </div>
+                            </div>
+                        `;
+                    }
+                },
+                {
+                    data: 'student.user.mobile',
+                    name: 'mobile',
+                    orderable: false,
+                    render: function (data, type, row) {
+                        return row.student?.user?.mobile ?? '-';
+                    }
+                },
+                {
+                    data: 'academic_session.name',
+                    name: 'academic_session_id',
+                    render: function (data, type, row) {
+                        return row.academic_session?.name ?? '-';
+                    }
+                },
+                {
+                    data: 'roll_number',
+                    name: 'roll_number',
+                    render: function (data, type, row) {
+                        return row.roll_number ?? '-';
+                    }
+                },
+                {
+                    data: 'student_class.class_name',
+                    name: 'class_id',
+                    render: function (data, type, row) {
+                        return row.student_class?.class_name ?? '-';
+                    }
+                },
+                {
+                    data: 'section.name',
+                    name: 'section_id',
+                    render: function (data, type, row) {
+                        return row.section?.name ?? '-';
+                    }
+                },
+                {
+                    data: 'student.user.status',
+                    name: 'status',
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row) {
+                        return Helper.statusSwitch(row.id, row.student?.user?.status);
+                    }
+                },
+                {
+                    data: null,
+                    name: null,
+                    orderable: false,
+                    searchable: false,
+                    render: function (data, type, row) {
+                        const viewUrl = STUDENT_SHOW_URL.replace(':id', row.id);
+                        const editUrl = STUDENT_UPDATE_URL.replace(':id', row.id) + '/edit';
+
+                        return `
+                            <a
+                                href="${viewUrl}"
+                                class="btn btn-sm btn-info btn-view-student"
+                                title="View">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a
+                                href="${editUrl}"
+                                class="btn btn-sm btn-warning btn-edit-student"
+                                title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-danger btn-delete-student"
+                                data-id="${row.id}"
+                                title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        `;
+                    }
+                }
+            ]
+
+        });
+
+    },
+
+    /*
+    |--------------------------------------------------------------------------
+    | Events
+    |--------------------------------------------------------------------------
+    */
 
     bindEvents() {
 
-        /*
-        |--------------------------------------------------------------------------
-        | Filter
-        |--------------------------------------------------------------------------
-        */
-
-        $('#filterForm').on(
-            'submit',
-            (e) => {
-
-                e.preventDefault();
-
-                this.load();
-
-            }
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Reset
-        |--------------------------------------------------------------------------
-        */
-
-        $('#btnReset').on(
-            'click',
-            () => {
-
-                $('#filterForm')[0].reset();
-
-                this.load();
-
-            }
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Pagination
-        |--------------------------------------------------------------------------
-        */
-
-        $(document).on(
-            'click',
-            '#studentPagination .page-link',
-            (e) => {
-
-                e.preventDefault();
-
-                const page =
-                    $(e.currentTarget).data('page');
-
-                if (page) {
-
-                    this.load(page);
-
-                }
-
-            }
-        );
-
-
-        /*
-       |--------------------------------------------------------------------------
-       | Add Student
-       |--------------------------------------------------------------------------
-       */
-
-        // $('#btnAddStudent').on(
-        //     'click',
-        //     () => {
-
-        //         this.openCreateModal();
-
-        //     }
-        // );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Student Form Submit
-        |--------------------------------------------------------------------------
-        */
-
-        $('#studentForm').on('submit', (e) => {
-
+        // Filter Form
+        $('#filterForm').on('submit', (e) => {
             e.preventDefault();
+            this.table.ajax.reload();
+        });
 
+        // Filter changes
+        $('#academic_session_id, #class_id, #section_id, #status').on('change', () => {
+            this.table.ajax.reload();
+        });
+
+        // Class change to load sections
+        $('#class_id').on('change', function () {
+            const classId = $(this).val();
+            const sectionSelect = $('#section_id');
+
+            sectionSelect.html('<option value="">Select Section</option>');
+
+            if (classId) {
+                $.ajax({
+                    url: SECTION_BY_CLASS_URL.replace(':id', classId),
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.data) {
+                            $.each(response.data, function (key, section) {
+                                sectionSelect.append(
+                                    `<option value="${section.id}">${section.name}</option>`
+                                );
+                            });
+                        }
+                    }
+                });
+            }
+        });
+
+        // Reset
+        $('#btnReset').on('click', () => {
+            $('#filterForm')[0].reset();
+            this.table.search('').ajax.reload();
+        });
+
+        // Student Form Submit (Create / Edit pages)
+        $('#studentForm').on('submit', (e) => {
+            e.preventDefault();
             const form = $('#studentForm');
-
             const action = form.attr('action');
-
-            const method =
-                form.find('input[name="_method"]').val()
-                ?? 'POST';
+            const method = form.find('input[name="_method"]').val() ?? 'POST';
 
             if (method === 'PUT') {
                 this.update(action);
@@ -118,743 +229,32 @@ const Student = {
             }
         });
 
-        /*
-        |--------------------------------------------------------------------------
-        | Edit student
-        |--------------------------------------------------------------------------
-        */
-
-        $(document).on(
-            'click',
-            '.btn-edit-student',
-            (e) => {
-
-                const id =
-                    $(e.currentTarget).data('id');
-
-                window.location.href = BASE_URL + '/admin/students/' + id + '/edit';
-
-            }
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | View Student
-        |--------------------------------------------------------------------------
-        */
-        $(document).on(
-            'click',
-            '.btn-view-student',
-            (e) => {
-
-                const id =
-                    $(e.currentTarget).data('id');
-
-                window.location.href = BASE_URL + '/admin/students/' + id;
-
-            }
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Image preview
-        |--------------------------------------------------------------------------
-        */
-        $('#profile_image').on('change', function () {
-
-            const file = this.files[0];
-
-            if (!file) {
-
-                $('#profilePreview').attr(
-                    'src',
-                    DEFAULT_AVATAR
-                );
-
-                return;
-
-            }
-
-
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-
-                $('#profilePreview')
-                    .attr('src', e.target.result);
-                // .removeClass('d-none');
-
-            };
-
-            reader.readAsDataURL(file);
-
-        });
-
-        //change status
+        // Change status
         $(document).on('change', '.btn-status', (e) => {
-
             this.changeStatus(e.currentTarget);
-
         });
 
         // Delete 
         $(document).on('click', '.btn-delete-student', (e) => {
-
             this.destroy($(e.currentTarget).data('id'));
-
         });
 
-
-    },
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Load Students
-    |--------------------------------------------------------------------------
-    */
-
-    load(page = 1) {
-
-        $.ajax({
-
-            url: BASE_URL + '/admin/students/list',
-
-            type: 'GET',
-
-            data: {
-
-                ...$('#filterForm').serializeArray()
-                    .reduce(
-                        (obj, item) => {
-
-                            obj[item.name] =
-                                item.value;
-
-                            return obj;
-
-                        },
-                        {}
-                    ),
-
-                page: page,
-
-            },
-
-
-            success: (response) => {
-
-                // this.renderByStudentProfile(
-                //     response.data
-                // );
-
-                this.renderByStudentEnrollment(response.data);
-
-            },
-
-
-            error: (xhr) => {
-
-                Toast.error(
-
-                    xhr.responseJSON?.message ??
-
-                    'Unable to load students.'
-
-                );
-
+        // Image preview
+        $('#profile_image').on('change', function () {
+            const file = this.files[0];
+            if (!file) {
+                $('#profilePreview').attr('src', DEFAULT_AVATAR);
+                return;
             }
 
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                $('#profilePreview').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(file);
         });
 
     },
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Render Students
-    |--------------------------------------------------------------------------
-    */
-
-    // renderByStudentProfile(result) {
-
-    //     const rows =
-    //         result.data;
-
-
-    //     let html = '';
-
-
-    //     if (!rows.length) {
-
-    //         html = `
-
-    //             <tr>
-
-    //                 <td
-    //                     colspan="8"
-    //                     class="text-center py-4">
-
-    //                     No Students Found
-
-    //                 </td>
-
-    //             </tr>
-
-    //         `;
-
-
-    //         $('#studentTableBody')
-    //             .html(html);
-
-
-    //         $('#studentPagination')
-    //             .html('');
-
-
-    //         return;
-
-    //     }
-
-
-    //     rows.forEach(
-    //         (row, index) => {
-
-    //             const user =
-    //                 row.user ?? {};
-
-
-    //             const enrollment =
-    //                 row.enrollments?.[0]
-    //                 ?? {};
-
-
-    //             const session =
-    //                 enrollment.academic_session
-    //                 ?? {};
-
-
-    //             const studentClass =
-    //                 enrollment.student_class
-    //                 ?? {};
-
-
-    //             const section =
-    //                 enrollment.section
-    //                 ?? {};
-
-
-    //             const serialNumber =
-    //                 result.from + index;
-
-
-    //             const profileImage =
-    //                 user.profile_image_url
-    //                 ?? DEFAULT_AVATAR;
-
-
-    //             html += `
-
-    //                 <tr>
-
-    //                     <td>
-
-    //                         ${serialNumber}
-
-    //                     </td>
-
-
-    //                     <td>
-
-    //                         <div
-    //                             class="d-flex align-items-center">
-
-    //                             <img
-    //                                 src="${profileImage}"
-    //                                 width="38"
-    //                                 height="38"
-    //                                 class="rounded-circle me-2"
-    //                                 style="object-fit: cover;">
-
-    //                             <div>
-
-    //                                 <div
-    //                                     class="fw-semibold">
-
-    //                                     ${user.name ?? '-'}
-
-    //                                 </div>
-
-    //                                 <small
-    //                                     class="text-muted">
-
-    //                                     ${user.email ?? '-'}
-
-    //                                 </small>
-
-    //                             </div>
-
-    //                         </div>
-
-    //                     </td>
-
-    //                     <td>
-
-    //                         ${user.mobile ?? '-'}
-
-    //                     </td>
-
-    //                     <td>
-
-    //                         ${session.name ?? '-'}
-
-    //                     </td>
-
-    //                     <td>
-
-    //                         ${enrollment.roll_number ?? '-'}
-
-    //                     </td>
-
-
-    //                     <td>
-
-    //                         ${studentClass.class_name ?? '-'}
-
-    //                     </td>
-
-
-    //                     <td>
-
-    //                         ${section.name ?? '-'}
-
-    //                     </td>
-
-
-    //                     <td>
-    //                          ${Helper.statusSwitch(row.id, user?.status)}
-
-    //                     </td>
-
-
-    //                     <td>
-
-    //                         <button
-
-    //                             type="button"
-
-    //                             class="btn btn-sm btn-info btn-view-student"
-
-    //                             data-id="${row.id}"
-
-    //                             title="View">
-
-    //                             <i
-    //                                 class="bi bi-eye">
-
-    //                             </i>
-
-    //                         </button>
-
-
-    //                         <button
-
-    //                             type="button"
-
-    //                             class="btn btn-sm btn-warning btn-edit-student"
-
-    //                             data-id="${row.id}"
-    //                             href="${BASE_URL + '/admin/students/' + row.id + '/edit'}"
-
-    //                             title="Edit">
-
-    //                             <i
-    //                                 class="bi bi-pencil">
-
-    //                             </i>
-
-    //                         </button>
-
-
-    //                         <button
-
-    //                             type="button"
-
-    //                             class="btn btn-sm btn-danger btn-delete-student"
-
-    //                             data-id="${row.id}"
-
-    //                             title="Delete">
-
-    //                             <i
-    //                                 class="bi bi-trash">
-
-    //                             </i>
-
-    //                         </button>
-
-    //                     </td>
-
-    //                 </tr>
-
-    //             `;
-
-    //         }
-
-    //     );
-
-
-    //     $('#studentTableBody')
-    //         .html(html);
-
-
-    //     this.renderPagination(result);
-
-    // },
-
-    renderByStudentEnrollment(result) {
-
-        const rows =
-            result.data;
-
-
-        let html = '';
-
-
-        if (!rows.length) {
-
-            html = `
-
-                <tr>
-
-                    <td
-                        colspan="8"
-                        class="text-center py-4">
-
-                        No Students Found for current Academic Session
-
-                    </td>
-
-                </tr>
-
-            `;
-
-
-            $('#studentTableBody')
-                .html(html);
-
-
-            $('#studentPagination')
-                .html('');
-
-
-            return;
-
-        }
-
-
-        rows.forEach(
-            (row, index) => {
-
-                const user =
-                    row.student.user ?? {};
-
-
-                const student_profile =
-                    row.student
-                    ?? {};
-
-
-                const session =
-                    row.academic_session
-                    ?? {};
-
-
-                const studentClass =
-                    row.student_class
-                    ?? {};
-
-
-                const section =
-                    row.section
-                    ?? {};
-
-
-                const serialNumber =
-                    result.from + index;
-
-
-                const profileImage =
-                    user.profile_image_url
-                    ?? DEFAULT_AVATAR;
-
-
-                html += `
-
-                    <tr>
-
-                        <td>
-
-                            ${serialNumber}
-
-                        </td>
-
-
-                        <td>
-
-                            <div
-                                class="d-flex align-items-center">
-
-                                <img
-                                    src="${profileImage}"
-                                    width="38"
-                                    height="38"
-                                    class="rounded-circle me-2"
-                                    style="object-fit: cover;">
-
-                                <div>
-
-                                    <div
-                                        class="fw-semibold">
-
-                                        ${user.name ?? '-'}
-
-                                    </div>
-
-                                    <small
-                                        class="text-muted">
-
-                                        ${user.email ?? '-'}
-
-                                    </small>
-
-                                </div>
-
-                            </div>
-
-                        </td>
-
-                        <td>
-
-                            ${user.mobile ?? '-'}
-
-                        </td>
-
-                        <td>
-
-                            ${session.name ?? '-'}
-
-                        </td>
-
-                        <td>
-
-                            ${row.roll_number ?? '-'}
-
-                        </td>
-
-
-                        <td>
-
-                            ${studentClass.class_name ?? '-'}
-
-                        </td>
-
-
-                        <td>
-
-                            ${section.name ?? '-'}
-
-                        </td>
-
-
-                        <td>
-                             ${Helper.statusSwitch(row.id, user?.status)}
-                           
-                        </td>
-
-
-                        <td>
-
-                            <button
-
-                                type="button"
-
-                                class="btn btn-sm btn-info btn-view-student"
-
-                                data-id="${row.id}"
-
-                                title="View">
-
-                                <i
-                                    class="bi bi-eye">
-
-                                </i>
-
-                            </button>
-
-
-                            <button
-
-                                type="button"
-
-                                class="btn btn-sm btn-warning btn-edit-student"
-
-                                data-id="${row.id}"
-                                href="${BASE_URL + '/admin/students/' + row.id + '/edit'}"
-
-                                title="Edit">
-
-                                <i
-                                    class="bi bi-pencil">
-
-                                </i>
-
-                            </button>
-
-
-                            <button
-
-                                type="button"
-
-                                class="btn btn-sm btn-danger btn-delete-student"
-
-                                data-id="${row.id}"
-
-                                title="Delete">
-
-                                <i
-                                    class="bi bi-trash">
-
-                                </i>
-
-                            </button>
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-            }
-
-        );
-
-
-        $('#studentTableBody')
-            .html(html);
-
-
-        this.renderPagination(result);
-
-    },
-    /*
-    |--------------------------------------------------------------------------
-    | Pagination
-    |--------------------------------------------------------------------------
-    */
-
-    renderPagination(pagination) {
-
-        let html = '';
-
-
-        pagination.links.forEach(
-            (link) => {
-
-                html += `
-
-                    <button
-
-                        class="btn btn-sm
-
-                            ${link.active
-
-                        ? 'btn-primary active'
-
-                        : 'btn-light'
-
-                    }
-
-                            page-link"
-
-                        data-page="${link.page ?? ''}"
-
-                        ${link.page === null
-                        ? 'disabled'
-                        : ''
-
-                    }>
-
-                        ${link.label}
-
-                    </button>
-
-                `;
-
-            }
-
-        );
-
-
-        $('#studentPagination')
-            .html(html);
-
-    },
-
-    /*
-    |--------------------------------------------------------------------------
-    | Open Create Modal
-    |--------------------------------------------------------------------------
-    */
-
-    // openCreateModal() {
-
-    //     const form =
-    //         $('#studentForm')[0];
-
-
-    //     form.reset();
-
-
-    //     $('#student_id')
-    //         .val('');
-
-
-    //     $('#studentModalTitle')
-    //         .text('Add Student');
-
-
-    //     $('#btnSaveStudent')
-    //         .text('Save Student');
-
-
-    //     // /*
-    //     // |--------------------------------------------------------------------------
-    //     // | Default Status
-    //     // |--------------------------------------------------------------------------
-    //     // */
-
-    //     // $('#status')
-    //     //     .val('1');
-
-
-    //     /*
-    //     |--------------------------------------------------------------------------
-    //     | Clear File Preview
-    //     |--------------------------------------------------------------------------
-    //     */
-
-    //     $('#profile_image_preview')
-    //         .attr(
-    //             'src',
-    //             DEFAULT_AVATAR
-    //         );
-
-
-    //     this.modal.show();
-
-    // },
-
 
     /*
     |--------------------------------------------------------------------------
@@ -865,30 +265,14 @@ const Student = {
     store(url) {
 
         Ajax.request({
-
             form: '#studentForm',
-
             url: url,
-
             method: 'POST',
-
             success: (response) => {
-
-                $('#studentForm')[0]
-                    .reset();
-
-
-                Toast.success(
-
-                    response.message ?? 'Student created successfully.'
-
-                );
-
-
+                $('#studentForm')[0].reset();
+                Toast.success(response.message ?? 'Student created successfully.');
                 window.location.href = BASE_URL + '/admin/students';
-
             }
-
         });
 
     },
@@ -901,80 +285,47 @@ const Student = {
 
     update(url) {
 
-
         Ajax.request({
-
             form: '#studentForm',
-
             url: url,
-
             method: 'POST',
-
             extraData: {
-
                 _method: 'PUT'
-
             },
-
             success: (response) => {
-
                 $('#studentForm')[0].reset();
-                Toast.success(
-
-                    response.message
-
-                    ??
-
-                    'Student Updated successfully.'
-
-                );
+                Toast.success(response.message ?? 'Student updated successfully.');
                 window.location.href = BASE_URL + '/admin/students';
-
             }
-
         });
 
     },
 
     /*
-   |--------------------------------------------------------------------------
-   | Change status
-   |--------------------------------------------------------------------------
-   */
+    |--------------------------------------------------------------------------
+    | Change status
+    |--------------------------------------------------------------------------
+    */
 
     changeStatus(element) {
 
         const id = $(element).data('id');
 
         Ajax.request({
-
-            url: BASE_URL + '/admin/students/' + id + '/status',
-
+            url: STUDENT_STATUS_URL.replace(':id', id),
             method: 'POST',
-
             data: (() => {
-
                 let formData = new FormData();
-
                 formData.append('_method', 'PATCH');
-
                 return formData;
-
             })(),
-
-            success: () => {
-
-                this.load(1);
-
+            success: (response) => {
+                Toast.success(response.message ?? 'Student status updated successfully.');
+                this.table.ajax.reload(null, false);
             },
-
             error: () => {
-                // alert('ssssssssss');
-                // Toggle ko wapas previous state me le aao
                 element.checked = !element.checked;
-
             }
-
         });
 
     },
@@ -988,62 +339,36 @@ const Student = {
     destroy(id) {
 
         Swal.fire({
-
             title: 'Delete Student?',
-
-            text: 'This action cannot be undone and delete User Profile',
-
+            text: 'This action cannot be undone.',
             icon: 'warning',
-
             showCancelButton: true,
-
             confirmButtonText: 'Yes, Delete',
-
-            cancelButtonText: 'Cancel',
-
+            cancelButtonText: 'Cancel'
         }).then((result) => {
-
             if (!result.isConfirmed) {
-
                 return;
-
             }
 
             Ajax.request({
-
-                url: BASE_URL + '/admin/students/' + id,
-
+                url: STUDENT_DELETE_URL.replace(':id', id),
                 method: 'POST',
-
                 data: (() => {
-
                     let formData = new FormData();
-
                     formData.append('_method', 'DELETE');
-
                     return formData;
-
                 })(),
-
                 success: (response) => {
-                    console.log('Delete Success');
-
-                    console.log(response);
-                    this.load(1);
-
+                    Toast.success(response.message ?? 'Student deleted successfully.');
+                    this.table.ajax.reload(null, false);
                 }
-
             });
-
         });
 
-    },
+    }
 
 };
 
-
 $(function () {
-
     Student.init();
-
 });

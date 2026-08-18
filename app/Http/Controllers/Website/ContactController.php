@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Website;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\BaseController;
-use Illuminate\Http\Request;
 use App\Http\Requests\Website\ContactRequest;
 use App\Services\Website\ContactService;
 
@@ -20,7 +18,7 @@ class ContactController extends BaseController
     public function store(ContactRequest $request)
     {
         try {
-// dd($request->validated());
+            // dd($request->validated());
             $this->contactService->store(
                 $request->validated()
             );

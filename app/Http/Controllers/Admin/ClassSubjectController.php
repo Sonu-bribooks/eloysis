@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\BaseController;
-use Illuminate\Http\Request;
-use App\Services\Admin\ClassSubjectService;
 use App\Http\Requests\Admin\ClassSubjectRequest;
 use App\Models\ClassSubject;
+use App\Services\Admin\ClassSubjectService;
+use Illuminate\Http\Request;
 
 class ClassSubjectController extends BaseController
 {
-    public function __construct(protected ClassSubjectService $ClassSubjectService) {
+    public function __construct(protected ClassSubjectService $ClassSubjectService)
+    {
         //
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -28,19 +29,29 @@ class ClassSubjectController extends BaseController
         );
     }
 
-    public function list(Request $request) {
-       
-        $filters = $request->only([
-            'search',
-            'filter_status',
-            'page'
-        ]);
-         
-        $subjects = $this->ClassSubjectService->getList($filters);
-        return $this->success(
-            'Academic Class subjects list fetched successfully.',
-            $subjects
+    public function list(Request $request)
+    {
+        $filters = [
+            'search' => $request->input('search.value'),
+            'filter_status' => $request->input('filter_status'),
+        ];
+
+        $length = max((int) $request->input('length', 10), 1);
+        $start = max((int) $request->input('start', 0), 0);
+        $page = (int) floor($start / $length) + 1;
+
+        $orderColumn = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir', 'asc');
+
+        $subjects = $this->ClassSubjectService->getList(
+            $filters,
+            $length,
+            $page,
+            $orderColumn !== null ? (int) $orderColumn : null,
+            $orderDirection
         );
+
+        return $this->datatable($subjects, (int) $request->input('draw', 1));
     }
 
     /**
@@ -80,6 +91,7 @@ class ClassSubjectController extends BaseController
     {
         $clsubject['class_info'] = class_options();
         $clsubject['subject_info'] = subject_options();
+
         return $this->success(
             'Academic Class subjects fetch successfully.',
             $clsubject

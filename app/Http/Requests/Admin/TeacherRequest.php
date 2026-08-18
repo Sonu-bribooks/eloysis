@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Http\Requests\BaseRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class TeacherRequest extends BaseRequest
@@ -154,11 +154,11 @@ class TeacherRequest extends BaseRequest
                 'max:20',
             ],
 
-            'profile_image'=>[
+            'profile_image' => [
                 'nullable',
                 'image',
                 'mimes:jpg,jpeg,png,webp',
-                'max:2048'
+                'max:2048',
             ],
 
         ];
@@ -168,41 +168,29 @@ class TeacherRequest extends BaseRequest
     {
         return [
 
-            'name.required' =>
-                'Please enter teacher name.',
+            'name.required' => 'Please enter teacher name.',
 
-            'email.required' =>
-                'Please enter email address.',
+            'email.required' => 'Please enter email address.',
 
-            'email.email' =>
-                'Please enter a valid email address.',
+            'email.email' => 'Please enter a valid email address.',
 
-            'email.unique' =>
-                'Email address already exists.',
+            'email.unique' => 'Email address already exists.',
 
-            'mobile.unique' =>
-                'Mobile number already exists.',
+            'mobile.unique' => 'Mobile number already exists.',
 
-            'password.required' =>
-                'Please enter password.',
+            'password.required' => 'Please enter password.',
 
-            'password.min' =>
-                'Password must be at least 8 characters.',
+            'password.min' => 'Password must be at least 8 characters.',
 
-            'password.confirmed' =>
-                'Password confirmation does not match.',
+            'password.confirmed' => 'Password confirmation does not match.',
 
-            'status.required' =>
-                'Please select status.',
+            'status.required' => 'Please select status.',
 
-            'employee_id.required' =>
-                'Please enter employee ID.',
+            'employee_id.required' => 'Please enter employee ID.',
 
-            'employee_id.unique' =>
-                'Employee ID already exists.',
+            'employee_id.unique' => 'Employee ID already exists.',
 
-            'dob.before' =>
-                'Date of birth must be a past date.',
+            'dob.before' => 'Date of birth must be a past date.',
 
         ];
     }

@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\BaseController;
-use Illuminate\Http\Request;
-use App\Services\Admin\TeacherSubjectService;
 use App\Http\Requests\Admin\TeacherSubjectRequest;
 use App\Models\TeacherSubject;
+use App\Services\Admin\TeacherSubjectService;
+use Illuminate\Http\Request;
 
 class TeacherSubjectController extends BaseController
 {
-    public function __construct(protected TeacherSubjectService $TeacherSubjectService) {
+    public function __construct(protected TeacherSubjectService $TeacherSubjectService)
+    {
         //
     }
+
     /**
      * Display a listing of the resource.
      */
@@ -30,19 +31,29 @@ class TeacherSubjectController extends BaseController
         );
     }
 
-    public function list(Request $request) {
-       
-        $filters = $request->only([
-            'search',
-            'filter_status',
-            'page'
-        ]);
-         
-        $subjects = $this->TeacherSubjectService->getList($filters);
-        return $this->success(
-            'Academic teacher subjects list fetched successfully.',
-            $subjects
+    public function list(Request $request)
+    {
+        $filters = [
+            'search' => $request->input('search.value'),
+            'filter_status' => $request->input('filter_status'),
+        ];
+
+        $length = max((int) $request->input('length', 10), 1);
+        $start = max((int) $request->input('start', 0), 0);
+        $page = (int) floor($start / $length) + 1;
+
+        $orderColumn = $request->input('order.0.column');
+        $orderDirection = $request->input('order.0.dir', 'asc');
+
+        $subjects = $this->TeacherSubjectService->getList(
+            $filters,
+            $length,
+            $page,
+            $orderColumn !== null ? (int) $orderColumn : null,
+            $orderDirection
         );
+
+        return $this->datatable($subjects, (int) $request->input('draw', 1));
     }
 
     /**
@@ -84,6 +95,7 @@ class TeacherSubjectController extends BaseController
         $teacher_subject['subject_info'] = subject_options();
         $teacher_subject['teacher_info'] = teacher_options();
         $teacher_subject['sections_info'] = section_options();
+
         return $this->success(
             'Academic Teacher subjects fetch successfully.',
             $teacher_subject

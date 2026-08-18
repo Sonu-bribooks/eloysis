@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Http\Controllers\BaseController;
+use App\Http\Requests\Admin\LoginRequest;
 use App\Services\Admin\LoginService;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\Admin\LoginRequest;
 
 class AuthController extends BaseController
 {
     public function __construct(
         protected LoginService $loginService
-    ){}
+    ) {}
 
     public function index()
     {
@@ -35,10 +33,11 @@ class AuthController extends BaseController
             );
         }
         $request->session()->regenerate();
+
         return $this->success(
-           $result['message'],
+            $result['message'],
             [
-                'redirect' => route('admin.dashboard')
+                'redirect' => route('admin.dashboard'),
             ]
 
         );
@@ -46,7 +45,7 @@ class AuthController extends BaseController
 
     public function logout()
     {
-         Auth::guard('admin')->logout();
+        Auth::guard('admin')->logout();
 
         request()->session()->invalidate();
 

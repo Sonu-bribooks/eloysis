@@ -3,9 +3,8 @@
 namespace App\Services\Admin;
 
 use App\Repositories\Admin\StudentPromotionRepository;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\DB;
 
 class StudentPromotionService
 {
@@ -17,7 +16,7 @@ class StudentPromotionService
         //
     }
 
-     /**
+    /**
      * Get students for promotion
      */
     public function students(array $filters)
@@ -32,7 +31,7 @@ class StudentPromotionService
     public function promote(array $data): array
     {
         $promoted = 0;
-        $skipped  = [];
+        $skipped = [];
 
         DB::transaction(function () use ($data, &$promoted, &$skipped) {
 
@@ -40,7 +39,7 @@ class StudentPromotionService
 
                 $enrollment = $this->promotionRepository->find($enrollmentId);
 
-                if (!$enrollment) {
+                if (! $enrollment) {
                     continue;
                 }
 
@@ -59,8 +58,8 @@ class StudentPromotionService
 
                     $skipped[] = [
                         'student_id' => $enrollment->stu_profile_id,
-                        'name'       => optional($enrollment->student->user)->name,
-                        'reason'     => 'Already enrolled in selected session.',
+                        'name' => optional($enrollment->student->user)->name,
+                        'reason' => 'Already enrolled in selected session.',
                     ];
 
                     continue;
@@ -73,21 +72,21 @@ class StudentPromotionService
                 */
 
                 $this->promotionRepository->create([
-                    'user_id'               => $enrollment->user_id,
+                    'user_id' => $enrollment->user_id,
 
-                    'stu_profile_id'        => $enrollment->stu_profile_id,
+                    'stu_profile_id' => $enrollment->stu_profile_id,
 
-                    'academic_session_id'   => $data['target_academic_session_id'],
+                    'academic_session_id' => $data['target_academic_session_id'],
 
-                    'class_id'              => $data['target_class_id'],
+                    'class_id' => $data['target_class_id'],
 
-                    'section_id'            => $data['target_section_id'],
+                    'section_id' => $data['target_section_id'],
 
-                    'roll_number'           => $enrollment->roll_number,
+                    'roll_number' => $enrollment->roll_number,
 
-                    'status'                => 1,
+                    'status' => 1,
 
-                    'promoted_by'           => Auth::guard('admin')->id(),
+                    'promoted_by' => Auth::guard('admin')->id(),
 
                 ]);
 
@@ -102,7 +101,7 @@ class StudentPromotionService
 
             'promoted' => $promoted,
 
-            'skipped'  => $skipped,
+            'skipped' => $skipped,
 
         ];
     }

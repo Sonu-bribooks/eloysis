@@ -34,7 +34,7 @@ class StudentPromotionRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['academic_session_id'])) {
+        if (! empty($filters['academic_session_id'])) {
 
             $query->where(
                 'academic_session_id',
@@ -49,7 +49,7 @@ class StudentPromotionRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['class_id'])) {
+        if (! empty($filters['class_id'])) {
 
             $query->where(
                 'class_id',
@@ -64,7 +64,7 @@ class StudentPromotionRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['section_id'])) {
+        if (! empty($filters['section_id'])) {
 
             $query->where(
                 'section_id',
@@ -79,7 +79,7 @@ class StudentPromotionRepository extends BaseRepository
         |--------------------------------------------------------------------------
         */
 
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
 
             $search = $filters['search'];
 
@@ -90,22 +90,20 @@ class StudentPromotionRepository extends BaseRepository
                     'like',
                     "%{$search}%"
                 )
-
-                ->orWhere(
-                    'admission_no',
-                    'like',
-                    "%{$search}%"
-                )
-
-                ->orWhereHas('student.user', function ($query) use ($search) {
-
-                    $query->where(
-                        'name',
+                    ->orWhere(
+                        'admission_no',
                         'like',
                         "%{$search}%"
-                    );
+                    )
+                    ->orWhereHas('student.user', function ($query) use ($search) {
 
-                });
+                        $query->where(
+                            'name',
+                            'like',
+                            "%{$search}%"
+                        );
+
+                    });
 
             });
 

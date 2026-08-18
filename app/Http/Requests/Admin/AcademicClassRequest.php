@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Http\Requests\BaseRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class AcademicClassRequest extends BaseRequest
@@ -66,7 +66,6 @@ class AcademicClassRequest extends BaseRequest
             'class_code.required' => 'class Code is required.',
 
             'class_code.unique' => 'class Code already exists.',
-
 
         ];
     }

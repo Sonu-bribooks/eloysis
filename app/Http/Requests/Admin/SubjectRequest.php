@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Http\Requests\BaseRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
 
 class SubjectRequest extends BaseRequest
@@ -24,13 +24,14 @@ class SubjectRequest extends BaseRequest
     public function rules(): array
     {
         $id = $this->route('subject')?->id;
+
         // dd($id);
         return [
             'subject_name' => [
                 'required',
                 'string',
                 'max:50',
-                Rule::unique('subjects','subject_name')->ignore($id),
+                Rule::unique('subjects', 'subject_name')->ignore($id),
             ],
 
             'subject_code' => [
@@ -39,7 +40,7 @@ class SubjectRequest extends BaseRequest
                 'max:20',
             ],
 
-           'description' => [
+            'description' => [
                 'nullable',
                 'string',
                 'max:500',
@@ -51,11 +52,11 @@ class SubjectRequest extends BaseRequest
     {
         return [
 
-            'subject_name.required'     => 'Subject name is required.',
-            'subject_name.unique'       => 'This subject already exists for the selected class.',
+            'subject_name.required' => 'Subject name is required.',
+            'subject_name.unique' => 'This subject already exists for the selected class.',
 
-            'subject_code.required'     => 'Subject code is required.',
-            'subject_code.max'          => 'Subject code may not be greater than 20 characters.',
+            'subject_code.required' => 'Subject code is required.',
+            'subject_code.max' => 'Subject code may not be greater than 20 characters.',
 
         ];
     }

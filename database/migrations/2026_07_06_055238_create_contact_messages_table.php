@@ -13,17 +13,17 @@ return new class extends Migration
     {
         Schema::create('contact_messages', function (Blueprint $table) {
             $table->id();
-            $table->string('name',100);
+            $table->string('name', 100);
 
-            $table->string('email',150);
+            $table->string('email', 150);
 
-            $table->string('phone',20)->nullable();
+            $table->string('phone', 20)->nullable();
 
-            $table->string('subject',200);
+            $table->string('subject', 200);
 
             $table->text('message');
 
-            $table->enum('status',['pending','read','replied'])
+            $table->enum('status', ['pending', 'read', 'replied'])
                 ->default('pending');
 
             $table->ipAddress('ip_address')->nullable();

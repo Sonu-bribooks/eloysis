@@ -3,11 +3,9 @@
 namespace App\Services\Admin;
 
 use App\Repositories\Admin\AcademicSessionRepository;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Exception;
 use Carbon\Carbon;
-
+use Exception;
+use Illuminate\Support\Facades\DB;
 
 class AcademicSessionService
 {
@@ -21,9 +19,14 @@ class AcademicSessionService
     /**
      * Get sessions
      */
-    public function getAcademicSession(array $filters = [], int $perPage = 10)
-    {
-        return $this->academicSessionRepository->getAcademicSessions($filters, $perPage);
+    public function getAcademicSession(
+        array $filters = [],
+        int $perPage = 10,
+        int $page = 1,
+        ?int $orderColumn = null,
+        string $orderDirection = 'asc'
+    ) {
+        return $this->academicSessionRepository->getAcademicSessions($filters, $perPage, $page, $orderColumn, $orderDirection);
     }
 
     /**
@@ -35,7 +38,7 @@ class AcademicSessionService
 
         try {
             $today = Carbon::today();
-            $is_current = ($today->gt($data['start_date']) && $today->lt($data['end_date'])) ?  true : false;
+            $is_current = ($today->gt($data['start_date']) && $today->lt($data['end_date'])) ? true : false;
             $data['name'] = $data['session_name'];
             $data['is_current'] = $is_current;
             // dd('final',$data);
@@ -62,7 +65,7 @@ class AcademicSessionService
 
         try {
             $today = Carbon::today();
-            $is_current = ($today->gt($data['start_date']) && $today->lt($data['end_date'])) ?  true : false;
+            $is_current = ($today->gt($data['start_date']) && $today->lt($data['end_date'])) ? true : false;
             $data['name'] = $data['session_name'];
             $data['is_current'] = $is_current;
             $session = $this->academicSessionRepository->update($id, $data);
@@ -108,6 +111,7 @@ class AcademicSessionService
     public function changeStatus(int $id)
     {
         $this->academicSessionRepository->changeStatus($id);
+
         return $this->academicSessionRepository->academicStatus($id);
     }
 }

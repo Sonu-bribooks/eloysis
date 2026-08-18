@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests\Website;
 
+use App\Http\Requests\BaseRequest;
 use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use App\Http\Requests\BaseRequest;
 
 class ContactRequest extends BaseRequest
 {
@@ -27,15 +26,15 @@ class ContactRequest extends BaseRequest
     {
         return [
 
-            'name'=>'required|string|max:100',
+            'name' => 'required|string|max:100',
 
-            'email'=>'required|email|max:150',
+            'email' => 'required|email|max:150',
 
-            'phone'=>'nullable|digits_between:10,15',
+            'phone' => 'nullable|digits_between:10,15',
 
-            'subject'=>'required|max:200',
+            'subject' => 'required|max:200',
 
-            'message'=>'required|min:10|max:5000',
+            'message' => 'required|min:10|max:5000',
 
         ];
     }
@@ -44,13 +43,13 @@ class ContactRequest extends BaseRequest
     {
         return [
 
-            'name.required'=>'Please enter your name.',
+            'name.required' => 'Please enter your name.',
 
-            'email.required'=>'Please enter your email.',
+            'email.required' => 'Please enter your email.',
 
-            'subject.required'=>'Please enter subject.',
+            'subject.required' => 'Please enter subject.',
 
-            'message.required'=>'Please enter message.',
+            'message.required' => 'Please enter message.',
 
         ];
     }
@@ -63,7 +62,6 @@ class ContactRequest extends BaseRequest
     protected function failedValidation(Validator $validator)
     {
         throw new HttpResponseException(
-
             response()->json([
 
                 'status' => false,

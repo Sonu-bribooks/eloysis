@@ -27,9 +27,9 @@ class Question extends Model
     ];
 
     protected $casts = [
-        'marks'          => 'decimal:2',
+        'marks' => 'decimal:2',
         'negative_marks' => 'decimal:2',
-        'status'         => 'boolean',
+        'status' => 'boolean',
     ];
 
     public function getOptionsAttribute(): array

@@ -2,7 +2,6 @@
 
 namespace App\Services\Admin;
 
-
 use App\Repositories\Admin\StudentAttendanceRepository;
 use Illuminate\Support\Facades\DB;
 
@@ -18,7 +17,7 @@ class StudentAttendanceService
         $this->attendanceRepository = $attendanceRepository;
     }
 
-     /**
+    /**
      * Get students for attendance
      */
     public function students(array $filters = [])

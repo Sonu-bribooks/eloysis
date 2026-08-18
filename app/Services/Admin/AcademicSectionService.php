@@ -3,16 +3,17 @@
 namespace App\Services\Admin;
 
 use App\Repositories\Admin\AcademicSectionRepository;
-use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class AcademicSectionService
 {
-    protected AcademicSectionRepository  $AcademicSectionRepository;
+    protected AcademicSectionRepository $AcademicSectionRepository;
+
     /**
      * Create a new class instance.
      */
-    public function __construct(AcademicSectionRepository  $AcademicSectionRepository)
+    public function __construct(AcademicSectionRepository $AcademicSectionRepository)
     {
         $this->AcademicSectionRepository = $AcademicSectionRepository;
     }
@@ -20,10 +21,14 @@ class AcademicSectionService
     /**
      * Get Academic Section
      */
-    public function getAcademicSections(array $filters = [], int $perPage = 10) {
-
-        return $this->AcademicSectionRepository->getAcademicSections($filters, $perPage);
-
+    public function getAcademicSections(
+        array $filters = [],
+        int $perPage = 10,
+        int $page = 1,
+        ?int $orderColumn = null,
+        string $orderDirection = 'asc'
+    ) {
+        return $this->AcademicSectionRepository->getAcademicSections($filters, $perPage, $page, $orderColumn, $orderDirection);
     }
 
     /**
@@ -71,7 +76,7 @@ class AcademicSectionService
         }
     }
 
-     /**
+    /**
      * Delete Section
      */
     public function delete(int $id)

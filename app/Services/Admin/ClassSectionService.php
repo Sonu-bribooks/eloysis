@@ -15,13 +15,17 @@ class ClassSectionService
         //
     }
 
-     /**
+    /**
      * Get Academic Section
      */
-    public function getLists(array $filters = [], int $perPage = 10) {
-
-        return $this->classSectionRepository->getLists($filters, $perPage);
-
+    public function getLists(
+        array $filters = [],
+        int $perPage = 10,
+        int $page = 1,
+        ?int $orderColumn = null,
+        string $orderDirection = 'asc'
+    ) {
+        return $this->classSectionRepository->getLists($filters, $perPage, $page, $orderColumn, $orderDirection);
     }
 
     /**
@@ -44,7 +48,7 @@ class ClassSectionService
             DB::rollBack();
 
             dd([
-                'message'   => $e->getMessage(),
+                'message' => $e->getMessage(),
                 'errorInfo' => $e->errorInfo ?? null,
             ]);
             throw $e;
@@ -74,7 +78,7 @@ class ClassSectionService
         }
     }
 
-     /**
+    /**
      * Delete Section
      */
     public function delete(int $id)
@@ -104,5 +108,4 @@ class ClassSectionService
     {
         return $this->classSectionRepository->changeStatus($id);
     }
-
 }

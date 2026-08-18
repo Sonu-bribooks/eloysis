@@ -6,11 +6,242 @@ const Classes = {
         this.modal = new bootstrap.Modal(
             document.getElementById('classModal')
         );
-
+        this.initDataTable();
         this.bindEvents();
 
-        this.load();
+
     },
+
+    /*
+   |--------------------------------------------------------------------------
+   | DataTable
+   |--------------------------------------------------------------------------
+   */
+
+    initDataTable() {
+
+        this.table = $('#classTable').DataTable({
+
+            processing: true,
+
+            serverSide: true,
+
+            ajax: {
+
+                url: CLASSES_LIST_URL,
+
+                type: 'GET',
+
+                data: function (d) {
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Custom Filters
+                    |--------------------------------------------------------------------------
+                    */
+
+                    d.filter_status =
+                        $('#filter_status').val();
+
+                },
+
+                error: function (xhr) {
+
+                    Toast.error(
+                        xhr.responseJSON?.message ??
+                        'Unable to load Academic Classes.'
+                    );
+
+                }
+
+            },
+
+            /*
+            |--------------------------------------------------------------------------
+            | Default Page Length
+            |--------------------------------------------------------------------------
+            */
+
+            pageLength: 10,
+
+            /*
+            |--------------------------------------------------------------------------
+            | Per Page Options
+            |--------------------------------------------------------------------------
+            */
+
+            lengthMenu: [
+                [10, 25, 50, 100],
+                [10, 25, 50, 100]
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Search
+            |--------------------------------------------------------------------------
+            */
+
+            searching: true,
+
+            /*
+            |--------------------------------------------------------------------------
+            | Ordering
+            |--------------------------------------------------------------------------
+            */
+
+            ordering: true,
+
+            /*
+            |--------------------------------------------------------------------------
+            | Columns
+            |--------------------------------------------------------------------------
+            */
+
+            columns: [
+
+                /*
+                |--------------------------------------------------------------------------
+                | #
+                |--------------------------------------------------------------------------
+                */
+
+                {
+                    data: null,
+
+                    name: null,
+
+                    orderable: false,
+
+                    searchable: false,
+
+                    render: function (
+                        data,
+                        type,
+                        row,
+                        meta
+                    ) {
+
+                        return (
+                            meta.row +
+                            meta.settings._iDisplayStart +
+                            1
+                        );
+
+                    }
+                },
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Class Name
+                |--------------------------------------------------------------------------
+                */
+
+                {
+                    data: 'class_name',
+
+                    name: 'class_name'
+                },
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Class Code
+                |--------------------------------------------------------------------------
+                */
+
+                {
+                    data: 'class_code',
+
+                    name: 'class_code'
+                },
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Status
+                |--------------------------------------------------------------------------
+                */
+
+                {
+                    data: 'status',
+
+                    name: 'status',
+
+                    orderable: true,
+
+                    searchable: false,
+
+                    render: function (
+                        data,
+                        type,
+                        row
+                    ) {
+
+                        return Helper.statusSwitch(
+                            row.id,
+                            row.status
+                        );
+
+                    }
+                },
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Actions
+                |--------------------------------------------------------------------------
+                */
+
+                {
+                    data: null,
+
+                    name: null,
+
+                    orderable: false,
+
+                    searchable: false,
+
+                    render: function (
+                        data,
+                        type,
+                        row
+                    ) {
+
+                        return `
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-warning btn-edit"
+                                data-id="${row.id}">
+
+                                <i class="bi bi-pencil"></i>
+
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-danger btn-delete"
+                                data-id="${row.id}">
+
+                                <i class="bi bi-trash"></i>
+
+                            </button>
+                        `;
+
+                    }
+                }
+
+            ]
+
+        });
+
+    },
+
+    /*
+    |--------------------------------------------------------------------------
+    | Events
+    |--------------------------------------------------------------------------
+    */
 
     bindEvents() {
 
@@ -19,7 +250,7 @@ const Classes = {
 
             e.preventDefault();
 
-            this.load(1);
+            this.table.ajax.reload();
 
         });
 
@@ -28,7 +259,9 @@ const Classes = {
 
             $('#filterForm')[0].reset();
 
-            this.load(1);
+            this.table
+                .search('')
+                .ajax.reload();
 
         });
 
@@ -70,152 +303,22 @@ const Classes = {
 
         });
 
-        //pagination
-        $(document).on('click', '.page-link', (e) => {
-
-            let page = $(e.currentTarget).data('page') ?? 1;
-
-            this.load(page);
-
-        });
-
-        //change status
+        // Change Status
         $(document).on('change', '.btn-status', (e) => {
-
             this.changeStatus(e.currentTarget);
-
-        });
-    },
-
-    load(page = 1) {
-
-        $.ajax({
-
-            url: CLASSES_LIST_URL,
-            type: 'GET',
-            data: $('#filterForm').serialize() + '&page=' + page,
-
-            beforeSend: () => {
-
-                $('#classTableBody').html(`
-
-                    <tr>
-
-                        <td
-                            colspan="5"
-                            class="text-center py-4">
-
-                            Loading...
-
-                        </td>
-
-                    </tr>
-
-                `);
-
-            },
-
-            success: (response) => {
-                console.log(response);
-
-                this.render(response.data);
-                this.renderPagination(response.data);
-            },
-
-            error: (e) => {
-                Toast.error(e.responseJSON?.message ?? 'Unable to load Academic Classes.');
-            }
-        })
-
-    },
-
-    render(result) {
-        const rows = result.data;
-
-        let html = '';
-
-        if (!rows.length) {
-
-            html = `
-                <tr>
-                    <td colspan="5" class="text-center py-4">
-                        No Academic Classes Found
-                    </td>
-                </tr>
-            `;
-
-            $('#classTableBody').html(html);
-
-            return;
-        }
-
-        rows.forEach((row, index) => {
-
-            html += `
-                <tr>
-
-                    <td>${index + 1}</td>
-
-                    <td>${row.class_name}</td>
-
-                    <td>${row.class_code}</td>
-
-                    <td>
-                        ${Helper.statusSwitch(row.id, row.status)}
-                    </td>
-
-                    <td>
-
-                        <button
-                            class="btn btn-sm btn-warning btn-edit"
-                            data-id="${row.id}">
-
-                            <i class="bi bi-pencil"></i>
-
-                        </button>
-
-                        <button
-                            class="btn btn-sm btn-danger btn-delete"
-                            data-id="${row.id}">
-
-                            <i class="bi bi-trash"></i>
-
-                        </button>
-
-                    </td>
-
-                </tr>
-            `;
-
         });
 
-        $('#classTableBody').html(html);
-    },
-
-    renderPagination(pagination) {
-        let html = '';
-
-        pagination.links.forEach(link => {
-            html += `
-                <button
-                    class="btn btn-sm ${link.active ? 'btn-primary active' : 'btn-light'} page-link"
-                    data-page="${link.page ?? ''}"
-                    ${link.page === null ? 'disabled' : ''}>
-
-                    ${link.label}
-
-                </button>
-            `;
+        // Status Filter
+        $('#filter_status').on('change', () => {
+            this.table.ajax.reload();
         });
-
-        $('#classPagination').html(html);
     },
 
     /*
-   |--------------------------------------------------------------------------
-   | Create
-   |--------------------------------------------------------------------------
-   */
+    |--------------------------------------------------------------------------
+    | Create
+    |--------------------------------------------------------------------------
+    */
 
     openCreate() {
 
@@ -257,7 +360,10 @@ const Classes = {
 
                 $('#classForm')[0].reset();
 
-                this.load(1);
+                this.table.ajax.reload(
+                    null,
+                    false
+                );
 
             }
 
@@ -337,7 +443,10 @@ const Classes = {
 
                 $('#classForm')[0].reset();
 
-                this.load(1);
+                this.table.ajax.reload(
+                    null,
+                    false
+                );
 
             }
 
@@ -394,7 +503,10 @@ const Classes = {
                     console.log('Delete Success');
 
                     console.log(response);
-                    this.load(1);
+                    this.table.ajax.reload(
+                        null,
+                        false
+                    );
 
                 }
 
@@ -433,15 +545,15 @@ const Classes = {
 
             success: () => {
 
-                this.load(1);
+                this.table.ajax.reload(
+                    null,
+                    false
+                );
 
             },
 
             error: () => {
-                // alert('ssssssssss');
-                // Toggle ko wapas previous state me le aao
                 element.checked = !element.checked;
-
             }
 
         });

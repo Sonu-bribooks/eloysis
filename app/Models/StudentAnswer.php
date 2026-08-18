@@ -19,9 +19,9 @@ class StudentAnswer extends Model
     ];
 
     protected $casts = [
-        'is_correct'    => 'boolean',
+        'is_correct' => 'boolean',
         'marks_awarded' => 'decimal:2',
-        'answered_at'   => 'datetime',
+        'answered_at' => 'datetime',
     ];
 
     /**

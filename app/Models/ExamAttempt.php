@@ -26,12 +26,12 @@ class ExamAttempt extends Model
     ];
 
     protected $casts = [
-        'started_at'          => 'datetime',
-        'submitted_at'        => 'datetime',
-        'expires_at'          => 'datetime',
+        'started_at' => 'datetime',
+        'submitted_at' => 'datetime',
+        'expires_at' => 'datetime',
         'result_published_at' => 'datetime',
-        'score'               => 'decimal:2',
-        'percentage'          => 'decimal:2',
+        'score' => 'decimal:2',
+        'percentage' => 'decimal:2',
     ];
 
     /**

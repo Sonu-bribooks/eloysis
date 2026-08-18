@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use App\Http\Requests\BaseRequest;
+use Illuminate\Contracts\Validation\ValidationRule;
 
 class LoginRequest extends BaseRequest
 {
@@ -24,14 +24,14 @@ class LoginRequest extends BaseRequest
     {
         return [
             'email' => ['required'],
-            'password' => ['required','min:6'],
+            'password' => ['required', 'min:6'],
         ];
     }
 
     public function messages(): array
     {
         return [
-            'email.required'    => 'Please enter your email or username.',
+            'email.required' => 'Please enter your email or username.',
             'password.required' => 'Please enter your password.',
         ];
     }

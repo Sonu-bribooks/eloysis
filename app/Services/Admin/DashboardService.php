@@ -2,14 +2,11 @@
 
 namespace App\Services\Admin;
 
-use App\Models\Role;
-use App\Models\StaffProfile;
-use App\Repositories\Admin\StaffRepository;
-use App\Repositories\Admin\UserRepository;
-use App\Repositories\Admin\StudentRepository;
-use App\Repositories\Admin\TeacherRepository;
 use App\Repositories\Admin\AcademicClassRepository;
+use App\Repositories\Admin\StaffRepository;
+use App\Repositories\Admin\StudentRepository;
 use App\Repositories\Admin\SubjectRepository;
+use App\Repositories\Admin\TeacherRepository;
 
 class DashboardService
 {
@@ -26,11 +23,11 @@ class DashboardService
         return [
             'students' => $this->studentRepository->query()->count(),
             'teachers' => $this->teacherRepository->query()->count(),
-            'classes'  => $this->classRepository->query()->count(),
+            'classes' => $this->classRepository->query()->count(),
             'subjects' => $this->subjectRepository->query()->count(),
-            'admins'   => $this->staffRepository->query()->count(),
-            'exams'    => 0,
-            'results'  => 0,
+            'admins' => $this->staffRepository->query()->count(),
+            'exams' => 0,
+            'results' => 0,
             'contacts' => 0,
         ];
     }
