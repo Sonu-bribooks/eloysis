@@ -1,15 +1,16 @@
 <aside class="admin-sidebar" id="adminSidebar">
 
-    {{-- User Banner Card (Matching Reference Design) --}}
+    {{-- User --}}
     <div class="sidebar-user-card">
 
         <div class="user-card-banner">
 
             <div class="user-avatar-wrapper">
 
-                <img src="https://ui-avatars.com/api/?name={{ urlencode(auth('admin')->user()->name) }}&background=0284C7&color=fff"
-                     alt="{{ auth('admin')->user()->name }}"
-                     class="user-avatar-img">
+                <img
+                    src="https://ui-avatars.com/api/?name={{ urlencode(auth('admin')->user()->name) }}&background=0284C7&color=fff"
+                    alt="{{ auth('admin')->user()->name }}"
+                    class="user-avatar-img">
 
             </div>
 
@@ -17,13 +18,18 @@
 
         <div class="user-card-body">
 
-            <h6 class="user-name">{{ auth('admin')->user()->name }}</h6>
+            <h6 class="user-name">
+                {{ auth('admin')->user()->name }}
+            </h6>
 
-            <small class="user-role">{{ ucfirst(auth('admin')->user()->role->role_name ?? 'Admin') }}</small>
+            <small class="user-role">
+                {{ ucfirst(auth('admin')->user()->role->role_name ?? 'Admin') }}
+            </small>
 
         </div>
 
     </div>
+
 
     {{-- Navigation --}}
     <nav class="sidebar-menu">
@@ -31,261 +37,229 @@
         <ul>
 
             <li class="menu-title">
-
                 NAVIGATION
-
             </li>
+
 
             {{-- Dashboard --}}
-            <li>
+            <x-admin.menu-item
+                route="admin.dashboard"
+                icon="bi bi-speedometer2"
+                label="Dashboard"
+            />
 
-                <a href="{{ route('admin.dashboard') }}"
-                   title="Dashboard"
-                   class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-
-                    <i class="bi bi-speedometer2"></i>
-
-                    <span>Dashboard</span>
-
-                </a>
-
-            </li>
 
             {{-- Website --}}
-            <li>
+            <x-admin.menu-group
+                id="websiteMenu"
+                title="Website Management"
+                icon="bi bi-globe"
+                :active="menu_active('website')">
 
-                <a href="#websiteMenu"
-                   title="Website Management"
-                   data-bs-toggle="collapse"
-                   aria-expanded="false">
+                <x-admin.menu-item
+                    route="#"
+                    icon="bi bi-images"
+                    label="Home Slider"
+                />
 
-                    <i class="bi bi-globe"></i>
+                <x-admin.menu-item
+                    route="#"
+                    icon="bi bi-newspaper"
+                    label="News"
+                />
 
-                    <span>Website Management</span>
+                <x-admin.menu-item
+                    route="#"
+                    icon="bi bi-calendar-event"
+                    label="Events"
+                />
 
-                    <i class="bi bi-chevron-right ms-auto menu-chevron"></i>
+                <x-admin.menu-item
+                    route="#"
+                    icon="bi bi-image"
+                    label="Gallery"
+                />
 
-                </a>
+                <x-admin.menu-item
+                    route="#"
+                    icon="bi bi-envelope"
+                    label="Contact Messages"
+                />
 
-                <ul class="collapse" id="websiteMenu">
-                    <li>
-                        <a href="#">
-                            <i class="bi bi-images me-2"></i>
-                            <span> Home Slider </span>
-                        </a>
-                    </li>
+            </x-admin.menu-group>
 
-                    <li>
-                        <a href="#">
-                            <i class="bi bi-newspaper me-2"></i>
-                            <span>News</span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="#">
-                            <i class="bi bi-calendar-event me-2"></i>
-                            <span>Events</span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="#">
-                            <i class="bi bi-image me-2"></i>
-                            <span>Gallery</span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="#">
-                            <i class="bi bi-envelope me-2"></i> 
-                            <span>Contact Messages</span>
-                        </a>
-                    </li>
-                </ul>
-
-            </li>
 
             {{-- Academic --}}
-            <li>
+            <x-admin.menu-group
+                id="academicMenu"
+                title="Academic Management"
+                icon="bi bi-mortarboard"
+                :active="menu_active('academic')">
 
-                <a href="#academicMenu"
-                   title="Academic Management"
-                   data-bs-toggle="collapse"
-                   aria-expanded="{{ request()->is('admin/academic*') || request()->is('admin/classes*') || request()->is('admin/sections*') || request()->is('admin/subjects*') || request()->is('admin/teachers*') ? 'true' : 'false' }}">
+                <x-admin.menu-item
+                    route="admin.academic.index"
+                    icon="bi bi-calendar3"
+                    label="Academic Session"
+                />
 
-                    <i class="bi bi-mortarboard"></i>
+                <x-admin.menu-item
+                    route="admin.classes.index"
+                    active="admin.classes.*"
+                    icon="bi bi-building"
+                    label="Classes"
+                />
 
-                    <span>Academic Management</span>
+                <x-admin.menu-item
+                    route="admin.sections.index"
+                    active="admin.sections.*"
+                    icon="bi bi-diagram-3"
+                    label="Sections"
+                />
 
-                    <i class="bi bi-chevron-right ms-auto menu-chevron"></i>
+                <x-admin.menu-item
+                    route="admin.class-sections.index"
+                    active="admin.class-sections.*"
+                    icon="bi bi-diagram-2"
+                    label="Class Sections"
+                />
 
-                </a>
+                <x-admin.menu-item
+                    route="admin.subjects.index"
+                    active="admin.subjects.*"
+                    icon="bi bi-book"
+                    label="Subjects"
+                />
 
-                <ul class="collapse {{ request()->is('admin/academic*') || request()->is('admin/classes*') || request()->is('admin/sections*') || request()->is('admin/subjects*') || request()->is('admin/teachers*') ? 'show' : '' }}" id="academicMenu">
-                    <li>
-                        <a href="{{ route('admin.academic.index') }}" class="{{ request()->routeIs('admin.academic.index') ? 'active' : '' }}">
-                            <i class="bi bi-calendar3 me-2"></i> 
-                            <span>Academic Session </span>
-                        </a>
-                    </li>
+                <x-admin.menu-item
+                    route="admin.clsubject.index"
+                    active="admin.clsubject.*"
+                    icon="bi bi-journal-bookmark"
+                    label="Class Subjects"
+                />
 
-                    <li>
-                        <a href="{{route('admin.classes.index')}}" class="{{ request()->routeIs('admin.classes.index') ? 'active' : '' }}">
-                            <i class="bi bi-building me-2"></i> 
-                            <span>Classes </span>
-                        </a>
-                    </li>
+                <x-admin.menu-item
+                    route="admin.teachers.index"
+                    active="admin.teachers.*"
+                    icon="bi bi-person-workspace"
+                    label="Teachers"
+                />
 
-                    <li>
-                        <a href="{{route('admin.sections.index')}}" class="{{ request()->routeIs('admin.sections.index') ? 'active' : '' }}">
-                            <i class="bi bi-diagram-3 me-2"></i> 
-                            <span> Sections </span>
-                        </a>
-                    </li>
+                <x-admin.menu-item
+                    route="admin.teacher-subject.index"
+                    active="admin.teacher-subject.*"
+                    icon="bi bi-person-video2"
+                    label="Teacher Subjects"
+                />
 
-                    <li>
-                        <a href="{{ route('admin.class-sections.index') }}" class="{{ request()->routeIs('admin.class-sections.index') ? 'active' : '' }}">
-                            <i class="bi bi-diagram-2 me-2"></i> 
-                            <span>Class Sections </span>
-                        </a>
-                    </li>
+            </x-admin.menu-group>
 
-                    <li>
-                        <a href="{{ route('admin.subjects.index') }}" class="{{ request()->routeIs('admin.subjects.index') ? 'active' : '' }}">
-                            <i class="bi bi-book me-2"></i> 
-                            <span> Subjects </span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="{{ route('admin.clsubject.index') }}" class="{{ request()->routeIs('admin.clsubject.index') ? 'active' : '' }}">
-                            <i class="bi bi-journal-bookmark me-2"></i> 
-                            <span>Class Subjects </span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="{{ route('admin.teachers.index') }}" class="{{ request()->routeIs('admin.teachers.index') ? 'active' : '' }}">
-                            <i class="bi bi-person-workspace me-2"></i> 
-                            <span> Teachers </span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="{{ route('admin.teacher-subject.index') }}" class="{{ request()->routeIs('admin.teacher-subject.index') ? 'active' : '' }}">
-                            <i class="bi bi-person-video2 me-2"></i> 
-                            <span>Teacher Subjects </span>
-                        </a>
-                    </li>
-
-                </ul>
-
-            </li>
 
             {{-- Students --}}
-            <li>
+            <x-admin.menu-group
+                id="studentMenu"
+                title="Students Management"
+                icon="bi bi-people"
+                :active="menu_active('students')">
 
-                <a href="#studentMenu"
-                   title="Students Management"
-                   data-bs-toggle="collapse"
-                   aria-expanded="{{ request()->is('admin/students*') || request()->is('admin/student-promotions*') || request()->is('admin/attendance*') ? 'true' : 'false' }}">
+                <x-admin.menu-item
+                    route="admin.students.index"
+                    active="admin.students.*"
+                    icon="bi bi-list-ul"
+                    label="Student List"
+                />
 
-                    <i class="bi bi-people"></i>
+                <x-admin.menu-item
+                    route="admin.student-promotions.index"
+                    active="admin.student-promotions.*"
+                    icon="bi bi-mortarboard-fill"
+                    label="Student Promotion"
+                />
 
-                    <span>Students Management</span>
+                {{-- Not implemented yet --}}
+                <li>
+                    <a href="#">
+                        <i class="bi bi-person-plus me-2"></i>
+                        <span>Admissions</span>
+                    </a>
+                </li>
 
-                    <i class="bi bi-chevron-right ms-auto menu-chevron"></i>
+                <x-admin.menu-item
+                    route="admin.attendance.index"
+                    active="admin.attendance.*"
+                    icon="bi bi-calendar-check"
+                    label="Attendance"
+                />
 
-                </a>
+            </x-admin.menu-group>
 
-                <ul class="collapse {{ request()->is('admin/students*') || request()->is('admin/student-promotions*') || request()->is('admin/attendance*') ? 'show' : '' }}" id="studentMenu">
 
-                    <li><a href="{{ route('admin.students.index') }}" class="{{ request()->routeIs('admin.students.index') ? 'active' : '' }}"><i class="bi bi-list-ul me-2"></i> <span>Student List </span></a></li>
-                    <li><a href="{{ route('admin.student-promotions.index') }}" class="{{ request()->routeIs('admin.student-promotions.index') ? 'active' : '' }}"><i class="bi bi-mortarboard-fill me-2"></i> <span>Student Promotion </span></a></li>
-                    
-                    <li><a href="#"><i class="bi bi-person-plus me-2"></i> <span>Admissions </span></a></li>
+            {{-- Examinations --}}
+            <x-admin.menu-group
+                id="examMenu"
+                title="Examinations"
+                icon="bi bi-journal-check"
+                :active="menu_active('examinations')">
 
-                    <li><a href="{{ route('admin.attendance.index') }}" class="{{ request()->routeIs('admin.attendance.index') ? 'active' : '' }}"><i class="bi bi-calendar-check me-2"></i> <span>Attendance </span></a></li>
+                <li>
+                    <a href="#">
+                        <i class="bi bi-journal-text me-2"></i>
+                        <span>Exams</span>
+                    </a>
+                </li>
 
-                </ul>
+                <li>
+                    <a href="#">
+                        <i class="bi bi-patch-question me-2"></i>
+                        <span>Questions</span>
+                    </a>
+                </li>
 
-            </li>
+                <li>
+                    <a href="#">
+                        <i class="bi bi-award me-2"></i>
+                        <span>Results</span>
+                    </a>
+                </li>
 
-            {{-- Exam --}}
-            <li>
+            </x-admin.menu-group>
 
-                <a href="#examMenu"
-                   title="Examinations"
-                   data-bs-toggle="collapse"
-                   aria-expanded="false">
-
-                    <i class="bi bi-journal-check"></i>
-
-                    <span>Examinations</span>
-
-                    <i class="bi bi-chevron-right ms-auto menu-chevron"></i>
-
-                </a>
-
-                <ul class="collapse" id="examMenu">
-
-                    <li><a href="#"><i class="bi bi-journal-text me-2"></i> <span>Exams </span></a></li>
-
-                    <li><a href="#"> <i class="bi bi-patch-question me-2"></i> <span>Questions </span></a></li>
-
-                    <li><a href="#"> <i class="bi bi-award me-2"></i> <span>Results </span></a></li>
-
-                </ul>
-
-            </li>
 
             {{-- Administration --}}
             <li class="menu-title">
-
                 ADMINISTRATION
-
             </li>
 
-            <li>
 
-                <a href="#userMenu"
-                   title="User Management"
-                   data-bs-toggle="collapse"
-                   aria-expanded="{{ request()->is('admin/roles*') || request()->is('admin/staffs*') ? 'true' : 'false' }}">
+            {{-- User Management --}}
+            <x-admin.menu-group
+                id="userMenu"
+                title="User Management"
+                icon="bi bi-shield-lock"
+                :active="menu_active('users')">
 
-                    <i class="bi bi-shield-lock"></i>
+                <x-admin.menu-item
+                    route="admin.roles.index"
+                    active="admin.roles.*"
+                    icon="bi bi-person-badge"
+                    label="Roles"
+                />
 
-                    <span>User Management</span>
+                <li>
+                    <a href="#">
+                        <i class="bi bi-shield-lock me-2"></i>
+                        <span>Permissions</span>
+                    </a>
+                </li>
 
-                    <i class="bi bi-chevron-right ms-auto menu-chevron"></i>
+                <x-admin.menu-item
+                    route="admin.staffs.index"
+                    active="admin.staffs.*"
+                    icon="bi bi-person-gear"
+                    label="Admin Users"
+                />
 
-                </a>
+            </x-admin.menu-group>
 
-                <ul class="collapse {{ request()->is('admin/roles*') || request()->is('admin/staffs*') ? 'show' : '' }}" id="userMenu">
-                    <li>
-                        <a href="{{ route('admin.roles.index') }}" class="{{ request()->routeIs('admin.roles.index') ? 'active' : '' }}">
-                            <i class="bi bi-person-badge me-2"></i> 
-                            <span> Roles </span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="#">
-                            <i class="bi bi-shield-lock me-2"></i> 
-                            <span> Permissions </span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="{{ route('admin.staffs.index')}}" class="{{ request()->routeIs('admin.staffs.index') ? 'active' : '' }}">
-                            <i class="bi bi-person-gear me-2"></i> 
-                            <span> Admin Users </span>
-                        </a>
-                    </li>
-                </ul>
-
-            </li>
 
             {{-- Reports --}}
             <li>
@@ -300,18 +274,29 @@
 
             </li>
 
+
             {{-- Settings --}}
-            <li>
+            <x-admin.menu-group
+                id="settingsMenu"
+                title="Settings"
+                icon="bi bi-gear"
+                :active="menu_active('settings')">
 
-                <a href="#" title="Settings">
+                <x-admin.menu-item
+                    route="admin.logs.index"
+                    active="admin.logs.*"
+                    icon="bi bi-file-text"
+                    label="Logs"
+                />
 
-                    <i class="bi bi-gear"></i>
+                <li>
+                    <a href="#">
+                        <i class="bi bi-upload me-2"></i>
+                        <span>Import</span>
+                    </a>
+                </li>
 
-                    <span>Settings</span>
-
-                </a>
-
-            </li>
+            </x-admin.menu-group>
 
         </ul>
 

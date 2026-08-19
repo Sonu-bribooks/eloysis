@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\StudentPromotionController;
 use App\Http\Controllers\Admin\SubjectController;
 use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\Admin\TeacherSubjectController;
+use App\Http\Controllers\Admin\LogController;
 use Illuminate\Support\Facades\Route;
 
 require __DIR__.'/website.php';
@@ -29,7 +30,7 @@ require __DIR__.'/website.php';
 //     return view('welcome');
 // });
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware('activity.log')->group(function () {
 
     // Guest admin routes
     Route::middleware('admin.guest')->group(function () {
@@ -158,6 +159,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::post('/save', 'save')->name('save');
                 Route::get('/history', 'history')->name('history');
 
+            });
+
+        // **********************Log Management******************************* */
+        Route::prefix('logs')
+            ->name('logs.')
+            ->controller(LogController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/files', 'files')->name('files');
+                Route::get('/read', 'read')->name('read');
+                Route::get('/download', 'download')->name('download');
             });
 
         Route::resource('exams', ExamController::class);
