@@ -1,0 +1,278 @@
+/* ============================================================
+   DATATABLES – Custom Styling (Bootstrap 5 Integration)
+   Matches the BriBooks Modern Card Theme
+   ============================================================ */
+
+/* ── Wrapper Layout ── */
+div.dt-container {
+    padding: 0;
+}
+
+div.dt-container .dt-layout-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 16px 20px;
+}
+
+div.dt-container .dt-layout-row:first-child {
+    border-bottom: 1px solid var(--theme-border, #e2e8f0);
+    background-color: var(--theme-card-bg, #ffffff);
+    border-radius: 12px 12px 0 0;
+}
+
+div.dt-container .dt-layout-row:last-child {
+    border-top: 1px solid var(--theme-border, #e2e8f0);
+    background-color: var(--theme-card-bg, #ffffff);
+    border-radius: 0 0 12px 12px;
+}
+
+
+/* ── Length Menu (Show entries) ── */
+div.dt-container .dt-length {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+div.dt-container .dt-length label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--theme-text-secondary, #64748b);
+    white-space: nowrap;
+    margin-bottom: 0;
+}
+
+div.dt-container .dt-length select {
+    background-color: var(--theme-input-bg, #f8fafc);
+    color: var(--theme-input-text, #1e293b);
+    border: 1px solid var(--theme-input-border, #cbd5e1);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 13px;
+    min-width: 70px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+div.dt-container .dt-length select:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    outline: none;
+}
+
+
+/* ── Search Box ── */
+div.dt-container .dt-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+div.dt-container .dt-search label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--theme-text-secondary, #64748b);
+    white-space: nowrap;
+    margin-bottom: 0;
+}
+
+div.dt-container .dt-search input {
+    background-color: var(--theme-input-bg, #f8fafc);
+    color: var(--theme-input-text, #1e293b);
+    border: 1px solid var(--theme-input-border, #cbd5e1);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px;
+    min-width: 200px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+div.dt-container .dt-search input:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    outline: none;
+}
+
+div.dt-container .dt-search input::placeholder {
+    color: var(--theme-text-muted, #94a3af);
+}
+
+
+/* ── Info Text ── */
+div.dt-container .dt-info {
+    font-size: 13px;
+    color: var(--theme-text-secondary, #64748b);
+    font-weight: 400;
+    padding: 0;
+}
+
+
+/* ── Pagination ── */
+div.dt-container .dt-paging {
+    padding: 0;
+}
+
+div.dt-container .dt-paging .pagination {
+    margin: 0;
+    gap: 4px;
+}
+
+div.dt-container .dt-paging .page-item .page-link {
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border: 1px solid var(--theme-border, #e2e8f0);
+    background-color: var(--theme-card-bg, #ffffff);
+    color: var(--theme-text, #1e293b);
+    transition: all 0.2s ease;
+    min-width: 36px;
+    text-align: center;
+}
+
+div.dt-container .dt-paging .page-item .page-link:hover {
+    background-color: var(--theme-table-hover, #f1f5f9);
+    color: var(--theme-text, #1e293b);
+    border-color: var(--theme-border, #e2e8f0);
+}
+
+div.dt-container .dt-paging .page-item.active .page-link {
+    background-color: #0284c7 !important;
+    border-color: #0284c7 !important;
+    color: #ffffff !important;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+}
+
+div.dt-container .dt-paging .page-item.disabled .page-link {
+    background-color: var(--theme-card-bg, #ffffff) !important;
+    color: var(--theme-text-muted, #94a3af) !important;
+    border-color: var(--theme-border, #e2e8f0) !important;
+    opacity: 0.6;
+}
+
+
+/* ── Processing Indicator ── */
+div.dt-container .dt-processing {
+    background-color: var(--theme-card-bg, #ffffff);
+    color: var(--theme-text, #1e293b);
+    border: 1px solid var(--theme-border, #e2e8f0);
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ── Empty Table ── */
+.dataTables_empty,
+td.dt-empty {
+    font-size: 13.5px;
+    color: var(--theme-text-muted, #94a3af) !important;
+    padding: 32px 16px !important;
+    text-align: center;
+    font-style: italic;
+}
+
+
+/* ── Sorting Icons ── */
+table.dataTable thead th {
+    position: relative;
+}
+
+table.dataTable thead .dt-orderable-asc .dt-column-order,
+table.dataTable thead .dt-orderable-desc .dt-column-order {
+    opacity: 0.3;
+    transition: opacity 0.2s ease;
+}
+
+table.dataTable thead .dt-ordering-asc .dt-column-order,
+table.dataTable thead .dt-ordering-desc .dt-column-order {
+    opacity: 1;
+    color: #0284c7;
+}
+
+
+/* ── Table Card Fix ── */
+.card div.dt-container {
+    border: none;
+}
+
+.card div.dt-container .dt-layout-row:first-child {
+    border-radius: 0;
+}
+
+.card div.dt-container .dt-layout-row:last-child {
+    border-radius: 0 0 12px 12px;
+}
+
+
+/* ── Action Buttons Group ── */
+td .btn-edit,
+td .btn-delete,
+td .btn-view {
+    margin: 0 2px;
+}
+
+.btn-view {
+    background-color: #dbeafe !important;
+    color: #2563eb !important;
+    border: none !important;
+    border-radius: 50% !important;
+    width: 34px !important;
+    height: 34px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    transition: all 0.2s ease !important;
+}
+
+.btn-view:hover {
+    background-color: #3b82f6 !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .btn-view {
+    background-color: rgba(37, 99, 235, 0.25) !important;
+    color: #60a5fa !important;
+}
+
+[data-theme="dark"] .btn-view:hover {
+    background-color: #3b82f6 !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .btn-edit:hover {
+    background-color: #f59e0b !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .btn-delete:hover {
+    background-color: #ef4444 !important;
+    color: #ffffff !important;
+}
+
+
+/* ── Responsive: Stack on mobile ── */
+@media (max-width: 576px) {
+
+    div.dt-container .dt-layout-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 12px 16px;
+    }
+
+    div.dt-container .dt-search input {
+        min-width: 100%;
+    }
+
+    div.dt-container .dt-paging .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+}

@@ -135,19 +135,19 @@ const Teacher = {
                         return `
                             <button
                                 type="button"
-                                class="btn btn-sm btn-info btn-view-teacher"
+                                class="btn btn-sm btn-view"
                                 data-id="${row.id}">
                                 <i class="bi bi-eye"></i>
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-sm btn-warning btn-edit-teacher"
+                                class="btn btn-sm btn-edit"
                                 data-id="${row.id}">
                                 <i class="bi bi-pencil"></i>
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-sm btn-danger btn-delete-teacher"
+                                class="btn btn-sm btn-delete"
                                 data-id="${row.id}">
                                 <i class="bi bi-trash"></i>
                             </button>
@@ -192,12 +192,12 @@ const Teacher = {
         });
 
         // Edit Teacher
-        $(document).on('click', '.btn-edit-teacher', (e) => {
+        $(document).on('click', '.btn-edit', (e) => {
             this.edit($(e.currentTarget).data('id'));
         });
 
         // View Teacher
-        $(document).on('click', '.btn-view-teacher', (e) => {
+        $(document).on('click', '.btn-view', (e) => {
             this.view($(e.currentTarget).data('id'));
         });
 
@@ -212,7 +212,7 @@ const Teacher = {
         });
 
         // Delete 
-        $(document).on('click', '.btn-delete-teacher', (e) => {
+        $(document).on('click', '.btn-delete', (e) => {
             this.destroy($(e.currentTarget).data('id'));
         });
 

@@ -137,19 +137,19 @@ const Staff = {
                         return `
                             <button
                                 type="button"
-                                class="btn btn-sm btn-info btn-view-staff"
+                                class="btn btn-sm btn-view"
                                 data-id="${row.id}">
                                 <i class="bi bi-eye"></i>
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-sm btn-warning btn-edit-staff"
+                                class="btn btn-sm btn-edit"
                                 data-id="${row.id}">
                                 <i class="bi bi-pencil"></i>
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-sm btn-danger btn-delete-staff"
+                                class="btn btn-sm btn-delete"
                                 data-id="${row.id}">
                                 <i class="bi bi-trash"></i>
                             </button>
@@ -194,17 +194,17 @@ const Staff = {
         });
 
         // Edit
-        $(document).on('click', '.btn-edit-staff', (e) => {
+        $(document).on('click', '.btn-edit', (e) => {
             this.edit($(e.currentTarget).data('id'));
         });
 
         // View
-        $(document).on('click', '.btn-view-staff', (e) => {
+        $(document).on('click', '.btn-view', (e) => {
             this.view($(e.currentTarget).data('id'));
         });
 
         // Delete
-        $(document).on('click', '.btn-delete-staff', (e) => {
+        $(document).on('click', '.btn-delete', (e) => {
             this.delete($(e.currentTarget).data('id'));
         });
 

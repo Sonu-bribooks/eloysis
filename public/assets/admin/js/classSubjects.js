@@ -98,13 +98,13 @@ const ClassSubject = {
                         return `
                             <button
                                 type="button"
-                                class="btn btn-sm btn-warning btn-edit"
+                                class="btn btn-sm btn-edit"
                                 data-id="${row.id}">
                                 <i class="bi bi-pencil"></i>
                             </button>
                             <button
                                 type="button"
-                                class="btn btn-sm btn-danger btn-delete"
+                                class="btn btn-sm btn-delete"
                                 data-id="${row.id}">
                                 <i class="bi bi-trash"></i>
                             </button>

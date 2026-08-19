@@ -211,7 +211,7 @@ const Classes = {
                         return `
                             <button
                                 type="button"
-                                class="btn btn-sm btn-warning btn-edit"
+                                class="btn btn-sm btn-edit"
                                 data-id="${row.id}">
 
                                 <i class="bi bi-pencil"></i>
@@ -220,7 +220,7 @@ const Classes = {
 
                             <button
                                 type="button"
-                                class="btn btn-sm btn-danger btn-delete"
+                                class="btn btn-sm btn-delete"
                                 data-id="${row.id}">
 
                                 <i class="bi bi-trash"></i>

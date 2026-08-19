@@ -140,19 +140,19 @@ const Student = {
                         return `
                             <a
                                 href="${viewUrl}"
-                                class="btn btn-sm btn-info btn-view-student"
+                                class="btn btn-sm btn-view"
                                 title="View">
                                 <i class="bi bi-eye"></i>
                             </a>
                             <a
                                 href="${editUrl}"
-                                class="btn btn-sm btn-warning btn-edit-student"
+                                class="btn btn-sm btn-edit"
                                 title="Edit">
                                 <i class="bi bi-pencil"></i>
                             </a>
                             <button
                                 type="button"
-                                class="btn btn-sm btn-danger btn-delete-student"
+                                class="btn btn-sm btn-delete"
                                 data-id="${row.id}"
                                 title="Delete">
                                 <i class="bi bi-trash"></i>
@@ -235,7 +235,7 @@ const Student = {
         });
 
         // Delete 
-        $(document).on('click', '.btn-delete-student', (e) => {
+        $(document).on('click', '.btn-delete', (e) => {
             this.destroy($(e.currentTarget).data('id'));
         });
 
